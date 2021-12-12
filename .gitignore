@@ -1,0 +1,5 @@
+/.idea
+/temp
+*.pyc
+__pycache__
+refs/
