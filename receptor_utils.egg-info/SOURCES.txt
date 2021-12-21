@@ -1,0 +1,10 @@
+extract_refs.py
+identical_seqs.py
+novel_allele_name.py
+number_ighv.py
+setup.py
+simple_bio_seq.py
+receptor_utils.egg-info/PKG-INFO
+receptor_utils.egg-info/SOURCES.txt
+receptor_utils.egg-info/dependency_links.txt
+receptor_utils.egg-info/top_level.txt
