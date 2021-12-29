@@ -51,16 +51,25 @@ Numbering of V-sequences uses the IMGT alignment. The naming convention follows 
 
 # number_ighv
 
-Contains various functions for working with  V-sequences according to the IMGT numbering scheme.
+Contains various functions for working with V-sequences according to the IMGT numbering scheme.
 The most useful is ```gap_sequence()``` which will gap the provided V-sequence by using the closest sequence in a reference
 set as a template.
 
-# extract_refs.py
-A script which uses simple_bi_seq to extract 
-files for particular loci and species from an IMGT reference file. 
+## Example scripts
+
+These may be useful in their own right, but also show how to use some of the functions 
+mentioned above.
 
 # extract_refs.py
-A script which uses simple_bi_seq to extract 
+A script which uses simple_bio_seq to extract 
+files for particular loci and species from an IMGT reference file. 
+
+# gap_inferred.py
+A script which will gap a set of sequences listed in a FASTA file, using the closest sequences
+discovered from a reference set.
+
+# identical_seqs.py
+A script which uses simple_bio_seq to  
 list identical sequences and sub-sequences in a fasta file.
 
 
