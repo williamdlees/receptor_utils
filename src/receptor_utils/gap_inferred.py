@@ -1,8 +1,8 @@
 # Gap sequences inferred by IgDiscover
 
-import number_ighv
+from receptor_utils import number_ighv
 import argparse
-import simple_bio_seq as simple
+from receptor_utils import simple_bio_seq as simple
 
 parser = argparse.ArgumentParser(description='Gap inferred sequences')
 parser.add_argument('inferred_file', help='ungapped inferred sequences (fasta)')

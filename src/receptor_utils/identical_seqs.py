@@ -1,7 +1,7 @@
 # List identical sequences and sub-sequences in a fasta file
 
 import argparse
-import simple_bio_seq as simple
+from receptor_utils import simple_bio_seq as simple
 
 parser = argparse.ArgumentParser(description='List identical sequences and sub-sequences in a fasta file')
 parser.add_argument('input_file', help='gapped imgt reference file')

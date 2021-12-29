@@ -2,7 +2,7 @@
 # The current IMGT reference file can be downloaded from http://www.imgt.org/download/GENE-DB/IMGTGENEDB-ReferenceSequences.fasta-nt-WithGaps-F+ORF+inframeP
 
 import argparse
-import simple_bio_seq as simple
+from receptor_utils import simple_bio_seq as simple
 
 parser = argparse.ArgumentParser(description='Extract reference files for nominated species')
 parser.add_argument('imgt_file', help='gapped imgt reference file')

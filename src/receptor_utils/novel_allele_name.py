@@ -2,8 +2,8 @@
 # at https://wordpress.vdjbase.org/index.php/vdjbase_help/airr-seq-data-allele-names/
 # For V sequences, the sequence must be full-length at the 5' end, or IMGT-gapped.
 
-import simple_bio_seq as simple
-import number_ighv
+from receptor_utils import simple_bio_seq as simple
+from receptor_utils import number_ighv
 
 # Make a name for the novel allele, given its gapped or ungapped sequence
 # returns a tuple (name, gapped_sequence)

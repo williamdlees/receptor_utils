@@ -1,7 +1,7 @@
 # De novo IMGT-gapping of macaque IGHV germline genes, using guidance from http://www.bioinf.org.uk/abs/info.html#cdrid to confirm CDR1 and 2
 
 import re
-import simple_bio_seq as simple
+from receptor_utils import simple_bio_seq as simple
 
 def nt_diff(s1, s2):
     diffs = 0
