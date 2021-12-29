@@ -5,7 +5,8 @@
 import simple_bio_seq as simple
 import number_ighv
 
-# Return a name for the novel allele, given its gapped or ungapped sequence
+# Make a name for the novel allele, given its gapped or ungapped sequence
+# returns a tuple (name, gapped_sequence)
 #
 # novel_seq: the full-length sequence to name, which may be either gapped or ungapped in the case of a V-gene
 # ref_set: dict of reference genes (gapped in the case of v-genes), in the format returned by read_fasta
@@ -94,7 +95,8 @@ def name_novel(novel_seq, ref_set, v_gene=True):
         else:
             suffs.append('%d%s%d' % (d.pos + 1, d.novel.lower(), d.pos + len(d.novel)))
 
-    return closest_ref_name + '_' + '_'.join(suffs) if len(suffs) else closest_ref_name
+    novel_name = closest_ref_name + '_' + '_'.join(suffs) if len(suffs) else closest_ref_name
+    return(novel_name, novel_seq)
 
 
 # Build (and name) a reference set for sequences truncated at the 5' end

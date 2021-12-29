@@ -1,0 +1,8 @@
+LICENSE
+README.md
+pyproject.toml
+setup.cfg
+src/receptor_utils.egg-info/PKG-INFO
+src/receptor_utils.egg-info/SOURCES.txt
+src/receptor_utils.egg-info/dependency_links.txt
+src/receptor_utils.egg-info/top_level.txt

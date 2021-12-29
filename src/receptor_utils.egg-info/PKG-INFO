@@ -1,0 +1,19 @@
+Metadata-Version: 2.1
+Name: receptor-utils
+Version: 0.0.1
+Summary: Some tools I find useful for working with Ig receptor sequences
+Home-page: https://github.com/williamdlees/receptor_utils
+Author: William Lees
+Author-email: william@lees.org.uk
+License: UNKNOWN
+Project-URL: Bug Tracker, https://github.com/williamdlees/receptor_utils/issues
+Platform: UNKNOWN
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: European Union Public Licence 1.2 (EUPL 1.2)
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+License-File: LICENSE
+
+Some tools I find useful for working with Ig receptor sequences
+
