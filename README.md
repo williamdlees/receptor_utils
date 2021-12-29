@@ -1,17 +1,21 @@
-##receptor_utils
+## receptor_utils
 
 Some tools I find useful for working with Ig receptor sequences.
 
 ## Installation
 
+```bash
 git clone https://github.com/williamdlees/receptor_utils
 pip install receptor_utils
+```
 
-The module requires Biopython to be installed.
+The module requires [Biopython](https://biopython.org).
 
 (will be on PyPi soon)
 
 ## Overview
+
+Please refer to the files themselves for slightly more detailed documentation.
 
 # simple_bio_seq 
 
@@ -52,11 +56,11 @@ The most useful is ```gap_sequence()``` which will gap the provided V-sequence b
 set as a template.
 
 # extract_refs.py
-A script (that  can be run from the cloned repo) which uses simple_bi_seq to extract 
+A script which uses simple_bi_seq to extract 
 files for particular loci and species from an IMGT reference file. 
 
 # extract_refs.py
-A script (that can be run from the cloned repo) which uses simple_bi_seq to extract 
+A script which uses simple_bi_seq to extract 
 list identical sequences and sub-sequences in a fasta file.
 
 
