@@ -61,7 +61,7 @@ These may be useful in their own right, but also show how to use some of the fun
 mentioned above.
 
 ### extract_refs.py
-A script which uses simple_bio_seq to extract 
+A script which uses ```simple_bio_seq``` to extract 
 files for particular loci and species from an IMGT reference file. 
 
 ### gap_inferred.py
@@ -69,8 +69,7 @@ A script which will gap a set of sequences listed in a FASTA file, using the clo
 discovered from a reference set.
 
 ### identical_seqs.py
-A script which uses simple_bio_seq to  
-list identical sequences and sub-sequences in a fasta file.
+A script which uses ```simple_bio_seq``` to list identical sequences and sub-sequences in a fasta file.
 
 
 
