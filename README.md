@@ -58,17 +58,22 @@ set as a template.
 # Example scripts
 
 These may be useful in their own right, but also show how to use some of the functions 
-mentioned above.
+mentioned above. Once the package is installed, you should be able to run these at the command
+line without the .py extension, for example type
+```shell
+$ extract_refs --help
+```
+for help
 
-### extract_refs.py
+### extract_refs
 A script which uses ```simple_bio_seq``` to extract 
 files for particular loci and species from an IMGT reference file. 
 
-### gap_inferred.py
+### gap_inferred
 A script which will gap a set of sequences listed in a FASTA file, using the closest sequences
 discovered from a reference set.
 
-### identical_seqs.py
+### identical_seqs
 A script which uses ```simple_bio_seq``` to list identical sequences and sub-sequences in a fasta file.
 
 

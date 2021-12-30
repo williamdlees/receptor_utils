@@ -1,3 +1,4 @@
+#!python
 # Extract reference files for nominated species
 # The current IMGT reference file can be downloaded from http://www.imgt.org/download/GENE-DB/IMGTGENEDB-ReferenceSequences.fasta-nt-WithGaps-F+ORF+inframeP
 

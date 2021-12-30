@@ -1,3 +1,4 @@
+#!python
 # List identical sequences and sub-sequences in a fasta file
 
 import argparse

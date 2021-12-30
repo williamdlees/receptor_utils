@@ -1,3 +1,4 @@
+#!python
 # Gap sequences inferred by IgDiscover
 
 from receptor_utils import number_ighv
