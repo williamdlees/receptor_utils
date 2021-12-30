@@ -4,27 +4,29 @@
 import argparse
 from receptor_utils import simple_bio_seq as simple
 
-parser = argparse.ArgumentParser(description='List identical sequences and sub-sequences in a fasta file')
-parser.add_argument('input_file', help='gapped imgt reference file')
-args = parser.parse_args()
 
-seqs = simple.read_fasta(args.input_file)
+def main():
+    parser = argparse.ArgumentParser(description='List identical sequences and sub-sequences in a fasta file')
+    parser.add_argument('input_file', help='gapped imgt reference file')
+    args = parser.parse_args()
 
-seq_index = {}
+    seqs = simple.read_fasta(args.input_file)
 
-for seq_name, seq in seqs.items():
-    if seq not in seq_index:
-        seq_index[seq] = []
-    seq_index[seq].append(seq_name)
+    seq_index = {}
 
-print('Identical sequences:')
+    for seq_name, seq in seqs.items():
+        if seq not in seq_index:
+            seq_index[seq] = []
+        seq_index[seq].append(seq_name)
 
-for names in seq_index.values():
-    if len(names) > 1:
-        print(', '.join(names))
+    print('Identical sequences:')
 
-print('Sub-sequences:')
-for n1 in seqs:
-    for n2 in seqs:
-        if n1 != n2 and seqs[n1] != seqs[n2] and n1 in n2:
-            print('%s is a sub-sequence of %s' % (n1, n2))
+    for names in seq_index.values():
+        if len(names) > 1:
+            print(', '.join(names))
+
+    print('Sub-sequences:')
+    for n1 in seqs:
+        for n2 in seqs:
+            if n1 != n2 and seqs[n1] != seqs[n2] and n1 in n2:
+                print('%s is a sub-sequence of %s' % (n1, n2))
