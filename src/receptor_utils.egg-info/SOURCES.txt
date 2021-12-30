@@ -2,6 +2,13 @@ LICENSE
 README.md
 pyproject.toml
 setup.cfg
+src/receptor_utils/__init__.py
+src/receptor_utils/extract_refs.py
+src/receptor_utils/gap_inferred.py
+src/receptor_utils/identical_seqs.py
+src/receptor_utils/novel_allele_name.py
+src/receptor_utils/number_ighv.py
+src/receptor_utils/simple_bio_seq.py
 src/receptor_utils.egg-info/PKG-INFO
 src/receptor_utils.egg-info/SOURCES.txt
 src/receptor_utils.egg-info/dependency_links.txt
