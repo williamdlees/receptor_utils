@@ -273,7 +273,7 @@ def gap_sequence(seq, gapped_ref, ungapped_ref):
     elif aa[103] != 'C':
         notes = 'Second cysteine not found'
 
-    return res, aa, notes
+    return (res, aa, notes)
 
 
 def run_tests():

@@ -16,14 +16,18 @@ from receptor_utils import number_ighv
 
 def name_novel(novel_seq, ref_set, v_gene=True):
     novel_seq = novel_seq.upper()
+    notes = ''
 
-    # gap the sequence if necessary
+    # gap the sequence (even if already gapped) so that we get the notes
 
-    if v_gene and '.' not in novel_seq:
+    if v_gene:
+        if '.' in novel_seq:
+            novel_seq = novel_seq.replace('.', '')
+
         ungapped_ref_set = {}
         for k, v in ref_set.items():
             ungapped_ref_set[k] = v.replace('.', '')
-        novel_seq = number_ighv.gap_sequence(novel_seq, ref_set, ungapped_ref_set)[0]
+        (novel_seq, aa, notes) = number_ighv.gap_sequence(novel_seq, ref_set, ungapped_ref_set)
 
     # Check for truncation at 5' end and construct ambiguous reference set if necessary
 
@@ -56,11 +60,22 @@ def name_novel(novel_seq, ref_set, v_gene=True):
     for i in range(len(novel_seq) - 1, 0):
         if novel_seq[i] != '.':
             break
-    end = i
+    novel_end = i
 
     for i in list(diffs.keys()):
-        if i > end:
+        if i > novel_end:
             del diffs[i]
+
+    # add diffs if the closest ref is longer than the novel seq
+
+    if len(closest_ref_seq) > novel_end + 1:
+        for j in range(novel_end, len(closest_ref_seq) - 1):
+            d = Diff()
+            d.pos = j
+            d.ref = closest_ref_seq[j]
+            d.novel = '-'
+            diffs[j] = d
+
 
     # consolidate any adjacent diffs
 
@@ -68,7 +83,7 @@ def name_novel(novel_seq, ref_set, v_gene=True):
     for i, d in list(diffs.items()):
         if prev_i and diffs[prev_i].pos + len(diffs[prev_i].novel) == i:
             diffs[prev_i].ref += closest_ref_seq[i]
-            diffs[prev_i].novel += novel_seq[i]
+            diffs[prev_i].novel += novel_seq[i] if i < len(novel_seq) - 1 else '-'
             del diffs[i]
         else:
             prev_i = i
@@ -96,7 +111,7 @@ def name_novel(novel_seq, ref_set, v_gene=True):
             suffs.append('%d%s%d' % (d.pos + 1, d.novel.lower(), d.pos + len(d.novel)))
 
     novel_name = closest_ref_name + '_' + '_'.join(suffs) if len(suffs) else closest_ref_name
-    return(novel_name, novel_seq)
+    return(novel_name, novel_seq, notes)
 
 
 # Build (and name) a reference set for sequences truncated at the 5' end
