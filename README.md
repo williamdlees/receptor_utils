@@ -5,7 +5,7 @@ Some tools I find useful for working with Ig receptor sequences.
 # Installation
 
 ```bash
-pip install receptor_utils
+pip install receptor-utils
 ```
 
 The module requires [Biopython](https://biopython.org).

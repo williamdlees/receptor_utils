@@ -30,3 +30,8 @@ def main():
         for n2 in seqs:
             if n1 != n2 and seqs[n1] != seqs[n2] and n1 in n2:
                 print('%s is a sub-sequence of %s' % (n1, n2))
+
+
+
+if __name__ == "__main__":
+    main()

@@ -26,3 +26,7 @@ def main():
 
         simple.write_fasta(ungapped[seg], '%s_%s.fasta' % (args.species_name.replace(' ', '_'), seg))
 
+
+
+if __name__ == "__main__":
+    main()
