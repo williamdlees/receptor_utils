@@ -174,18 +174,25 @@ def gap_nt_from_aa(nucleotide_seq, peptide_seq):
 
 def gap_align(seq, ref):
     seq_i = iter(seq)
-    ref_i = iter(ref)
 
     res = ''
+    started = False
 
     for r in ref:
         if r != '.':
+            started = True
             try:
                 res += next(seq_i)
             except StopIteration:
                 res += '.'
         else:
-            res += '.'
+            if started:
+                res += '.'
+            else:
+                try:
+                    res += next(seq_i)
+                except StopIteration:
+                    res += '.'
 
     while True:
         try:
@@ -208,18 +215,25 @@ def gap_align(seq, ref):
 
 def gap_align_aa(seq, ref):
     seq_i = iter(seq)
-    ref_i = iter(ref)
 
     res = ''
+    started = False
 
     for r in ref:
         if r != '.':
+            started = True
             try:
                 res += next(seq_i)
             except StopIteration:
                 break
         else:
-            res += '.'
+            if started:
+                res += '.'
+            else:
+                try:
+                    res += next(seq_i)
+                except StopIteration:
+                    break
 
     while True:
         try:
