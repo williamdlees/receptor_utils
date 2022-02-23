@@ -1,6 +1,12 @@
 #!python
 # List identical sequences and sub-sequences in a fasta file
 
+# Copyright (c) 2021 William Lees
+
+# This source code, and any executable file compiled or derived from it, is governed by the European Union Public License v. 1.2,
+# the English version of which is available here: https://perma.cc/DK5U-NDVE
+
+
 import argparse
 from receptor_utils import simple_bio_seq as simple
 

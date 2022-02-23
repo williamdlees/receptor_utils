@@ -73,7 +73,9 @@ discovered from a reference set.
 ### identical_seqs
 A script which uses ```simple_bio_seq``` to list identical sequences and sub-sequences in a fasta file.
 
-
+### make_igblast_ndm
+A script which uses a set of IMGT-gapped V-sequences to create the ndm file [required ib IgBLAST for a 
+custom organism] (https://ncbi.github.io/igblast/cook/How-to-set-up.html)
 
 
 

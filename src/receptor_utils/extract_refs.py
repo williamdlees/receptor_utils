@@ -2,6 +2,12 @@
 # Extract reference files for nominated species
 # The current IMGT reference file can be downloaded from http://www.imgt.org/download/GENE-DB/IMGTGENEDB-ReferenceSequences.fasta-nt-WithGaps-F+ORF+inframeP
 
+# Copyright (c) 2021 William Lees
+
+# This source code, and any executable file compiled or derived from it, is governed by the European Union Public License v. 1.2,
+# the English version of which is available here: https://perma.cc/DK5U-NDVE
+
+
 import argparse
 from receptor_utils import simple_bio_seq as simple
 

@@ -1,5 +1,11 @@
 # De novo IMGT-gapping of macaque IGHV germline genes, using guidance from http://www.bioinf.org.uk/abs/info.html#cdrid to confirm CDR1 and 2
 
+# Copyright (c) 2021 William Lees
+
+# This source code, and any executable file compiled or derived from it, is governed by the European Union Public License v. 1.2,
+# the English version of which is available here: https://perma.cc/DK5U-NDVE
+
+
 import re
 from receptor_utils import simple_bio_seq as simple
 
@@ -142,18 +148,13 @@ def pretty_gapped(seq):
     print(pretty_header)
     print(seq)
 
-def chunks(l, n):
-    """ Yield successive n-sized chunks from l."""
-    for i in range(0, len(l), n):
-        yield l[i:i+n]
-
 # Given a gapped AA sequence and an ungapped nt sequence, produce a gapped nt sequence
 def gap_nt_from_aa(nucleotide_seq, peptide_seq):
     """ Transfers gaps from aligned peptide seq into codon partitioned nucleotide seq (codon alignment)
           - peptide_seq is an aligned peptide sequence with gaps that need to be transferred to nucleotide seq
           - nucleotide_seq is an un-aligned dna sequence whose codons translate to peptide seq"""
 
-    codons = [codon for codon in chunks(nucleotide_seq, 3)]  #splits nucleotides into codons (triplets)
+    codons = [codon for codon in simple.chunks(nucleotide_seq, 3)]  #splits nucleotides into codons (triplets)
     remains = nucleotide_seq[3*len(codons):] if 3*len(codons) != len(nucleotide_seq) else ''
     gapped_codons = []
     codon_count = 0
@@ -247,10 +248,22 @@ def gap_align_aa(seq, ref):
 def gap_align_aa_from_nt(aa_seq, nt_gapped):
     aa_i = iter(aa_seq)
     gapped_aa = ''
-    for codon in chunks(nt_gapped, 3):
+
+    started = False
+
+    for codon in simple.chunks(nt_gapped, 3):
         if '.' in codon:
-            gapped_aa += '.'
+            if started:
+                gapped_aa += '.'
+            else:
+                try:
+                    gapped_aa += next(aa_i)
+                except StopIteration:
+                    break
+
         else:
+            started = True
+
             try:
                 gapped_aa += next(aa_i)
             except StopIteration:
@@ -269,6 +282,7 @@ def gap_sequence(seq, gapped_ref, ungapped_ref):
             closest = name
             diffs = d
 
+    # print(f'gapping with {closest}')
     res = gap_align(seq, gapped_ref[closest])
     aa = simple.translate(seq)
     aa = gap_align_aa_from_nt(aa, res)

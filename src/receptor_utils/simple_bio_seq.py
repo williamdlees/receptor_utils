@@ -5,11 +5,24 @@
 # - iterators are coreced into lists for ease of debugging
 # basically just make things simple for cases where we don't need to do more
 
+# Copyright (c) 2021 William Lees
+
+# This source code, and any executable file compiled or derived from it, is governed by the European Union Public License v. 1.2,
+# the English version of which is available here: https://perma.cc/DK5U-NDVE
+
+
 from Bio import SeqIO
 from Bio.Seq import Seq
 from Bio.SeqRecord import SeqRecord
 from Bio.Align import MultipleSeqAlignment, AlignInfo
 import random
+import csv
+
+
+def chunks(l, n):
+    """ Yield successive n-sized chunks from l."""
+    for i in range(0, len(l), n):
+        yield l[i:i+n]
 
 
 def read_fasta(infile):
@@ -72,7 +85,7 @@ def sample_fasta(seqs, number):
     return sample_seqs
 
 
-def translate(seq, truncate=True):
+def translate(seq, truncate=True, ignore_partial_codon=True):
     seq_len = len(seq)
     residue = seq_len % 3
 
@@ -81,6 +94,17 @@ def translate(seq, truncate=True):
             seq = seq[:seq_len - residue]
         else:
             seq += 'N' * (3 - residue)
+            
+    if ignore_partial_codon:
+        codons = [codon for codon in chunks(seq, 3)]
+        i = 0
+
+        for i in range(len(codons)):
+            if '-' not in codons[i] and '.' not in codons[i]:
+                break
+            codons[i] = '---'
+            
+        seq = ''.join(codons)
 
     return Seq(seq).translate()
 
@@ -128,3 +152,34 @@ def closest_ref(seq, ref):
         elif diff == closest_diff:
             closest_names.append(ref_name)
     return closest_names
+
+
+# Read csv file into a list of dicts
+def read_csv(file, delimiter=None):
+    ret = []
+    with open(file, 'r') as fi:
+        if delimiter:
+            reader = csv.DictReader(fi, delimiter=delimiter)
+        else:
+            reader = csv.DictReader(fi)
+        for row in reader:
+            ret.append(row)
+
+
+# Write csv file given a list of dicts. Fieldnames are taken from the first row
+def write_csv(file, rows, delimiter=None):
+    if not rows:
+        return
+
+    fieldnames = rows[0].keys()
+    with open(file, 'w', newline='') as fo:
+        if delimiter:
+            writer = csv.DictWriter(fi, fieldnames=fieldnames, delimiter=delimiter)
+        else:
+            writer = csv.DictWriter(fi, fieldnames=fieldnames)
+
+        writer.writeheader()
+        
+        for row in rows:
+            writer.writerow(row)
+            

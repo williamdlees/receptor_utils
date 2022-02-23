@@ -2,6 +2,12 @@
 # at https://wordpress.vdjbase.org/index.php/vdjbase_help/airr-seq-data-allele-names/
 # For V sequences, the sequence must be full-length at the 5' end, or IMGT-gapped.
 
+# Copyright (c) 2021 William Lees
+
+# This source code, and any executable file compiled or derived from it, is governed by the European Union Public License v. 1.2,
+# the English version of which is available here: https://perma.cc/DK5U-NDVE
+
+
 from receptor_utils import simple_bio_seq as simple
 from receptor_utils import number_ighv
 
