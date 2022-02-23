@@ -68,7 +68,12 @@ files for particular loci and species from an IMGT reference file.
 
 ### gap_inferred
 A script which will gap a set of sequences listed in a FASTA file, using the closest sequences
-discovered from a reference set.
+discovered from a reference set. The script will do its best to warn of issues with the reference sequences and with 
+the gapped sequences it provides: please use the warnings to check that things are ok.
+
+Sequences to be gapped are assumed to be complete at the 5' end. If necessary they should be gapped with dots
+at the 5' end, so that the first nucleotide is at the correct position in the full-length sequence (in exactly
+the same way that IMGT puts dots at the start of a reference sequence that is incomplete at the 5' end)
 
 ### identical_seqs
 A script which uses ```simple_bio_seq``` to list identical sequences and sub-sequences in a fasta file.
