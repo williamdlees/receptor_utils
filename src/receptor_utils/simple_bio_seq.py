@@ -165,6 +165,8 @@ def read_csv(file, delimiter=None):
         for row in reader:
             ret.append(row)
 
+    return ret
+
 
 # Write csv file given a list of dicts. Fieldnames are taken from the first row
 def write_csv(file, rows, delimiter=None):
@@ -174,9 +176,9 @@ def write_csv(file, rows, delimiter=None):
     fieldnames = rows[0].keys()
     with open(file, 'w', newline='') as fo:
         if delimiter:
-            writer = csv.DictWriter(fi, fieldnames=fieldnames, delimiter=delimiter)
+            writer = csv.DictWriter(fo, fieldnames=fieldnames, delimiter=delimiter)
         else:
-            writer = csv.DictWriter(fi, fieldnames=fieldnames)
+            writer = csv.DictWriter(fo, fieldnames=fieldnames)
 
         writer.writeheader()
         
