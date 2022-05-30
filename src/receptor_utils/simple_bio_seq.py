@@ -47,7 +47,7 @@ def read_single_fasta(infile):
 # read V,D,J regions from one or more species from an IMGT reference file
 # species should be a ***list*** of species
 # returns a nested dict: [species][chain]
-def read_imgt_fasta(infile, species, chains=('IGHV', 'IGHD', 'IGHJ', 'CH')):
+def read_imgt_fasta(infile, species, chains=('IGHV', 'IGHD', 'IGHJ', 'CH'), functional_only=False):
     res = {}
     for sp in species:
         res[sp] = {}
@@ -60,15 +60,16 @@ def read_imgt_fasta(infile, species, chains=('IGHV', 'IGHD', 'IGHJ', 'CH')):
         for sp in species:
             for chain in chains:
                 if ('-REGION' in rec.description or chain == 'CH') and sp in rec.description and chain in rec.description:
-                    if 'V' not in chain or len(rec.seq) > 280:       # strip out obviously incomplete Vs
-                        name = rec.description.split('|')[1]
-                        type = rec.description.split('|')[4]
+                    if not functional_only or '|F|' in rec.description:
+                        if 'V' not in chain or len(rec.seq) > 280:       # strip out obviously incomplete Vs
+                            name = rec.description.split('|')[1]
+                            type = rec.description.split('|')[4]
 
-                        if chain != 'CH':
-                            res[sp][chain][name] = str(rec.seq).upper()
-                        else:
-                            gene, allele = name.split('*')
-                            res[sp][chain][gene + '_' + type + '*' + allele] = str(rec.seq).upper()
+                            if chain != 'CH':
+                                res[sp][chain][name] = str(rec.seq).upper()
+                            else:
+                                gene, allele = name.split('*')
+                                res[sp][chain][gene + '_' + type + '*' + allele] = str(rec.seq).upper()
     return res
 
 
@@ -106,7 +107,7 @@ def translate(seq, truncate=True, ignore_partial_codon=True):
             
         seq = ''.join(codons)
 
-    return Seq(seq).translate()
+    return str(Seq(seq).translate())
 
 
 def reverse_complement(seq):

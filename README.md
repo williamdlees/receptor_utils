@@ -82,7 +82,9 @@ A script which uses ```simple_bio_seq``` to list identical sequences and sub-seq
 A script which uses a set of IMGT-gapped V-sequences to create the ndm file 
 [required by IgBLAST for a custom organism](https://ncbi.github.io/igblast/cook/How-to-set-up.html)
 
-
+### annotate_j
+Given a set of J sequences, identify the correct frame and location of the CDR3 end, by searching for 
+the GxG motif.
 
 
 
