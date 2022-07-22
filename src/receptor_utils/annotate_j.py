@@ -29,7 +29,7 @@ def main():
         for frame in range(3):
             trans = simple.translate(seq[frame:])
 
-            if 'X' in trans:
+            if '*' in trans:
                 continue
 
             for m in re.finditer('[WF]G.G', trans):

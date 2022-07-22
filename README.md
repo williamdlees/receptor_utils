@@ -86,6 +86,9 @@ A script which uses a set of IMGT-gapped V-sequences to create the ndm file
 Given a set of J sequences, identify the correct frame and location of the CDR3 end, by searching for 
 the GxG motif.
 
+## rev_comp
+Return the reverse-complement of the specified nucleotide sequence.
+
 
 
 

@@ -1,13 +1,11 @@
 Metadata-Version: 2.1
 Name: receptor-utils
-Version: 0.0.12
+Version: 0.0.13
 Summary: Some tools I find useful for working with Ig receptor sequences
 Home-page: https://github.com/williamdlees/receptor_utils
 Author: William Lees
 Author-email: william@lees.org.uk
-License: UNKNOWN
 Project-URL: Bug Tracker, https://github.com/williamdlees/receptor_utils/issues
-Platform: UNKNOWN
 Classifier: Programming Language :: Python :: 3
 Classifier: License :: OSI Approved :: European Union Public Licence 1.2 (EUPL 1.2)
 Classifier: Operating System :: OS Independent
@@ -99,9 +97,9 @@ A script which uses ```simple_bio_seq``` to list identical sequences and sub-seq
 A script which uses a set of IMGT-gapped V-sequences to create the ndm file 
 [required by IgBLAST for a custom organism](https://ncbi.github.io/igblast/cook/How-to-set-up.html)
 
-
-
-
+### annotate_j
+Given a set of J sequences, identify the correct frame and location of the CDR3 end, by searching for 
+the GxG motif.
 
 
 
