@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: receptor-utils
-Version: 0.0.13
+Version: 0.0.15
 Summary: Some tools I find useful for working with Ig receptor sequences
 Home-page: https://github.com/williamdlees/receptor_utils
 Author: William Lees
@@ -100,6 +100,9 @@ A script which uses a set of IMGT-gapped V-sequences to create the ndm file
 ### annotate_j
 Given a set of J sequences, identify the correct frame and location of the CDR3 end, by searching for 
 the GxG motif.
+
+## rev_comp
+Return the reverse-complement of the specified nucleotide sequence.
 
 
 
