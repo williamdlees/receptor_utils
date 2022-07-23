@@ -137,7 +137,7 @@ def toSeqRecords(seqs):
 def dumb_consensus(seqs, threshold):
     msa = MultipleSeqAlignment(toSeqRecords(seqs))
     summary_align = AlignInfo.SummaryInfo(msa)
-    return str(summary_align.gap_consensus(threshold=threshold))
+    return  str(summary_align.gap_consensus(threshold=threshold))
 
 
 # Find the closest reference sequence to a query sequence
