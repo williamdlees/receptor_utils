@@ -4,7 +4,6 @@
 # the English version of which is available here: https://perma.cc/DK5U-NDVE
 
 
-import csv
 from receptor_utils import simple_bio_seq as simple
 import argparse
 

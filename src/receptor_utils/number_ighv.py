@@ -288,7 +288,8 @@ def gap_sequence(seq, gapped_ref, ungapped_ref):
     aa = gap_align_aa_from_nt(aa, res)
 
     # checks
-    notes = check_conserved_residues(aa)
+    if 'HV' in closest:
+        notes = check_conserved_residues(aa)
 
     return (res, aa, notes)
 
@@ -296,8 +297,10 @@ def gap_sequence(seq, gapped_ref, ungapped_ref):
 def check_conserved_residues(aa):
     notes = ''
     # allow stop codon in final nucleotides without warning
-    if 'X' in aa[:-1] or '*' in aa[:-1]:
-        notes = 'Stop codon in V-REGION'
+    if '*' in aa:
+        pos = aa.index('*')
+        if pos <= 103:
+            notes = 'Stop codon in V-REGION before 2nd cysteine'
     elif aa[22] != 'C':
         notes = 'First cysteine not found'
     elif aa[40] != 'W':

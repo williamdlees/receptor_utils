@@ -62,9 +62,19 @@ $ extract_refs --help
 ```
 for help
 
+### rev_comp
+Return the reverse-complement of the specified nucleotide sequence.
+
+### name_allele
+Return a 'tigger style' name for an allele sequence (reference allele name suffixed with SNPs)
+given a reference set
+
 ### extract_refs
 A script which uses ```simple_bio_seq``` to extract 
 files for particular loci and species from an IMGT reference file. 
+
+### identical_seqs
+A script which uses ```simple_bio_seq``` to list identical sequences and sub-sequences in a fasta file.
 
 ### gap_inferred
 A script which will gap a set of sequences listed in a FASTA file, using the closest sequences
@@ -75,9 +85,6 @@ Sequences to be gapped are assumed to be complete at the 5' end. If necessary th
 at the 5' end, so that the first nucleotide is at the correct position in the full-length sequence (in exactly
 the same way that IMGT puts dots at the start of a reference sequence that is incomplete at the 5' end)
 
-### identical_seqs
-A script which uses ```simple_bio_seq``` to list identical sequences and sub-sequences in a fasta file.
-
 ### make_igblast_ndm
 A script which uses a set of IMGT-gapped V-sequences to create the ndm file 
 [required by IgBLAST for a custom organism](https://ncbi.github.io/igblast/cook/How-to-set-up.html)
@@ -86,8 +93,6 @@ A script which uses a set of IMGT-gapped V-sequences to create the ndm file
 Given a set of J sequences, identify the correct frame and location of the CDR3 end, by searching for 
 the GxG motif.
 
-## rev_comp
-Return the reverse-complement of the specified nucleotide sequence.
 
 
 
