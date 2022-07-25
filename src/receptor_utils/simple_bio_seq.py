@@ -17,6 +17,7 @@ from Bio.SeqRecord import SeqRecord
 from Bio.Align import MultipleSeqAlignment, AlignInfo
 import random
 import csv
+from collections import Counter
 
 
 def chunks(l, n):
@@ -134,10 +135,76 @@ def toSeqRecords(seqs):
     return recs
 
 
-def dumb_consensus(seqs, threshold):
+def dumb_consensus(seqs, threshold=0.7):
     msa = MultipleSeqAlignment(toSeqRecords(seqs))
     summary_align = AlignInfo.SummaryInfo(msa)
-    return  str(summary_align.gap_consensus(threshold=threshold))
+    return str(summary_align.gap_consensus(threshold=threshold))
+
+
+def scored_consensus(seqs, threshold=0.7):
+    msa = MultipleSeqAlignment(toSeqRecords(seqs))
+    summary_align = AlignInfo.SummaryInfo(msa)
+    return scored_gap_consensus(msa, threshold=threshold)
+
+
+# Adapted from BioPython.Bio.ALign
+# return min_score: this is the lowest proportion of reads that 'won' at any position
+def scored_gap_consensus(alignment, threshold=0.7, ambiguous="X", require_multiple=False):
+    """Output a fast consensus sequence of the alignment, allowing gaps.
+    Same as dumb_consensus(), but allows gap on the output.
+    Things to do:
+     - Let the user define that with only one gap, the result
+       character in consensus is gap.
+     - Let the user select gap character, now
+       it takes the same as input.
+    """
+    consensus = ""
+
+    # find the length of the consensus we are creating
+    con_len = alignment.get_alignment_length()
+    con_rows = len(alignment)
+
+    # go through each seq item
+    min_score = 1.0
+    for n in range(con_len):
+        # keep track of the counts of the different atoms we get
+        atom_dict = Counter()
+        num_atoms = 0
+
+        for record in alignment:
+            # make sure we haven't run past the end of any sequences
+            # if they are of different lengths
+            try:
+                c = record[n]
+            except IndexError:
+                continue
+            atom_dict[c] += 1
+
+            num_atoms += 1
+
+        max_atoms = []
+        max_size = 0
+
+        for atom in atom_dict:
+            if atom_dict[atom] > max_size:
+                max_atoms = [atom]
+                max_size = atom_dict[atom]
+            elif atom_dict[atom] == max_size:
+                max_atoms.append(atom)
+
+        if require_multiple and num_atoms == 1:
+            consensus += ambiguous
+            min_score = min(min_score, 1/con_rows)
+        elif (len(max_atoms) == 1) and (
+            (float(max_size) / float(num_atoms)) >= threshold
+        ):
+            consensus += max_atoms[0]
+            min_score = min(min_score, float(max_size) / float(con_rows))
+        else:
+            consensus += ambiguous
+            min_score = min(min_score, float(max_size) / float(con_rows))
+
+    return (Seq(consensus), min_score)
 
 
 # Find the closest reference sequence to a query sequence
