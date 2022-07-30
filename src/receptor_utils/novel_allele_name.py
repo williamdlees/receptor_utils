@@ -10,6 +10,9 @@
 
 from receptor_utils import simple_bio_seq as simple
 from receptor_utils import number_ighv
+from Bio.pairwise2 import align, format_alignment
+from collections import namedtuple
+
 
 # Make a name for the novel allele, given its gapped or ungapped sequence
 # returns a tuple (name, gapped_sequence)
@@ -20,20 +23,13 @@ from receptor_utils import number_ighv
 # gaps in V-sequences are '.', as in the IMGT reference set
 
 
-def name_novel(novel_seq, ref_set, v_gene=True):
+def name_novel(novel_seq, ref_set, v_gene=True, include_cigar=False):
+    if novel_seq == 'CAGGTGCAGCTGCAGGAGTCGGGCCCAGGACTGGTGAAGCCTTCGGACACCCTGTCCCTCACCTGCGCTGTCTCTGGTTACTCCATCAGCAGTAGTAACTGGTGGGGCTGGATCCGGCAGCCCCCAGGGAAGGGACTGGAGTGGATTGGGTACATCTATTATAGTGGGAGCATCTACTACAACCCGTCCCTCAAGAGTCGAGTCACCATGTCAGTAGACACGTCCAAGAACCAGTTCTCCCTGAAGCTGAGCTCTGTGACCGCCGTGGACACGGCCGTGTATTACTACCGAGAAA':
+        breakpoint()
+
+
     novel_seq = novel_seq.upper()
     notes = ''
-
-    # gap the sequence (even if already gapped) so that we get the notes
-
-    if v_gene:
-        if '.' in novel_seq:
-            novel_seq = novel_seq.replace('.', '')
-
-        ungapped_ref_set = {}
-        for k, v in ref_set.items():
-            ungapped_ref_set[k] = v.replace('.', '')
-        (novel_seq, aa, notes) = number_ighv.gap_sequence(novel_seq, ref_set, ungapped_ref_set)
 
     # Check for truncation at 5' end and construct ambiguous reference set if necessary
 
@@ -43,15 +39,55 @@ def name_novel(novel_seq, ref_set, v_gene=True):
                 break
         ref_set = build_ambiguous_ref(ref_set, i)
 
+        # TODO - handle ungapped sets that are truncated at the 5' end
+    else:
+        # gap the sequence (even if already gapped) so that we get the notes
+    
+        if v_gene:
+            if '.' in novel_seq:
+                novel_seq = novel_seq.replace('.', '')
+    
+            ungapped_ref_set = {}
+            for k, v in ref_set.items():
+                ungapped_ref_set[k] = v.replace('.', '')
+            novel_seq, aa, notes = number_ighv.gap_sequence(novel_seq, ref_set, ungapped_ref_set)
+
+
     closest_ref_name = simple.closest_ref(novel_seq, ref_set)[0]
     closest_ref_seq = ref_set[closest_ref_name]
 
-    if len(closest_ref_seq) < len(novel_seq):
-        closest_ref_seq += '.' * (len(novel_seq) - len(closest_ref_seq))
-
     diffs = {}
+    insertions = []
     class Diff:
         pass
+
+    # if we have a lot of diffs, check for indels
+
+    n_diffs = simple.nt_diff(closest_ref_seq, novel_seq)
+    if n_diffs > 10:
+        ungapped_closest_ref = closest_ref_seq.replace('.', '')
+        fixed_seq, insertions = find_indels(ungapped_closest_ref, novel_seq.replace('.', ''))
+        fixed_diffs = simple.nt_diff(ungapped_closest_ref, fixed_seq)
+        if fixed_diffs < n_diffs:
+            # thread the gaps through the fixed sequence and adjust insertion positions
+            novel_seq = ''
+            fixed_ind = 0
+            for i in range(len(closest_ref_seq)):
+                if closest_ref_seq[i] != '.':
+                    novel_seq += fixed_seq[fixed_ind]
+                    fixed_ind += 1
+                else:
+                    novel_seq += '.'
+                    for insertion in insertions:
+                        if insertion[0] > i:
+                            insertion[0] += 1
+                            
+            if fixed_ind < len(fixed_seq):
+                for i in range(fixed_ind, len(fixed_seq)):
+                    novel_seq += fixed_seq[i]
+                            
+    if len(closest_ref_seq) < len(novel_seq):
+        closest_ref_seq += '.' * (len(novel_seq) - len(closest_ref_seq))
 
     for i in range(0, len(novel_seq)):
         if closest_ref_seq[i] != novel_seq[i]:
@@ -63,7 +99,7 @@ def name_novel(novel_seq, ref_set, v_gene=True):
 
     # trim any diffs that are past the end of the novel sequence
 
-    for i in range(len(novel_seq) - 1, 0):
+    for i in range(len(novel_seq) - 1, -1, -1):
         if novel_seq[i] != '.':
             break
     novel_end = i
@@ -89,7 +125,7 @@ def name_novel(novel_seq, ref_set, v_gene=True):
     for i, d in list(diffs.items()):
         if prev_i and diffs[prev_i].pos + len(diffs[prev_i].novel) == i:
             diffs[prev_i].ref += closest_ref_seq[i]
-            diffs[prev_i].novel += novel_seq[i] if i < len(novel_seq) - 1 else '-'
+            diffs[prev_i].novel += novel_seq[i] if i < len(novel_seq) else '-'
             del diffs[i]
         else:
             prev_i = i
@@ -108,16 +144,134 @@ def name_novel(novel_seq, ref_set, v_gene=True):
 
     # form the suffix
 
-    suffs = []
-    for i in sorted(diffs.keys()):
-        d = diffs[i]
-        if len(d.novel) == 1 and d.ref != '.' and d.novel != '.':
-            suffs.append('%s%d%s' % (d.ref.lower(), d.pos + 1, d.novel.lower()))
-        else:
-            suffs.append('%d%s%d' % (d.pos + 1, d.novel.lower(), d.pos + len(d.novel)))
+    all_positions = list(diffs.keys())
+    all_positions.extend([i[0] for i in insertions])
+    all_positions = list(set(all_positions))
+    all_positions.sort()
 
+    class CigarState:
+        pass
+
+    cigar_state = CigarState()
+    cigar_state.count = 0
+    cigar_state.state = 'M'
+    cigar_state.next_pos = 0
+    cigar_state.string = ''
+    cigar_state.processed_seq_len = 0
+    cigar_state.this_seg = ''
+    cigar_state.processed_segs = []
+
+    def process_cigar(op, c):
+        if c != '.':
+            if cigar_state.state != op:
+                if cigar_state.count > 0:
+                    cigar_state.string += f"{cigar_state.count}{cigar_state.state}"
+                    cigar_state.processed_seq_len += cigar_state.count
+                    cigar_state.processed_segs.append((len(cigar_state.this_seg), cigar_state.this_seg))
+                cigar_state.count = 1
+                cigar_state.this_seg = c
+                cigar_state.state = op
+            else:
+                cigar_state.count += 1
+                cigar_state.this_seg += c
+        if op != 'I':
+            cigar_state.next_pos += 1
+            
+    def finalise_cigar():
+        if cigar_state.count > 0:
+            cigar_state.string += f"{cigar_state.count}{cigar_state.state}"
+            cigar_state.processed_seq_len += cigar_state.count
+            cigar_state.processed_segs.append((len(cigar_state.this_seg), cigar_state.this_seg))
+        return cigar_state.string
+
+    suffs = []
+
+    # create the name suffix parts and the cigar string
+    
+    for i in all_positions:
+        for j in range(cigar_state.next_pos, i):
+            process_cigar('M', novel_seq[j])
+        if i in diffs:
+            d = diffs[i]
+            if len(d.novel) == 1 and d.ref != '.' and d.novel != '.':
+                suffs.append('%s%d%s' % (d.ref.lower(), d.pos + 1, d.novel.lower()))
+            else:
+                suffs.append('%d%s%d' % (d.pos + 1, d.novel.lower(), d.pos + len(d.novel)))
+            for j in range(len(d.novel)):
+                if d.novel[j] == '-':
+                    process_cigar('D', d.novel[j])
+                else:
+                    process_cigar('M', d.novel[j])
+        else:
+            process_cigar('M', novel_seq[i])          # process the current position before processing insertions
+
+        for insertion in insertions:
+            if insertion[0] == i:
+                suffs.append('i%d%s' % (insertion[0] + 1, insertion[1].lower()))
+                process_cigar('I', insertion[1].lower())
+                
     novel_name = closest_ref_name + '_' + '_'.join(suffs) if len(suffs) else closest_ref_name
-    return(novel_name, novel_seq, notes)
+
+    # process the cigar for the rest of the string. We know there are no indels.
+
+    if cigar_state.next_pos < len(novel_seq):
+        for j in range(cigar_state.next_pos, len(novel_seq)):
+            process_cigar('M', novel_seq[j])
+
+    cigar_string = finalise_cigar()
+    
+    # put the insertions into the sequence. Note the order, we process the cigar without the insertions in the sequence,
+    # but cigar_state.processed_seq_len includes a count of the insertions. So we need to put them in before checking lengths
+    # ...and this gives us an honest comparison of the seq we want and its cigar
+
+    for i in range(len(insertions) - 1, -1, -1):
+        novel_seq = novel_seq[:insertions[i][0] + 1] + insertions[i][1] + novel_seq[insertions[i][0] + 1:]
+
+    if cigar_state.processed_seq_len != len(novel_seq.replace('.', '')):
+        print("Error in constructing cigar string: lengths do not agree!")
+        breakpoint()
+
+    # Remove explicit '-' deletions from the sequence as these are not expected to be there when the cigar is processed by samtools
+    novel_seq = novel_seq.replace('-', '')
+
+    if include_cigar:
+        return novel_name, novel_seq, notes, cigar_string
+    else:
+        return novel_name, novel_seq, notes 
+
+
+# Align novel sequence against the reference sequence and check for indels
+def find_indels(closest_ref_seq, novel_seq):
+    a = align.globalms(closest_ref_seq, novel_seq, 2, 0, -5, -1, one_alignment_only=True, penalize_end_gaps=(False, False))
+    # print(format_alignment(*a[0]))
+    
+    insertions = []
+    fixed_novel = ''        # this will be the novel without any insertions, and now aligned so that there is a '-' for any deletion
+        
+    a = a[0]
+
+    # remove any insertions at the end, as we don't want them represented this way
+
+    seqA = list(a.seqA)
+    seqB = a.seqB
+    for i in range(len(seqA)-1, -1, -1):
+        if seqA[i] == '-':
+            del seqA[i]
+        else:
+            break
+    seqA = ''.join(seqA)
+
+    for c in zip(list(seqA), list(seqB)):
+        if c[0] != '-':
+            fixed_novel += c[1]
+        else:
+            insertions.append([len(fixed_novel) - 1, c[1]])
+
+    if len(seqB) > len(seqA):
+        for i in range(len(seqA), len(seqB)):
+            fixed_novel += seqB[i]
+
+    return fixed_novel, insertions
 
 
 # Build (and name) a reference set for sequences truncated at the 5' end
@@ -134,9 +288,6 @@ def build_ambiguous_ref(full_ref, start):
 
     ref = {}
     for seq, names in rev_ref.items():
-        if'IGHV3-15*08' in names:
-            print('foo')
-
         if len(names) == 1:
             ref[names[0]] = seq
         else:
@@ -170,11 +321,11 @@ def build_ambiguous_ref(full_ref, start):
 
 
 def run_tests():
-    test_novels = simple.read_fasta('tests/IGHV3-20.04.fasta')
-    ref_set = simple.read_fasta('refs/Homo_Sapiens_IGHV_gapped.fasta')
+    ref_set = simple.read_fasta('Homo_sapiens_IGHV_gapped.fasta')
+    test_novels = simple.read_fasta('IGHV3-20.04.fasta')
 
     for name, seq in test_novels.items():
-        novel_name = name_novel(seq, ref_set)
+        novel_name = name_novel(seq, ref_set)[0]
         if novel_name != name:
             print('Error: %s != %s' % (novel_name, name))
 

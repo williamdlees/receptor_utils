@@ -102,9 +102,8 @@ def translate(seq, truncate=True, ignore_partial_codon=True):
         i = 0
 
         for i in range(len(codons)):
-            if '-' not in codons[i] and '.' not in codons[i]:
-                break
-            codons[i] = '---'
+            if '-' in codons[i] or '.' in codons[i]:
+                codons[i] = '---'
             
         seq = ''.join(codons)
 

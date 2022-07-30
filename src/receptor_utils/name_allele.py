@@ -39,7 +39,7 @@ def main():
         seq = simple.reverse_complement(seq)
 
     novel_name, novel_seq, notes = novel_allele_name.name_novel(seq, gene_refs, len(seq) > 60)
-    
+           
     print(novel_name)
     
     if '.' in novel_seq:

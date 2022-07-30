@@ -4,6 +4,7 @@ pyproject.toml
 setup.cfg
 src/receptor_utils/__init__.py
 src/receptor_utils/annotate_j.py
+src/receptor_utils/at_coords.py
 src/receptor_utils/extract_refs.py
 src/receptor_utils/gap_inferred.py
 src/receptor_utils/identical_seqs.py
