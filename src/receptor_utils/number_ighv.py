@@ -296,6 +296,10 @@ def gap_sequence(seq, gapped_ref, ungapped_ref):
 
 def check_conserved_residues(aa):
     notes = ''
+
+    if len(aa) < 104:
+        return 'Sequence truncated before second cysteine'
+
     # allow stop codon in final nucleotides without warning
     if '*' in aa:
         pos = aa.index('*')

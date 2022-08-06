@@ -23,9 +23,9 @@ from collections import namedtuple
 # gaps in V-sequences are '.', as in the IMGT reference set
 
 
-def name_novel(novel_seq, ref_set, v_gene=True, include_cigar=False):
-    if novel_seq == 'CAGGTGCAGCTGCAGGAGTCGGGCCCAGGACTGGTGAAGCCTTCGGACACCCTGTCCCTCACCTGCGCTGTCTCTGGTTACTCCATCAGCAGTAGTAACTGGTGGGGCTGGATCCGGCAGCCCCCAGGGAAGGGACTGGAGTGGATTGGGTACATCTATTATAGTGGGAGCATCTACTACAACCCGTCCCTCAAGAGTCGAGTCACCATGTCAGTAGACACGTCCAAGAACCAGTTCTCCCTGAAGCTGAGCTCTGTGACCGCCGTGGACACGGCCGTGTATTACTACCGAGAAA':
-        breakpoint()
+def name_novel(novel_seq, ref_set, v_gene=True):
+    #if novel_seq == 'CAGGTGCAGCTGCAGGAGTCGGGCCCAGGACTGGTGAAGCCTTCGGACACCCTGTCCCTCACCTGCGCTGTCTCTGGTTACTCCATCAGCAGTAGTAACTGGTGGGGCTGGATCCGGCAGCCCCCAGGGAAGGGACTGGAGTGGATTGGGTACATCTATTATAGTGGGAGCATCTACTACAACCCGTCCCTCAAGAGTCGAGTCACCATGTCAGTAGACACGTCCAAGAACCAGTTCTCCCTGAAGCTGAGCTCTGTGACCGCCGTGGACACGGCCGTGTATTACTACCGAGAAA':
+    #    breakpoint()
 
 
     novel_seq = novel_seq.upper()
@@ -102,16 +102,15 @@ def name_novel(novel_seq, ref_set, v_gene=True, include_cigar=False):
     for i in range(len(novel_seq) - 1, -1, -1):
         if novel_seq[i] != '.':
             break
-    novel_end = i
 
     for i in list(diffs.keys()):
-        if i > novel_end:
+        if i >= len(novel_seq):
             del diffs[i]
 
     # add diffs if the closest ref is longer than the novel seq
 
-    if len(closest_ref_seq) > novel_end + 1:
-        for j in range(novel_end, len(closest_ref_seq) - 1):
+    if len(closest_ref_seq) > len(novel_seq):
+        for j in range(len(novel_seq), len(closest_ref_seq)):
             d = Diff()
             d.pos = j
             d.ref = closest_ref_seq[j]
@@ -149,77 +148,24 @@ def name_novel(novel_seq, ref_set, v_gene=True, include_cigar=False):
     all_positions = list(set(all_positions))
     all_positions.sort()
 
-    class CigarState:
-        pass
-
-    cigar_state = CigarState()
-    cigar_state.count = 0
-    cigar_state.state = 'M'
-    cigar_state.next_pos = 0
-    cigar_state.string = ''
-    cigar_state.processed_seq_len = 0
-    cigar_state.this_seg = ''
-    cigar_state.processed_segs = []
-
-    def process_cigar(op, c):
-        if c != '.':
-            if cigar_state.state != op:
-                if cigar_state.count > 0:
-                    cigar_state.string += f"{cigar_state.count}{cigar_state.state}"
-                    cigar_state.processed_seq_len += cigar_state.count
-                    cigar_state.processed_segs.append((len(cigar_state.this_seg), cigar_state.this_seg))
-                cigar_state.count = 1
-                cigar_state.this_seg = c
-                cigar_state.state = op
-            else:
-                cigar_state.count += 1
-                cigar_state.this_seg += c
-        if op != 'I':
-            cigar_state.next_pos += 1
-            
-    def finalise_cigar():
-        if cigar_state.count > 0:
-            cigar_state.string += f"{cigar_state.count}{cigar_state.state}"
-            cigar_state.processed_seq_len += cigar_state.count
-            cigar_state.processed_segs.append((len(cigar_state.this_seg), cigar_state.this_seg))
-        return cigar_state.string
-
     suffs = []
 
-    # create the name suffix parts and the cigar string
+    # create the name suffix parts
     
     for i in all_positions:
-        for j in range(cigar_state.next_pos, i):
-            process_cigar('M', novel_seq[j])
         if i in diffs:
             d = diffs[i]
             if len(d.novel) == 1 and d.ref != '.' and d.novel != '.':
                 suffs.append('%s%d%s' % (d.ref.lower(), d.pos + 1, d.novel.lower()))
             else:
                 suffs.append('%d%s%d' % (d.pos + 1, d.novel.lower(), d.pos + len(d.novel)))
-            for j in range(len(d.novel)):
-                if d.novel[j] == '-':
-                    process_cigar('D', d.novel[j])
-                else:
-                    process_cigar('M', d.novel[j])
-        else:
-            process_cigar('M', novel_seq[i])          # process the current position before processing insertions
 
         for insertion in insertions:
             if insertion[0] == i:
                 suffs.append('i%d%s' % (insertion[0] + 1, insertion[1].lower()))
-                process_cigar('I', insertion[1].lower())
-                
+
     novel_name = closest_ref_name + '_' + '_'.join(suffs) if len(suffs) else closest_ref_name
 
-    # process the cigar for the rest of the string. We know there are no indels.
-
-    if cigar_state.next_pos < len(novel_seq):
-        for j in range(cigar_state.next_pos, len(novel_seq)):
-            process_cigar('M', novel_seq[j])
-
-    cigar_string = finalise_cigar()
-    
     # put the insertions into the sequence. Note the order, we process the cigar without the insertions in the sequence,
     # but cigar_state.processed_seq_len includes a count of the insertions. So we need to put them in before checking lengths
     # ...and this gives us an honest comparison of the seq we want and its cigar
@@ -227,17 +173,7 @@ def name_novel(novel_seq, ref_set, v_gene=True, include_cigar=False):
     for i in range(len(insertions) - 1, -1, -1):
         novel_seq = novel_seq[:insertions[i][0] + 1] + insertions[i][1] + novel_seq[insertions[i][0] + 1:]
 
-    if cigar_state.processed_seq_len != len(novel_seq.replace('.', '')):
-        print("Error in constructing cigar string: lengths do not agree!")
-        breakpoint()
-
-    # Remove explicit '-' deletions from the sequence as these are not expected to be there when the cigar is processed by samtools
-    novel_seq = novel_seq.replace('-', '')
-
-    if include_cigar:
-        return novel_name, novel_seq, notes, cigar_string
-    else:
-        return novel_name, novel_seq, notes 
+    return novel_name, novel_seq, notes
 
 
 # Align novel sequence against the reference sequence and check for indels
