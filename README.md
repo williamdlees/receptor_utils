@@ -71,7 +71,7 @@ given a reference set
 
 ### extract_refs
 A script which uses ```simple_bio_seq``` to extract 
-files for particular loci and species from an IMGT reference file. 
+files for particular loci and species from an [IMGT reference file](https://www.imgt.org/download/GENE-DB/IMGTGENEDB-ReferenceSequences.fasta-nt-WithGaps-F+ORF+inframeP). 
 
 ### identical_seqs
 A script which uses ```simple_bio_seq``` to list identical sequences and sub-sequences in a fasta file.

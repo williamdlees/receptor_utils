@@ -60,17 +60,17 @@ def read_imgt_fasta(infile, species, chains=('IGHV', 'IGHD', 'IGHJ', 'CH'), func
     for rec in recs:
         for sp in species:
             for chain in chains:
-                if ('-REGION' in rec.description or chain == 'CH') and sp in rec.description and chain in rec.description:
+                if ('-REGION' in rec.description or chain == 'CH' or 'EX' in rec.description) and sp in rec.description and chain in rec.description:
                     if not functional_only or '|F|' in rec.description:
                         if 'V' not in chain or len(rec.seq) > 280:       # strip out obviously incomplete Vs
                             name = rec.description.split('|')[1]
                             type = rec.description.split('|')[4]
 
-                            if chain != 'CH':
-                                res[sp][chain][name] = str(rec.seq).upper()
-                            else:
+                            if chain == 'CH' or ('EX' in rec.description and chain in rec.description):
                                 gene, allele = name.split('*')
                                 res[sp][chain][gene + '_' + type + '*' + allele] = str(rec.seq).upper()
+                            else:
+                                res[sp][chain][name] = str(rec.seq).upper()
     return res
 
 
