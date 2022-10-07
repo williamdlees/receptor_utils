@@ -287,8 +287,9 @@ def gap_sequence(seq, gapped_ref, ungapped_ref):
     aa = simple.translate(seq)
     aa = gap_align_aa_from_nt(aa, res)
 
+    notes = ''
     # checks
-    if 'HV' in closest:
+    if 'V' in closest:
         notes = check_conserved_residues(aa)
 
     return (res, aa, notes)
