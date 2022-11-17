@@ -25,7 +25,7 @@ def main():
     
     for seq_name, seq in seqs.items():
         solutions = []
-        Result = namedtuple('Result', ['nt_seq', 'frame', 'cdr3_pos', 'trans'])
+        Result = namedtuple('Result', ['nt_seq', 'frame', 'cdr3_pos', 'trans', 'extra_bps'])
         for frame in range(3):
             trans = simple.translate(seq[frame:])
 
@@ -37,7 +37,8 @@ def main():
                     seq,
                     frame,
                     frame + 3*m.start(),
-                    trans
+                    trans,
+                    (len(seq) - frame) % 3
                 ]))
 
         if solutions:
@@ -45,7 +46,7 @@ def main():
                 print('WARNING: multiple solutions for {seq_name}')
                 
             for solution in solutions:
-                print(f'{seq_name}: j_codon_frame {solution.frame+1} j_cdr3_end {solution.cdr3_pos+1}')
+                print(f'{seq_name}: j_codon_frame {solution.frame} j_cdr3_end {solution.cdr3_pos-1} exta bps {solution.extra_bps}')
 
                 loc_count = '      '
                 for num in range(len(solution.trans)):
@@ -61,15 +62,16 @@ def main():
                 print(nt + '\n\n')
 
                 annotations.append({
-                    'name': seq_name,
-                    'nt_sequence': seq,
-                    'j_codon_frame': solution.frame+1,
-                    'j_cdr3_end': solution.cdr3_pos+1,
+                    '#name': seq_name,
+                    'j_codon_frame': solution.frame,
+                    'chain_type': f'{seq_name[3]}{seq_name[2]}',
+                    'j_cdr3_end': solution.cdr3_pos-1,
+                    'extra_bps': solution.extra_bps,
                 })
         else:
             print(f'{seq_name}: no solutions')
 
-    simple.write_csv(args.out_file, annotations)
+    simple.write_csv(args.out_file, annotations, delimiter='\t')
 
 if __name__ == "__main__":
     main()
