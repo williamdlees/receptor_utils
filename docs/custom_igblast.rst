@@ -32,12 +32,12 @@ may fail to annotate a substantial proportion of submitted sequences. My own app
     and look at the analysis of the read, you will see that indeed that part of the analysis is missing! There is no error or warning, it is simply not included! This is not an error if the read is
     too short to cover the entire junction, but, if V-quest annotates the sequence as functional, it is likely that the aux file incorrectly specifies one or more J-genes, or is empty.
 
-  * **MakDb.py: Junction does not match the sequence starting at position 310 in the IMGT numbered V(D)J sequence** - Again this can occur with pseudogenes or corrupted sequences, but if
+  * **MakeDb.py: Junction does not match the sequence starting at position 310 in the IMGT numbered V(D)J sequence** - Again this can occur with pseudogenes or corrupted sequences, but if
     V-Quest annotates the sequence as functional, it is likely to indicate a problem in the ndm file, such that the sequence is incorrectly aligned. Another circumstance under which  it
     can occur is if MakeDb does not recognise the v, d or j-call as being in the canonical format, i.e. something along the lines of IGHV1-69*02. Some latitude is allowed, but if you
     are using allele names that depart from this format, check that they are not causing issues. In particular, a name without an allele suffix will cause this problem.
 
-* Once any problems identified in the above steps are resolved, open the 'pass' database in Excel or something similar. Check that a reasonable proportion of reads are annotated as functional, and that all V-gene and J-gene families result insome functional arrangements - investigate any exceptions
+* Once any problems identified in the above steps are resolved, open the 'pass' database in Excel or something similar. Check that a reasonable proportion of reads are annotated as functional, and that all V-gene and J-gene families result in some functional arrangements - investigate any exceptions
 * Continue to exercise caution as you extend your analysis to more repertoires, being conscious of the possibility of annotation errors in your results.
 
 I hope that this section doesn't put you off! But it should serve as a warning that you need to be systematic, and on the lookout for problems that are not well flagged
