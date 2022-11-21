@@ -32,8 +32,8 @@ may fail to annotate a substantial proportion of submitted sequences. My own app
     and look at the analysis of the read, you will see that indeed that part of the analysis is missing! There is no error or warning, it is simply not included! This is not an error if the read is
     too short to cover the entire junction, but, if V-quest annotates the sequence as functional, it is likely that the aux file incorrectly specifies one or more J-genes, or is empty.
 
-  * **MakDb.py: Junction does not match the sequence starting at position 310 in the IMGT numbered V(D)J sequence** - Again this can occur with pseudogenes or corrupted sequences, but it
-    V-quest annotates the sequence as functional, it is likely to indicate a problem in the ndm file, such that the sequence is incorrectly aligned. Another circumstance under which  it
+  * **MakDb.py: Junction does not match the sequence starting at position 310 in the IMGT numbered V(D)J sequence** - Again this can occur with pseudogenes or corrupted sequences, but if
+    V-Quest annotates the sequence as functional, it is likely to indicate a problem in the ndm file, such that the sequence is incorrectly aligned. Another circumstance under which  it
     can occur is if MakeDb does not recognise the v, d or j-call as being in the canonical format, i.e. something along the lines of IGHV1-69*02. Some latitude is allowed, but if you
     are using allele names that depart from this format, check that they are not causing issues. In particular, a name without an allele suffix will cause this problem.
 
