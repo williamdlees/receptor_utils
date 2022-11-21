@@ -40,5 +40,5 @@ simple_bio_seq API
 ------------------
 
 This is a set of simple wrappers around commonly-used functions in Biopython which suit my use case and are used in the tools above. They support, for example,
-one-line reading and writing of FASTA files and comma/tab-separated files, and manage sequences as strings in a dict, which I find simplifies code compared the
+one-line reading and writing of FASTA files and comma/tab-separated files, and manage sequences as strings in a dict, which I find simplifies code compared to the
 Biopython functions, at the expense of flexibility which I rarely need. The are documented under :ref:`API <api_label>`.
