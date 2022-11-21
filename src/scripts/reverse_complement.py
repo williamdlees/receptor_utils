@@ -8,10 +8,14 @@ from receptor_utils import simple_bio_seq as simple
 import argparse
 
 
-def main():
+def get_parser():
     parser = argparse.ArgumentParser(description='Return the reverse complement of a nucleotide sequence')
     parser.add_argument('sequence', help='input sequence')
-    args = parser.parse_args()
+    return parser
+
+
+def main():
+    args = get_parser().parse_args()
 
     rc = simple.reverse_complement(args.sequence)
     print(rc)

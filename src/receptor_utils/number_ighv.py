@@ -1,4 +1,6 @@
-# De novo IMGT-gapping of macaque IGHV germline genes, using guidance from http://www.bioinf.org.uk/abs/info.html#cdrid to confirm CDR1 and 2
+# De novo IMGT-gapping of IGHV germline genes, using guidance from http://www.bioinf.org.uk/abs/info.html#cdrid to confirm CDR1 and 2
+# This is experimental. Not used in the examples and specific to IGHV. Maybe a recourse if there is no suitable gapped reference template
+# to rely on
 
 # Copyright (c) 2021 William Lees
 
@@ -21,7 +23,7 @@ def nt_diff(s1, s2):
     return diffs
 
 
-# Number the protein translation of an entire IGHV V-gene
+# De-novo numbering of the protein translation of an entire IGHV V-gene
 def number_ighv(seq):
     gapped = ''
     # find the conserved Cys at 23
@@ -148,12 +150,9 @@ def pretty_gapped(seq):
     print(pretty_header)
     print(seq)
 
+
 # Given a gapped AA sequence and an ungapped nt sequence, produce a gapped nt sequence
 def gap_nt_from_aa(nucleotide_seq, peptide_seq):
-    """ Transfers gaps from aligned peptide seq into codon partitioned nucleotide seq (codon alignment)
-          - peptide_seq is an aligned peptide sequence with gaps that need to be transferred to nucleotide seq
-          - nucleotide_seq is an un-aligned dna sequence whose codons translate to peptide seq"""
-
     codons = [codon for codon in simple.chunks(nucleotide_seq, 3)]  #splits nucleotides into codons (triplets)
     remains = nucleotide_seq[3*len(codons):] if 3*len(codons) != len(nucleotide_seq) else ''
     gapped_codons = []

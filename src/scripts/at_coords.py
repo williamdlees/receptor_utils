@@ -10,14 +10,16 @@
 import argparse
 from receptor_utils import simple_bio_seq as simple
 
-
-def main():
+def get_parser():
     parser = argparse.ArgumentParser(description=' Extract the sequence at the specified 1-based co-ordinates in the file')
     parser.add_argument('input_file', help='File containing the reference sequence (FASTA)')
     parser.add_argument('start', help='Start co-ord (1-based)', type=int)
     parser.add_argument('end', help='End co-ord (1-based)', type=int)
     parser.add_argument('-r', help='Reverse-complement the result', action='store_true')
-    args = parser.parse_args()
+    return parser
+
+def main():
+    args = get_parser().parse_args()
 
     if args.end < args.start or args.end < 1 or args.start < 1:
         quit()

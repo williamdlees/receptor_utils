@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>receptor_utils.simple_bio_seq &mdash; receptor-utils  documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> receptor-utils
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../scripts.html">Command-Line Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">receptor-utils</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">receptor_utils.simple_bio_seq</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for receptor_utils.simple_bio_seq</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Wrapper around BioSeq functions for simple applications</span>
+<span class="sd">principles:</span>
+<span class="sd">- store sequences as strings, use dicts for collectiopns</span>
+<span class="sd">- all sequences are coerced to upper case on input</span>
+<span class="sd">- iterators are coreced into lists for ease of debugging</span>
+<span class="sd">basically just make things simple for cases where we don&#39;t need to do more</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># Copyright (c) 2021 William Lees</span>
+<span class="n">__author__</span> <span class="o">=</span> <span class="s1">&#39;William Lees&#39;</span>
+
+<span class="c1"># This source code, and any executable file compiled or derived from it, is governed by the European Union Public License v. 1.2,</span>
+<span class="c1"># the English version of which is available here: https://perma.cc/DK5U-NDVE</span>
+
+
+<span class="kn">from</span> <span class="nn">Bio</span> <span class="kn">import</span> <span class="n">SeqIO</span>
+<span class="kn">from</span> <span class="nn">Bio.Seq</span> <span class="kn">import</span> <span class="n">Seq</span>
+<span class="kn">from</span> <span class="nn">Bio.SeqRecord</span> <span class="kn">import</span> <span class="n">SeqRecord</span>
+<span class="kn">from</span> <span class="nn">Bio.Align</span> <span class="kn">import</span> <span class="n">MultipleSeqAlignment</span><span class="p">,</span> <span class="n">AlignInfo</span>
+<span class="kn">import</span> <span class="nn">random</span>
+<span class="kn">import</span> <span class="nn">csv</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">Counter</span>
+
+
+<div class="viewcode-block" id="chunks"><a class="viewcode-back" href="../../receptor_utils.html#receptor_utils.simple_bio_seq.chunks">[docs]</a><span class="k">def</span> <span class="nf">chunks</span><span class="p">(</span><span class="n">l</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Yield successive n-sized chunks from l.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">l</span><span class="p">),</span> <span class="n">n</span><span class="p">):</span>
+        <span class="k">yield</span> <span class="n">l</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="n">n</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="read_fasta"><a class="viewcode-back" href="../../receptor_utils.html#receptor_utils.simple_bio_seq.read_fasta">[docs]</a><span class="k">def</span> <span class="nf">read_fasta</span><span class="p">(</span><span class="n">infile</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Read a FASTA file into a dict</span>
+
+<span class="sd">    :param infile: Pathname of the file</span>
+<span class="sd">    :type infile: str</span>
+<span class="sd">    :returns: A dictionary indexed by FASTA ID, containing the sequences (in upper case)</span>
+<span class="sd">    :rtype: dict</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">recs</span> <span class="o">=</span> <span class="n">SeqIO</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">infile</span><span class="p">,</span> <span class="s1">&#39;fasta&#39;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">rec</span> <span class="ow">in</span> <span class="n">recs</span><span class="p">:</span>
+        <span class="n">res</span><span class="p">[</span><span class="n">rec</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">rec</span><span class="o">.</span><span class="n">seq</span><span class="p">)</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">res</span></div>
+
+
+<div class="viewcode-block" id="write_fasta"><a class="viewcode-back" href="../../receptor_utils.html#receptor_utils.simple_bio_seq.write_fasta">[docs]</a><span class="k">def</span> <span class="nf">write_fasta</span><span class="p">(</span><span class="n">seqs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">outfile</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Write a dict into a FASTA file. The dict should be indexed by sequence name</span>
+
+<span class="sd">    :param seqs: The sequences to write</span>
+<span class="sd">    :type seqs: dict</span>
+<span class="sd">    :param outfile: Pathname of the file to be written</span>
+<span class="sd">    :type outfile: str</span>
+<span class="sd">    :returns: the number of records written</span>
+<span class="sd">    :rtype: int</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">SeqIO</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">toSeqRecords</span><span class="p">(</span><span class="n">seqs</span><span class="p">),</span> <span class="n">outfile</span><span class="p">,</span> <span class="s1">&#39;fasta&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="read_single_fasta"><a class="viewcode-back" href="../../receptor_utils.html#receptor_utils.simple_bio_seq.read_single_fasta">[docs]</a><span class="k">def</span> <span class="nf">read_single_fasta</span><span class="p">(</span><span class="n">infile</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Read a single sequence from a FASTA file</span>
+
+<span class="sd">    :param infile: Pathname of the file</span>
+<span class="sd">    :type infile: str</span>
+<span class="sd">    :returns: The first (or only) sequence in the file</span>
+<span class="sd">    :rtype: str</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">recs</span> <span class="o">=</span> <span class="n">SeqIO</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">infile</span><span class="p">,</span> <span class="s1">&#39;fasta&#39;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">rec</span> <span class="ow">in</span> <span class="n">recs</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">rec</span><span class="o">.</span><span class="n">seq</span><span class="p">)</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span></div>
+
+
+<span class="c1"># read V,D,J regions from one or more species from an IMGT reference file</span>
+<span class="c1"># species should be a ***list*** of species</span>
+<span class="c1"># returns a nested dict: [species][chain]</span>
+<div class="viewcode-block" id="read_imgt_fasta"><a class="viewcode-back" href="../../receptor_utils.html#receptor_utils.simple_bio_seq.read_imgt_fasta">[docs]</a><span class="k">def</span> <span class="nf">read_imgt_fasta</span><span class="p">(</span><span class="n">infile</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">species</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">chains</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;IGHV&#39;</span><span class="p">,</span> <span class="s1">&#39;IGHD&#39;</span><span class="p">,</span> <span class="s1">&#39;IGHJ&#39;</span><span class="p">,</span> <span class="s1">&#39;CH&#39;</span><span class="p">),</span> <span class="n">functional_only</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;read V,D,J regions from one or more species from an IMGT reference file</span>
+
+<span class="sd">    :param infile: The IMGT reference file</span>
+<span class="sd">    :type infile: str</span>
+<span class="sd">    :param species: Species as specified in the file, with spaces replaced by underscore</span>
+<span class="sd">    :type species: str</span>
+<span class="sd">    :param chains: List of chains to read (e.g. [&#39;IGHV&#39;, &#39;IGHJ&#39;])</span>
+<span class="sd">    :type chains: list</span>
+<span class="sd">    :param functional_only: If True, returns only sequences marked as functional (F)</span>
+<span class="sd">    :return: A dict containing the serquences, indexed by name</span>
+<span class="sd">    :rtype: dict</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">sp</span> <span class="ow">in</span> <span class="n">species</span><span class="p">:</span>
+        <span class="n">res</span><span class="p">[</span><span class="n">sp</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">chain</span> <span class="ow">in</span> <span class="n">chains</span><span class="p">:</span>
+            <span class="n">res</span><span class="p">[</span><span class="n">sp</span><span class="p">][</span><span class="n">chain</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="n">recs</span> <span class="o">=</span> <span class="n">SeqIO</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">infile</span><span class="p">,</span> <span class="s1">&#39;fasta&#39;</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">rec</span> <span class="ow">in</span> <span class="n">recs</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">sp</span> <span class="ow">in</span> <span class="n">species</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">chain</span> <span class="ow">in</span> <span class="n">chains</span><span class="p">:</span>
+                <span class="k">if</span> <span class="p">(</span><span class="s1">&#39;-REGION&#39;</span> <span class="ow">in</span> <span class="n">rec</span><span class="o">.</span><span class="n">description</span> <span class="ow">or</span> <span class="n">chain</span> <span class="o">==</span> <span class="s1">&#39;CH&#39;</span> <span class="ow">or</span> <span class="s1">&#39;EX&#39;</span> <span class="ow">in</span> <span class="n">rec</span><span class="o">.</span><span class="n">description</span><span class="p">)</span> <span class="ow">and</span> <span class="n">sp</span> <span class="ow">in</span> <span class="n">rec</span><span class="o">.</span><span class="n">description</span> <span class="ow">and</span> <span class="n">chain</span> <span class="ow">in</span> <span class="n">rec</span><span class="o">.</span><span class="n">description</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">functional_only</span> <span class="ow">or</span> <span class="s1">&#39;|F|&#39;</span> <span class="ow">in</span> <span class="n">rec</span><span class="o">.</span><span class="n">description</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="s1">&#39;V&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">chain</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">rec</span><span class="o">.</span><span class="n">seq</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">280</span><span class="p">:</span>       <span class="c1"># strip out obviously incomplete Vs</span>
+                            <span class="n">name</span> <span class="o">=</span> <span class="n">rec</span><span class="o">.</span><span class="n">description</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;|&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+                            <span class="nb">type</span> <span class="o">=</span> <span class="n">rec</span><span class="o">.</span><span class="n">description</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;|&#39;</span><span class="p">)[</span><span class="mi">4</span><span class="p">]</span>
+
+                            <span class="k">if</span> <span class="n">chain</span> <span class="o">==</span> <span class="s1">&#39;CH&#39;</span> <span class="ow">or</span> <span class="p">(</span><span class="s1">&#39;EX&#39;</span> <span class="ow">in</span> <span class="n">rec</span><span class="o">.</span><span class="n">description</span> <span class="ow">and</span> <span class="n">chain</span> <span class="ow">in</span> <span class="n">rec</span><span class="o">.</span><span class="n">description</span><span class="p">):</span>
+                                <span class="n">gene</span><span class="p">,</span> <span class="n">allele</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;*&#39;</span><span class="p">)</span>
+                                <span class="n">res</span><span class="p">[</span><span class="n">sp</span><span class="p">][</span><span class="n">chain</span><span class="p">][</span><span class="n">gene</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="nb">type</span> <span class="o">+</span> <span class="s1">&#39;*&#39;</span> <span class="o">+</span> <span class="n">allele</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">rec</span><span class="o">.</span><span class="n">seq</span><span class="p">)</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+                            <span class="k">else</span><span class="p">:</span>
+                                <span class="n">res</span><span class="p">[</span><span class="n">sp</span><span class="p">][</span><span class="n">chain</span><span class="p">][</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">rec</span><span class="o">.</span><span class="n">seq</span><span class="p">)</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">res</span></div>
+
+
+<div class="viewcode-block" id="sample_fasta"><a class="viewcode-back" href="../../receptor_utils.html#receptor_utils.simple_bio_seq.sample_fasta">[docs]</a><span class="k">def</span> <span class="nf">sample_fasta</span><span class="p">(</span><span class="n">seqs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">number</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Return a random sample of sequences stored in a dict. Sequences are not resampled.</span>
+<span class="sd">    Returns a ValueError if the dict does not contain enough sequences</span>
+
+<span class="sd">    :param seqs: The sequences to sample</span>
+<span class="sd">    :type seqs: dict</span>
+<span class="sd">    :param number: The number of sequences to return</span>
+<span class="sd">    :type number: int</span>
+<span class="sd">    :return: The sampled sequences</span>
+<span class="sd">    :rtype: dict</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">keys</span> <span class="o">=</span> <span class="n">seqs</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">keys</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">number</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">seqs</span>
+
+    <span class="n">sample</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">keys</span><span class="p">,</span> <span class="n">number</span><span class="p">)</span>
+    <span class="n">sample_seqs</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">sample</span><span class="p">:</span>
+        <span class="n">sample_seqs</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">seqs</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">sample_seqs</span></div>
+
+
+<div class="viewcode-block" id="translate"><a class="viewcode-back" href="../../receptor_utils.html#receptor_utils.simple_bio_seq.translate">[docs]</a><span class="k">def</span> <span class="nf">translate</span><span class="p">(</span><span class="n">seq</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">truncate</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">ignore_partial_codon</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Translate a nucleotide sequence to amino acid</span>
+
+<span class="sd">    :param seq: the sequence to translate</span>
+<span class="sd">    :type seq: str</span>
+<span class="sd">    :param truncate: If True, truncate the sequence so that it terminates on a codon boundary. Otherwise pad with N if necessary</span>
+<span class="sd">    :type truncate: bool</span>
+<span class="sd">    :param ignore_partial_codon: If True, if any position in a codon contains - or ., set the entire codon to --- ensuring it gets translated as -</span>
+<span class="sd">    :type ignore_partial_codon: bool</span>
+<span class="sd">    :return: Amino acid string</span>
+<span class="sd">    :rtype: str</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">seq_len</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">seq</span><span class="p">)</span>
+    <span class="n">residue</span> <span class="o">=</span> <span class="n">seq_len</span> <span class="o">%</span> <span class="mi">3</span>
+
+    <span class="k">if</span> <span class="n">residue</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">truncate</span><span class="p">:</span>
+            <span class="n">seq</span> <span class="o">=</span> <span class="n">seq</span><span class="p">[:</span><span class="n">seq_len</span> <span class="o">-</span> <span class="n">residue</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">seq</span> <span class="o">+=</span> <span class="s1">&#39;N&#39;</span> <span class="o">*</span> <span class="p">(</span><span class="mi">3</span> <span class="o">-</span> <span class="n">residue</span><span class="p">)</span>
+            
+    <span class="k">if</span> <span class="n">ignore_partial_codon</span><span class="p">:</span>
+        <span class="n">codons</span> <span class="o">=</span> <span class="p">[</span><span class="n">codon</span> <span class="k">for</span> <span class="n">codon</span> <span class="ow">in</span> <span class="n">chunks</span><span class="p">(</span><span class="n">seq</span><span class="p">,</span> <span class="mi">3</span><span class="p">)]</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">codons</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="s1">&#39;-&#39;</span> <span class="ow">in</span> <span class="n">codons</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="ow">or</span> <span class="s1">&#39;.&#39;</span> <span class="ow">in</span> <span class="n">codons</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+                <span class="n">codons</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;---&#39;</span>
+            
+        <span class="n">seq</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">codons</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">Seq</span><span class="p">(</span><span class="n">seq</span><span class="p">)</span><span class="o">.</span><span class="n">translate</span><span class="p">())</span></div>
+
+
+<div class="viewcode-block" id="reverse_complement"><a class="viewcode-back" href="../../receptor_utils.html#receptor_utils.simple_bio_seq.reverse_complement">[docs]</a><span class="k">def</span> <span class="nf">reverse_complement</span><span class="p">(</span><span class="n">seq</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Return the reverse complement of a nucelotide sequence</span>
+
+<span class="sd">    :param seq: the nucleotide sequence</span>
+<span class="sd">    :type seq: str</span>
+<span class="sd">    :return: the reverse complement</span>
+<span class="sd">    :rtype: str</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">Seq</span><span class="p">(</span><span class="n">seq</span><span class="p">)</span><span class="o">.</span><span class="n">reverse_complement</span><span class="p">())</span></div>
+
+
+<div class="viewcode-block" id="nt_diff"><a class="viewcode-back" href="../../receptor_utils.html#receptor_utils.simple_bio_seq.nt_diff">[docs]</a><span class="k">def</span> <span class="nf">nt_diff</span><span class="p">(</span><span class="n">s1</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">s2</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Returns a count of the positions in which the input sequences differ. If the sequences are of different lengths, the count only covers</span>
+<span class="sd">    positions in the shorter sequence.</span>
+
+<span class="sd">    :param s1: the first sequence</span>
+<span class="sd">    :type s1: str</span>
+<span class="sd">    :param s2: the second sequence</span>
+<span class="sd">    :type s2: str</span>
+<span class="sd">    :return: The number of positions at which the sequences differ</span>
+<span class="sd">    :rtype: int</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">diffs</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">row</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">s1</span><span class="o">.</span><span class="n">upper</span><span class="p">(),</span> <span class="n">s2</span><span class="o">.</span><span class="n">upper</span><span class="p">()))</span>
+
+    <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">row</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="n">row</span><span class="p">[</span><span class="n">p</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">row</span><span class="p">[</span><span class="n">p</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="ow">and</span> <span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="n">p</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;X&#39;</span><span class="p">,</span> <span class="s1">&#39;N&#39;</span><span class="p">]</span> <span class="ow">and</span> <span class="n">row</span><span class="p">[</span><span class="n">p</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;X&#39;</span><span class="p">,</span> <span class="s1">&#39;N&#39;</span><span class="p">]):</span>
+            <span class="n">diffs</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="n">diffs</span> <span class="o">+=</span> <span class="nb">abs</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">s1</span><span class="p">)</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">s2</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">diffs</span></div>
+
+
+<span class="c1"># convert our dict format to SeqRecords</span>
+<div class="viewcode-block" id="toSeqRecords"><a class="viewcode-back" href="../../receptor_utils.html#receptor_utils.simple_bio_seq.toSeqRecords">[docs]</a><span class="k">def</span> <span class="nf">toSeqRecords</span><span class="p">(</span><span class="n">seqs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Convert a dict of sequences to a list of BioPython SeqRecords</span>
+
+<span class="sd">    :param seqs: the sequences to convert</span>
+<span class="sd">    :type seqs: dict</span>
+<span class="sd">    :return: the BioPython SeqRecords</span>
+<span class="sd">    :rtype: list</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">recs</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">seq</span> <span class="ow">in</span> <span class="n">seqs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">recs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SeqRecord</span><span class="p">(</span><span class="n">Seq</span><span class="p">(</span><span class="n">seq</span><span class="p">),</span> <span class="nb">id</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">recs</span></div>
+
+
+<div class="viewcode-block" id="dumb_consensus"><a class="viewcode-back" href="../../receptor_utils.html#receptor_utils.simple_bio_seq.dumb_consensus">[docs]</a><span class="k">def</span> <span class="nf">dumb_consensus</span><span class="p">(</span><span class="n">seqs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">threshold</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.7</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Return a dumb consensus on a dict of sequences, using Bio.Align.AlignInfo.SummaryInfo.dumb_consensus. All sequences should be the same length.</span>
+
+<span class="sd">    :param seqs: the sequences to analyse</span>
+<span class="sd">    :type seqs: dict</span>
+<span class="sd">    :param threshold:  the threshold value that is required to add a particular atom</span>
+<span class="sd">    :type threshold: float</span>
+<span class="sd">    :return: the consensus sequence</span>
+<span class="sd">    :rtype: str</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">msa</span> <span class="o">=</span> <span class="n">MultipleSeqAlignment</span><span class="p">(</span><span class="n">toSeqRecords</span><span class="p">(</span><span class="n">seqs</span><span class="p">))</span>
+    <span class="n">summary_align</span> <span class="o">=</span> <span class="n">AlignInfo</span><span class="o">.</span><span class="n">SummaryInfo</span><span class="p">(</span><span class="n">msa</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">summary_align</span><span class="o">.</span><span class="n">gap_consensus</span><span class="p">(</span><span class="n">threshold</span><span class="o">=</span><span class="n">threshold</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="scored_consensus"><a class="viewcode-back" href="../../receptor_utils.html#receptor_utils.simple_bio_seq.scored_consensus">[docs]</a><span class="k">def</span> <span class="nf">scored_consensus</span><span class="p">(</span><span class="n">seqs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">threshold</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.7</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Return a dumb consensus on a dict of sequences, using Bio.Align.AlignInfo.SummaryInfo.gap_consensus. All sequences should be the same length.</span>
+<span class="sd">    The output is modified to provide, as well as the consensus string, the mimimum score achieved at any position</span>
+
+<span class="sd">    :param seqs: the sequences to analyse</span>
+<span class="sd">    :type seqs: dict</span>
+<span class="sd">    :param threshold:  the threshold value that is required to add a particular atom</span>
+<span class="sd">    :type threshold: float</span>
+<span class="sd">    :return: (consensus sequence, min_score)</span>
+<span class="sd">    :rtype: str</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">msa</span> <span class="o">=</span> <span class="n">MultipleSeqAlignment</span><span class="p">(</span><span class="n">toSeqRecords</span><span class="p">(</span><span class="n">seqs</span><span class="p">))</span>
+    <span class="n">summary_align</span> <span class="o">=</span> <span class="n">AlignInfo</span><span class="o">.</span><span class="n">SummaryInfo</span><span class="p">(</span><span class="n">msa</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">scored_gap_consensus</span><span class="p">(</span><span class="n">msa</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="n">threshold</span><span class="p">)</span></div>
+
+
+<span class="c1"># Adapted from BioPython.Bio.ALign</span>
+<span class="c1"># return min_score: this is the lowest proportion of reads that &#39;won&#39; at any position</span>
+<div class="viewcode-block" id="scored_gap_consensus"><a class="viewcode-back" href="../../receptor_utils.html#receptor_utils.simple_bio_seq.scored_gap_consensus">[docs]</a><span class="k">def</span> <span class="nf">scored_gap_consensus</span><span class="p">(</span><span class="n">alignment</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span> <span class="n">ambiguous</span><span class="o">=</span><span class="s2">&quot;X&quot;</span><span class="p">,</span> <span class="n">require_multiple</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Adapted from BioPython.Bio.ALign. This function is called by receptor_utils.scored_consensus.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">consensus</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+
+    <span class="c1"># find the length of the consensus we are creating</span>
+    <span class="n">con_len</span> <span class="o">=</span> <span class="n">alignment</span><span class="o">.</span><span class="n">get_alignment_length</span><span class="p">()</span>
+    <span class="n">con_rows</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">alignment</span><span class="p">)</span>
+
+    <span class="c1"># go through each seq item</span>
+    <span class="n">min_score</span> <span class="o">=</span> <span class="mf">1.0</span>
+    <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">con_len</span><span class="p">):</span>
+        <span class="c1"># keep track of the counts of the different atoms we get</span>
+        <span class="n">atom_dict</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">()</span>
+        <span class="n">num_atoms</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">for</span> <span class="n">record</span> <span class="ow">in</span> <span class="n">alignment</span><span class="p">:</span>
+            <span class="c1"># make sure we haven&#39;t run past the end of any sequences</span>
+            <span class="c1"># if they are of different lengths</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">c</span> <span class="o">=</span> <span class="n">record</span><span class="p">[</span><span class="n">n</span><span class="p">]</span>
+            <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">atom_dict</span><span class="p">[</span><span class="n">c</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+
+            <span class="n">num_atoms</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="n">max_atoms</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">max_size</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="n">atom_dict</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">atom_dict</span><span class="p">[</span><span class="n">atom</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">max_size</span><span class="p">:</span>
+                <span class="n">max_atoms</span> <span class="o">=</span> <span class="p">[</span><span class="n">atom</span><span class="p">]</span>
+                <span class="n">max_size</span> <span class="o">=</span> <span class="n">atom_dict</span><span class="p">[</span><span class="n">atom</span><span class="p">]</span>
+            <span class="k">elif</span> <span class="n">atom_dict</span><span class="p">[</span><span class="n">atom</span><span class="p">]</span> <span class="o">==</span> <span class="n">max_size</span><span class="p">:</span>
+                <span class="n">max_atoms</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">atom</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">require_multiple</span> <span class="ow">and</span> <span class="n">num_atoms</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">consensus</span> <span class="o">+=</span> <span class="n">ambiguous</span>
+            <span class="n">min_score</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">min_score</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="n">con_rows</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">max_atoms</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span>
+            <span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">max_size</span><span class="p">)</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">num_atoms</span><span class="p">))</span> <span class="o">&gt;=</span> <span class="n">threshold</span>
+        <span class="p">):</span>
+            <span class="n">consensus</span> <span class="o">+=</span> <span class="n">max_atoms</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">min_score</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">min_score</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">max_size</span><span class="p">)</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">con_rows</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">consensus</span> <span class="o">+=</span> <span class="n">ambiguous</span>
+            <span class="n">min_score</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">min_score</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">max_size</span><span class="p">)</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">con_rows</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="p">(</span><span class="n">Seq</span><span class="p">(</span><span class="n">consensus</span><span class="p">),</span> <span class="n">min_score</span><span class="p">)</span></div>
+
+
+<span class="c1"># Find the closest reference sequence to a query sequence</span>
+<span class="c1"># Returns a list of equally close reference names</span>
+<div class="viewcode-block" id="closest_ref"><a class="viewcode-back" href="../../receptor_utils.html#receptor_utils.simple_bio_seq.closest_ref">[docs]</a><span class="k">def</span> <span class="nf">closest_ref</span><span class="p">(</span><span class="n">seq</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">ref</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Given an input sequence, find the closest entry or entries in an IMGT or other reference set as determined by nt_diff.</span>
+
+<span class="sd">    :param seq: the input sequence</span>
+<span class="sd">    :type seq: str</span>
+<span class="sd">    :param ref: the reference set</span>
+<span class="sd">    :type ref: dict</span>
+<span class="sd">    :return: the name of the closest entry, entries, if &gt;1 sequences in the reference set were equally close</span>
+<span class="sd">    :rtype: list</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">closest_diff</span> <span class="o">=</span> <span class="mi">999</span>
+    <span class="n">closest_names</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">ref_name</span><span class="p">,</span> <span class="n">ref_seq</span> <span class="ow">in</span> <span class="n">ref</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">diff</span> <span class="o">=</span> <span class="n">nt_diff</span><span class="p">(</span><span class="n">seq</span><span class="p">,</span> <span class="n">ref_seq</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">diff</span> <span class="o">&lt;</span> <span class="n">closest_diff</span><span class="p">:</span>
+            <span class="n">closest_diff</span> <span class="o">=</span> <span class="n">diff</span>
+            <span class="n">closest_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">ref_name</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">diff</span> <span class="o">==</span> <span class="n">closest_diff</span><span class="p">:</span>
+            <span class="n">closest_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ref_name</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">closest_names</span></div>
+
+
+<span class="c1"># Read csv file into a list of dicts</span>
+<div class="viewcode-block" id="read_csv"><a class="viewcode-back" href="../../receptor_utils.html#receptor_utils.simple_bio_seq.read_csv">[docs]</a><span class="k">def</span> <span class="nf">read_csv</span><span class="p">(</span><span class="n">file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">delimiter</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Read a delimited file into a list of dicts (as produced by DictReader)</span>
+
+<span class="sd">    :param file: filename of the file</span>
+<span class="sd">    :type file: str</span>
+<span class="sd">    :param delimiter: the delimiter (&#39;,&#39; by default)</span>
+<span class="sd">    :type delimiter: str</span>
+<span class="sd">    :return: the list of dicts</span>
+<span class="sd">    :rtype: list</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ret</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fi</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">delimiter</span><span class="p">:</span>
+            <span class="n">reader</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">DictReader</span><span class="p">(</span><span class="n">fi</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="n">delimiter</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">reader</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">DictReader</span><span class="p">(</span><span class="n">fi</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">reader</span><span class="p">:</span>
+            <span class="n">ret</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">ret</span></div>
+
+
+<span class="c1"># Write csv file given a list of dicts. Fieldnames are taken from the first row</span>
+<div class="viewcode-block" id="write_csv"><a class="viewcode-back" href="../../receptor_utils.html#receptor_utils.simple_bio_seq.write_csv">[docs]</a><span class="k">def</span> <span class="nf">write_csv</span><span class="p">(</span><span class="n">file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">rows</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">delimiter</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Write a list of dicts to a delimited file. The header row is determined from the keys of the first item</span>
+
+<span class="sd">    :param file: filename of the delimited file to create</span>
+<span class="sd">    :type file: str</span>
+<span class="sd">    :param rows: the rows to write</span>
+<span class="sd">    :type rows: list</span>
+<span class="sd">    :param delimiter: the delimiter (&#39;,&#39; by default)</span>
+<span class="sd">    :type delimiter: str</span>
+<span class="sd">    :return: None</span>
+<span class="sd">    :rtype: None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">rows</span><span class="p">:</span>
+        <span class="k">return</span>
+
+    <span class="n">fieldnames</span> <span class="o">=</span> <span class="n">rows</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">newline</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fo</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">delimiter</span><span class="p">:</span>
+            <span class="n">writer</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">DictWriter</span><span class="p">(</span><span class="n">fo</span><span class="p">,</span> <span class="n">fieldnames</span><span class="o">=</span><span class="n">fieldnames</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="n">delimiter</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">writer</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">DictWriter</span><span class="p">(</span><span class="n">fo</span><span class="p">,</span> <span class="n">fieldnames</span><span class="o">=</span><span class="n">fieldnames</span><span class="p">)</span>
+
+        <span class="n">writer</span><span class="o">.</span><span class="n">writeheader</span><span class="p">()</span>
+        
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">rows</span><span class="p">:</span>
+            <span class="n">writer</span><span class="o">.</span><span class="n">writerow</span><span class="p">(</span><span class="n">row</span><span class="p">)</span></div>
+            
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, William Lees.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

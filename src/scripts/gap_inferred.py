@@ -13,12 +13,16 @@ from receptor_utils import simple_bio_seq as simple
 import Bio.Data.CodonTable
 
 
-def main():
-    parser = argparse.ArgumentParser(description='Gap inferred sequences')
+def get_parser():
+    parser = argparse.ArgumentParser(description='Gap the sequences in a FASTA file, using the closest sequence in a gapped reference set as template')
     parser.add_argument('inferred_file', help='ungapped inferred sequences (fasta)')
     parser.add_argument('ref_file', help='gapped reference set (fasta)')
     parser.add_argument('out_file', help='output file containing gapped inferred sequences')
-    args = parser.parse_args()
+    return parser
+
+
+def main():
+    args = get_parser().parse_args()
 
     inferred = simple.read_fasta(args.inferred_file)
     refs = simple.read_fasta(args.ref_file)

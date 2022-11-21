@@ -3,16 +3,8 @@ README.md
 pyproject.toml
 setup.cfg
 src/receptor_utils/__init__.py
-src/receptor_utils/annotate_j.py
-src/receptor_utils/at_coords.py
-src/receptor_utils/extract_refs.py
-src/receptor_utils/gap_inferred.py
-src/receptor_utils/identical_seqs.py
-src/receptor_utils/make_igblast_ndm.py
-src/receptor_utils/name_allele.py
 src/receptor_utils/novel_allele_name.py
 src/receptor_utils/number_ighv.py
-src/receptor_utils/reverse_complement.py
 src/receptor_utils/simple_bio_seq.py
 src/receptor_utils.egg-info/PKG-INFO
 src/receptor_utils.egg-info/SOURCES.txt

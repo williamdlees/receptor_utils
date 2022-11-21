@@ -11,10 +11,14 @@ import argparse
 from receptor_utils import simple_bio_seq as simple
 
 
-def main():
+def get_parser():
     parser = argparse.ArgumentParser(description='List identical sequences and sub-sequences in a fasta file')
     parser.add_argument('input_file', help='gapped imgt reference file')
-    args = parser.parse_args()
+    return parser
+
+
+def main():
+    args = get_parser().parse_args()
 
     seqs = simple.read_fasta(args.input_file)
 

@@ -23,7 +23,21 @@ from collections import namedtuple
 # gaps in V-sequences are '.', as in the IMGT reference set
 
 
-def name_novel(novel_seq, ref_set, v_gene=True):
+def name_novel(novel_seq: str, ref_set: dict, v_gene: bool = True):
+    """Make a name for the novel allele, given its gapped or ungapped sequence.
+    The name conforms to the description `here <https://wordpress.vdjbase.org/index.php/vdjbase_help/airr-seq-data-allele-names/>`_ .
+    The sequence must be full-length at the 5 prime end, or gapped
+
+    :param novel_seq: the full-length sequence to name, which may be either gapped or ungapped in the case of a V-gene
+    :type novel_seq: str
+    :param ref_set: dict of reference genes (gapped in the case of v-genes), in the format returned by read_fasta
+    :type ref_set: dict
+    :param v_gene: True only if we are naming a v_gene
+    :type v_gene: bool
+    :return: tuple consisting of three strings: novel_name, novel_seq, notes. novel_seq is gapped in the case of a V-gene
+    :rtype: tuple
+    """
+
     #if novel_seq == 'CAGGTGCAGCTGCAGGAGTCGGGCCCAGGACTGGTGAAGCCTTCGGACACCCTGTCCCTCACCTGCGCTGTCTCTGGTTACTCCATCAGCAGTAGTAACTGGTGGGGCTGGATCCGGCAGCCCCCAGGGAAGGGACTGGAGTGGATTGGGTACATCTATTATAGTGGGAGCATCTACTACAACCCGTCCCTCAAGAGTCGAGTCACCATGTCAGTAGACACGTCCAAGAACCAGTTCTCCCTGAAGCTGAGCTCTGTGACCGCCGTGGACACGGCCGTGTATTACTACCGAGAAA':
     #    breakpoint()
 

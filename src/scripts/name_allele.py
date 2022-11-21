@@ -17,13 +17,17 @@ def find_gene(name):
     return gene
 
 
-def main():
-    parser = argparse.ArgumentParser(description='Name an allele by comparing to a reference set. Construct a novel name if necessary')
+def get_parser():
+    parser = argparse.ArgumentParser(description='Name an allele by comparing to a reference set. Construct a novel name containing SNPs if necessary')
     parser.add_argument('ref_set', help='reference set (FASTA) (V genes should be IMGT-gapped)')
     parser.add_argument('sequence', help='input sequence')
     parser.add_argument('-g', '--gene', metavar='GENE_NAME', help='only consider reference sequences from the specified gene', dest='gene')
     parser.add_argument('-r', '--rev_comp', help='reverse-complement sequence before processing', action='store_true', dest='rev_comp')
-    args = parser.parse_args()
+    return parser
+
+
+def main():
+    args = get_parser().parse_args()
 
     gene_refs = simple.read_fasta(args.ref_set)
     

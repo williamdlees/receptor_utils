@@ -15,11 +15,7 @@ from collections import namedtuple
 
 
 def main():
-    parser = argparse.ArgumentParser(description='Annotate a set of J sequences, finding the frame alignment and 1-based index of the first nucleotide of the conserved PHE or TRP')
-    parser.add_argument('seq_file', help='J sequences to annotate (fasta)')
-    parser.add_argument('out_file', help='Annotation output (csv)')
-    args = parser.parse_args()
-    
+    args = get_parser().parse_args()
     seqs = simple.read_fasta(args.seq_file)
     annotations = []
     
@@ -72,6 +68,15 @@ def main():
             print(f'{seq_name}: no solutions')
 
     simple.write_csv(args.out_file, annotations, delimiter='\t')
+
+
+def get_parser():
+    parser = argparse.ArgumentParser(
+        description='Annotate a set of J sequences, finding the frame alignment and 1-based index of the first nucleotide of the conserved PHE or TRP')
+    parser.add_argument('seq_file', help='J sequences to annotate (fasta)')
+    parser.add_argument('out_file', help='Annotation output in aux format for use with IgBlast')
+    return parser
+
 
 if __name__ == "__main__":
     main()

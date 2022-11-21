@@ -11,14 +11,16 @@
 import argparse
 from receptor_utils import simple_bio_seq as simple
 
-
-def main():
-    parser = argparse.ArgumentParser(description='Extract reference files for nominated species')
+def get_parser():
+    parser = argparse.ArgumentParser(description='Extract reference files for nominated species from a gapped IMGT reference file')
     parser.add_argument('imgt_file', help='gapped imgt reference file')
     parser.add_argument('species_name', help='species name for IMGT file in quotes, e.g. "Homo sapiens", "Macaca mulatta"')
     parser.add_argument('-L', '--locus', help='locus identifier, e.g. "IGH" (default), "IGK", "TRB", "TRG"', default='IGH', required=False)
     parser.add_argument('-F', '--functional_only', action='store_true')
-    args = parser.parse_args()
+    return parser
+
+def main():
+    args = get_parser().parse_args()
 
     segs = {
         'IGH': ['IGHV', 'IGHD', 'IGHJ', 'CH'],

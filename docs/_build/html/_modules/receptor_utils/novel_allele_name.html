@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>receptor_utils.novel_allele_name &mdash; receptor-utils  documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> receptor-utils
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../scripts.html">Command-Line Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">receptor-utils</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">receptor_utils.novel_allele_name</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for receptor_utils.novel_allele_name</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Provide a name for a novel allele sequence, using the VDJbase approach as outlined</span>
+<span class="c1"># at https://wordpress.vdjbase.org/index.php/vdjbase_help/airr-seq-data-allele-names/</span>
+<span class="c1"># For V sequences, the sequence must be full-length at the 5&#39; end, or IMGT-gapped.</span>
+
+<span class="c1"># Copyright (c) 2021 William Lees</span>
+
+<span class="c1"># This source code, and any executable file compiled or derived from it, is governed by the European Union Public License v. 1.2,</span>
+<span class="c1"># the English version of which is available here: https://perma.cc/DK5U-NDVE</span>
+
+
+<span class="kn">from</span> <span class="nn">receptor_utils</span> <span class="kn">import</span> <span class="n">simple_bio_seq</span> <span class="k">as</span> <span class="n">simple</span>
+<span class="kn">from</span> <span class="nn">receptor_utils</span> <span class="kn">import</span> <span class="n">number_ighv</span>
+<span class="kn">from</span> <span class="nn">Bio.pairwise2</span> <span class="kn">import</span> <span class="n">align</span><span class="p">,</span> <span class="n">format_alignment</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">namedtuple</span>
+
+
+<span class="c1"># Make a name for the novel allele, given its gapped or ungapped sequence</span>
+<span class="c1"># returns a tuple (name, gapped_sequence)</span>
+<span class="c1">#</span>
+<span class="c1"># novel_seq: the full-length sequence to name, which may be either gapped or ungapped in the case of a V-gene</span>
+<span class="c1"># ref_set: dict of reference genes (gapped in the case of v-genes), in the format returned by read_fasta</span>
+<span class="c1"># v_gene: True if we are naming a v_gene</span>
+<span class="c1"># gaps in V-sequences are &#39;.&#39;, as in the IMGT reference set</span>
+
+
+<div class="viewcode-block" id="name_novel"><a class="viewcode-back" href="../../receptor_utils.html#receptor_utils.novel_allele_name.name_novel">[docs]</a><span class="k">def</span> <span class="nf">name_novel</span><span class="p">(</span><span class="n">novel_seq</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">ref_set</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">v_gene</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Make a name for the novel allele, given its gapped or ungapped sequence.</span>
+<span class="sd">    The name conforms to the description `here &lt;https://wordpress.vdjbase.org/index.php/vdjbase_help/airr-seq-data-allele-names/&gt;`_ .</span>
+<span class="sd">    The sequence must be full-length at the 5 prime end, or gapped</span>
+
+<span class="sd">    :param novel_seq: the full-length sequence to name, which may be either gapped or ungapped in the case of a V-gene</span>
+<span class="sd">    :type novel_seq: str</span>
+<span class="sd">    :param ref_set: dict of reference genes (gapped in the case of v-genes), in the format returned by read_fasta</span>
+<span class="sd">    :type ref_set: dict</span>
+<span class="sd">    :param v_gene: True only if we are naming a v_gene</span>
+<span class="sd">    :type v_gene: bool</span>
+<span class="sd">    :return: tuple consisting of three strings: novel_name, novel_seq, notes. novel_seq is gapped in the case of a V-gene</span>
+<span class="sd">    :rtype: tuple</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1">#if novel_seq == &#39;CAGGTGCAGCTGCAGGAGTCGGGCCCAGGACTGGTGAAGCCTTCGGACACCCTGTCCCTCACCTGCGCTGTCTCTGGTTACTCCATCAGCAGTAGTAACTGGTGGGGCTGGATCCGGCAGCCCCCAGGGAAGGGACTGGAGTGGATTGGGTACATCTATTATAGTGGGAGCATCTACTACAACCCGTCCCTCAAGAGTCGAGTCACCATGTCAGTAGACACGTCCAAGAACCAGTTCTCCCTGAAGCTGAGCTCTGTGACCGCCGTGGACACGGCCGTGTATTACTACCGAGAAA&#39;:</span>
+    <span class="c1">#    breakpoint()</span>
+
+
+    <span class="n">novel_seq</span> <span class="o">=</span> <span class="n">novel_seq</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+    <span class="n">notes</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+
+    <span class="c1"># Check for truncation at 5&#39; end and construct ambiguous reference set if necessary</span>
+
+    <span class="k">if</span> <span class="n">novel_seq</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;.&#39;</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">novel_seq</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="n">novel_seq</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;.&#39;</span><span class="p">:</span>
+                <span class="k">break</span>
+        <span class="n">ref_set</span> <span class="o">=</span> <span class="n">build_ambiguous_ref</span><span class="p">(</span><span class="n">ref_set</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+
+        <span class="c1"># TODO - handle ungapped sets that are truncated at the 5&#39; end</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># gap the sequence (even if already gapped) so that we get the notes</span>
+    
+        <span class="k">if</span> <span class="n">v_gene</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s1">&#39;.&#39;</span> <span class="ow">in</span> <span class="n">novel_seq</span><span class="p">:</span>
+                <span class="n">novel_seq</span> <span class="o">=</span> <span class="n">novel_seq</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+    
+            <span class="n">ungapped_ref_set</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">ref_set</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">ungapped_ref_set</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+            <span class="n">novel_seq</span><span class="p">,</span> <span class="n">aa</span><span class="p">,</span> <span class="n">notes</span> <span class="o">=</span> <span class="n">number_ighv</span><span class="o">.</span><span class="n">gap_sequence</span><span class="p">(</span><span class="n">novel_seq</span><span class="p">,</span> <span class="n">ref_set</span><span class="p">,</span> <span class="n">ungapped_ref_set</span><span class="p">)</span>
+
+
+    <span class="n">closest_ref_name</span> <span class="o">=</span> <span class="n">simple</span><span class="o">.</span><span class="n">closest_ref</span><span class="p">(</span><span class="n">novel_seq</span><span class="p">,</span> <span class="n">ref_set</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">closest_ref_seq</span> <span class="o">=</span> <span class="n">ref_set</span><span class="p">[</span><span class="n">closest_ref_name</span><span class="p">]</span>
+
+    <span class="n">diffs</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">insertions</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">class</span> <span class="nc">Diff</span><span class="p">:</span>
+        <span class="k">pass</span>
+
+    <span class="c1"># if we have a lot of diffs, check for indels</span>
+
+    <span class="n">n_diffs</span> <span class="o">=</span> <span class="n">simple</span><span class="o">.</span><span class="n">nt_diff</span><span class="p">(</span><span class="n">closest_ref_seq</span><span class="p">,</span> <span class="n">novel_seq</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">n_diffs</span> <span class="o">&gt;</span> <span class="mi">10</span><span class="p">:</span>
+        <span class="n">ungapped_closest_ref</span> <span class="o">=</span> <span class="n">closest_ref_seq</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="n">fixed_seq</span><span class="p">,</span> <span class="n">insertions</span> <span class="o">=</span> <span class="n">find_indels</span><span class="p">(</span><span class="n">ungapped_closest_ref</span><span class="p">,</span> <span class="n">novel_seq</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">))</span>
+        <span class="n">fixed_diffs</span> <span class="o">=</span> <span class="n">simple</span><span class="o">.</span><span class="n">nt_diff</span><span class="p">(</span><span class="n">ungapped_closest_ref</span><span class="p">,</span> <span class="n">fixed_seq</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">fixed_diffs</span> <span class="o">&lt;</span> <span class="n">n_diffs</span><span class="p">:</span>
+            <span class="c1"># thread the gaps through the fixed sequence and adjust insertion positions</span>
+            <span class="n">novel_seq</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+            <span class="n">fixed_ind</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">closest_ref_seq</span><span class="p">)):</span>
+                <span class="k">if</span> <span class="n">closest_ref_seq</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;.&#39;</span><span class="p">:</span>
+                    <span class="n">novel_seq</span> <span class="o">+=</span> <span class="n">fixed_seq</span><span class="p">[</span><span class="n">fixed_ind</span><span class="p">]</span>
+                    <span class="n">fixed_ind</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">novel_seq</span> <span class="o">+=</span> <span class="s1">&#39;.&#39;</span>
+                    <span class="k">for</span> <span class="n">insertion</span> <span class="ow">in</span> <span class="n">insertions</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">insertion</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">i</span><span class="p">:</span>
+                            <span class="n">insertion</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+                            
+            <span class="k">if</span> <span class="n">fixed_ind</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">fixed_seq</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">fixed_ind</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">fixed_seq</span><span class="p">)):</span>
+                    <span class="n">novel_seq</span> <span class="o">+=</span> <span class="n">fixed_seq</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                            
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">closest_ref_seq</span><span class="p">)</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">novel_seq</span><span class="p">):</span>
+        <span class="n">closest_ref_seq</span> <span class="o">+=</span> <span class="s1">&#39;.&#39;</span> <span class="o">*</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">novel_seq</span><span class="p">)</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">closest_ref_seq</span><span class="p">))</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">novel_seq</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="n">closest_ref_seq</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">!=</span> <span class="n">novel_seq</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+            <span class="n">d</span> <span class="o">=</span> <span class="n">Diff</span><span class="p">()</span>
+            <span class="n">d</span><span class="o">.</span><span class="n">pos</span> <span class="o">=</span> <span class="n">i</span>
+            <span class="n">d</span><span class="o">.</span><span class="n">ref</span> <span class="o">=</span> <span class="n">closest_ref_seq</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">d</span><span class="o">.</span><span class="n">novel</span> <span class="o">=</span> <span class="n">novel_seq</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">diffs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">d</span>
+
+    <span class="c1"># trim any diffs that are past the end of the novel sequence</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">novel_seq</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">novel_seq</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;.&#39;</span><span class="p">:</span>
+            <span class="k">break</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">diffs</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+        <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">novel_seq</span><span class="p">):</span>
+            <span class="k">del</span> <span class="n">diffs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+    <span class="c1"># add diffs if the closest ref is longer than the novel seq</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">closest_ref_seq</span><span class="p">)</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">novel_seq</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">novel_seq</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">closest_ref_seq</span><span class="p">)):</span>
+            <span class="n">d</span> <span class="o">=</span> <span class="n">Diff</span><span class="p">()</span>
+            <span class="n">d</span><span class="o">.</span><span class="n">pos</span> <span class="o">=</span> <span class="n">j</span>
+            <span class="n">d</span><span class="o">.</span><span class="n">ref</span> <span class="o">=</span> <span class="n">closest_ref_seq</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+            <span class="n">d</span><span class="o">.</span><span class="n">novel</span> <span class="o">=</span> <span class="s1">&#39;-&#39;</span>
+            <span class="n">diffs</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">d</span>
+
+
+    <span class="c1"># consolidate any adjacent diffs</span>
+
+    <span class="n">prev_i</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">d</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">diffs</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+        <span class="k">if</span> <span class="n">prev_i</span> <span class="ow">and</span> <span class="n">diffs</span><span class="p">[</span><span class="n">prev_i</span><span class="p">]</span><span class="o">.</span><span class="n">pos</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">diffs</span><span class="p">[</span><span class="n">prev_i</span><span class="p">]</span><span class="o">.</span><span class="n">novel</span><span class="p">)</span> <span class="o">==</span> <span class="n">i</span><span class="p">:</span>
+            <span class="n">diffs</span><span class="p">[</span><span class="n">prev_i</span><span class="p">]</span><span class="o">.</span><span class="n">ref</span> <span class="o">+=</span> <span class="n">closest_ref_seq</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">diffs</span><span class="p">[</span><span class="n">prev_i</span><span class="p">]</span><span class="o">.</span><span class="n">novel</span> <span class="o">+=</span> <span class="n">novel_seq</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">novel_seq</span><span class="p">)</span> <span class="k">else</span> <span class="s1">&#39;-&#39;</span>
+            <span class="k">del</span> <span class="n">diffs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">prev_i</span> <span class="o">=</span> <span class="n">i</span>
+
+    <span class="c1"># split diffs that are too short to consolidate</span>
+
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">d</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">diffs</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+        <span class="k">if</span> <span class="mi">1</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">novel</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">4</span> <span class="ow">and</span> <span class="s1">&#39;.&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">d</span><span class="o">.</span><span class="n">novel</span> <span class="ow">and</span> <span class="s1">&#39;.&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">d</span><span class="o">.</span><span class="n">ref</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">novel</span><span class="p">)):</span>
+                <span class="n">diffs</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">Diff</span><span class="p">()</span>
+                <span class="n">diffs</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">pos</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">pos</span> <span class="o">+</span> <span class="n">j</span>
+                <span class="n">diffs</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">ref</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">ref</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+                <span class="n">diffs</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">novel</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">novel</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+            <span class="n">d</span><span class="o">.</span><span class="n">ref</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">ref</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">d</span><span class="o">.</span><span class="n">novel</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">novel</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="c1"># form the suffix</span>
+
+    <span class="n">all_positions</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">diffs</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+    <span class="n">all_positions</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">insertions</span><span class="p">])</span>
+    <span class="n">all_positions</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">all_positions</span><span class="p">))</span>
+    <span class="n">all_positions</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+
+    <span class="n">suffs</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="c1"># create the name suffix parts</span>
+    
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">all_positions</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">diffs</span><span class="p">:</span>
+            <span class="n">d</span> <span class="o">=</span> <span class="n">diffs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">novel</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">d</span><span class="o">.</span><span class="n">ref</span> <span class="o">!=</span> <span class="s1">&#39;.&#39;</span> <span class="ow">and</span> <span class="n">d</span><span class="o">.</span><span class="n">novel</span> <span class="o">!=</span> <span class="s1">&#39;.&#39;</span><span class="p">:</span>
+                <span class="n">suffs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s%d%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">ref</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span> <span class="n">d</span><span class="o">.</span><span class="n">pos</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">d</span><span class="o">.</span><span class="n">novel</span><span class="o">.</span><span class="n">lower</span><span class="p">()))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">suffs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%d%s%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">pos</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">d</span><span class="o">.</span><span class="n">novel</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span> <span class="n">d</span><span class="o">.</span><span class="n">pos</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">novel</span><span class="p">)))</span>
+
+        <span class="k">for</span> <span class="n">insertion</span> <span class="ow">in</span> <span class="n">insertions</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">insertion</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">i</span><span class="p">:</span>
+                <span class="n">suffs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;i</span><span class="si">%d%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">insertion</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">insertion</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()))</span>
+
+    <span class="n">novel_name</span> <span class="o">=</span> <span class="n">closest_ref_name</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">suffs</span><span class="p">)</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">suffs</span><span class="p">)</span> <span class="k">else</span> <span class="n">closest_ref_name</span>
+
+    <span class="c1"># put the insertions into the sequence. Note the order, we process the cigar without the insertions in the sequence,</span>
+    <span class="c1"># but cigar_state.processed_seq_len includes a count of the insertions. So we need to put them in before checking lengths</span>
+    <span class="c1"># ...and this gives us an honest comparison of the seq we want and its cigar</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">insertions</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+        <span class="n">novel_seq</span> <span class="o">=</span> <span class="n">novel_seq</span><span class="p">[:</span><span class="n">insertions</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">insertions</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">novel_seq</span><span class="p">[</span><span class="n">insertions</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:]</span>
+
+    <span class="k">return</span> <span class="n">novel_name</span><span class="p">,</span> <span class="n">novel_seq</span><span class="p">,</span> <span class="n">notes</span></div>
+
+
+<span class="c1"># Align novel sequence against the reference sequence and check for indels</span>
+<span class="k">def</span> <span class="nf">find_indels</span><span class="p">(</span><span class="n">closest_ref_seq</span><span class="p">,</span> <span class="n">novel_seq</span><span class="p">):</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">align</span><span class="o">.</span><span class="n">globalms</span><span class="p">(</span><span class="n">closest_ref_seq</span><span class="p">,</span> <span class="n">novel_seq</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">one_alignment_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">penalize_end_gaps</span><span class="o">=</span><span class="p">(</span><span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">))</span>
+    <span class="c1"># print(format_alignment(*a[0]))</span>
+    
+    <span class="n">insertions</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">fixed_novel</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>        <span class="c1"># this will be the novel without any insertions, and now aligned so that there is a &#39;-&#39; for any deletion</span>
+        
+    <span class="n">a</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="c1"># remove any insertions at the end, as we don&#39;t want them represented this way</span>
+
+    <span class="n">seqA</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">seqA</span><span class="p">)</span>
+    <span class="n">seqB</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">seqB</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">seqA</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">seqA</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;-&#39;</span><span class="p">:</span>
+            <span class="k">del</span> <span class="n">seqA</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">break</span>
+    <span class="n">seqA</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">seqA</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">seqA</span><span class="p">),</span> <span class="nb">list</span><span class="p">(</span><span class="n">seqB</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;-&#39;</span><span class="p">:</span>
+            <span class="n">fixed_novel</span> <span class="o">+=</span> <span class="n">c</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">insertions</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">fixed_novel</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">c</span><span class="p">[</span><span class="mi">1</span><span class="p">]])</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">seqB</span><span class="p">)</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">seqA</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">seqA</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">seqB</span><span class="p">)):</span>
+            <span class="n">fixed_novel</span> <span class="o">+=</span> <span class="n">seqB</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">fixed_novel</span><span class="p">,</span> <span class="n">insertions</span>
+
+
+<span class="c1"># Build (and name) a reference set for sequences truncated at the 5&#39; end</span>
+<span class="c1"># Start is 0-based index of first available bp</span>
+
+
+<span class="k">def</span> <span class="nf">build_ambiguous_ref</span><span class="p">(</span><span class="n">full_ref</span><span class="p">,</span> <span class="n">start</span><span class="p">):</span>
+    <span class="n">rev_ref</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">seq</span> <span class="ow">in</span> <span class="n">full_ref</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">seq</span> <span class="o">=</span> <span class="s1">&#39;.&#39;</span> <span class="o">*</span> <span class="n">start</span> <span class="o">+</span> <span class="n">seq</span><span class="p">[</span><span class="n">start</span><span class="p">:]</span>
+        <span class="k">if</span> <span class="n">seq</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">rev_ref</span><span class="p">:</span>
+            <span class="n">rev_ref</span><span class="p">[</span><span class="n">seq</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">rev_ref</span><span class="p">[</span><span class="n">seq</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+
+    <span class="n">ref</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">seq</span><span class="p">,</span> <span class="n">names</span> <span class="ow">in</span> <span class="n">rev_ref</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">names</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">ref</span><span class="p">[</span><span class="n">names</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">seq</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">genes</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">names</span><span class="p">:</span>
+                <span class="n">gene</span><span class="p">,</span> <span class="n">allele</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;*&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">gene</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">genes</span><span class="p">:</span>
+                    <span class="n">genes</span><span class="p">[</span><span class="n">gene</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="n">genes</span><span class="p">[</span><span class="n">gene</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">allele</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">genes</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">name</span> <span class="o">=</span> <span class="n">gene</span> <span class="o">+</span> <span class="s1">&#39;*&#39;</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">genes</span><span class="p">[</span><span class="n">gene</span><span class="p">]))</span>
+                <span class="n">ref</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">seq</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">gene_list</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">genes</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+                <span class="n">name</span> <span class="o">=</span> <span class="n">gene_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;*&#39;</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">genes</span><span class="p">[</span><span class="n">gene_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]]))</span>
+                <span class="n">fam_0</span> <span class="o">=</span> <span class="n">gene_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">gene_list</span><span class="p">)):</span>
+                    <span class="n">name</span> <span class="o">+=</span> <span class="s1">&#39;_&#39;</span>
+                    <span class="n">fam</span> <span class="o">=</span> <span class="n">gene_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="n">num</span> <span class="o">=</span> <span class="n">gene_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">fam</span> <span class="o">+</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">fam</span> <span class="o">==</span> <span class="n">fam_0</span><span class="p">:</span>
+                        <span class="n">alleles</span> <span class="o">=</span> <span class="p">[</span><span class="n">num</span> <span class="o">+</span> <span class="s1">&#39;.&#39;</span> <span class="o">+</span> <span class="n">a</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">genes</span><span class="p">[</span><span class="n">gene_list</span><span class="p">[</span><span class="n">i</span><span class="p">]]]</span>
+                        <span class="n">name</span> <span class="o">+=</span> <span class="s1">&#39;_&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">alleles</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">fam</span> <span class="o">=</span> <span class="n">gene_list</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">4</span><span class="p">:]</span>
+                        <span class="n">alleles</span> <span class="o">=</span> <span class="p">[</span><span class="n">fam</span> <span class="o">+</span> <span class="s1">&#39;.&#39;</span> <span class="o">+</span> <span class="n">a</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">genes</span><span class="p">[</span><span class="n">gene_list</span><span class="p">[</span><span class="n">i</span><span class="p">]]]</span>
+                        <span class="n">name</span> <span class="o">+=</span> <span class="s1">&#39;_&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">alleles</span><span class="p">)</span>
+                <span class="n">ref</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">seq</span>
+
+    <span class="k">return</span> <span class="n">ref</span>
+
+
+<span class="k">def</span> <span class="nf">run_tests</span><span class="p">():</span>
+    <span class="n">ref_set</span> <span class="o">=</span> <span class="n">simple</span><span class="o">.</span><span class="n">read_fasta</span><span class="p">(</span><span class="s1">&#39;Homo_sapiens_IGHV_gapped.fasta&#39;</span><span class="p">)</span>
+    <span class="n">test_novels</span> <span class="o">=</span> <span class="n">simple</span><span class="o">.</span><span class="n">read_fasta</span><span class="p">(</span><span class="s1">&#39;IGHV3-20.04.fasta&#39;</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">seq</span> <span class="ow">in</span> <span class="n">test_novels</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">novel_name</span> <span class="o">=</span> <span class="n">name_novel</span><span class="p">(</span><span class="n">seq</span><span class="p">,</span> <span class="n">ref_set</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">novel_name</span> <span class="o">!=</span> <span class="n">name</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Error: </span><span class="si">%s</span><span class="s1"> != </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">novel_name</span><span class="p">,</span> <span class="n">name</span><span class="p">))</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">run_tests</span><span class="p">()</span>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, William Lees.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -11,13 +11,16 @@ import csv
 from receptor_utils import simple_bio_seq as simple
 import argparse
 
-
-def main():
+def get_parser():
     parser = argparse.ArgumentParser(description='Make igblast ndm file from an IMGT-gapped variable-region reference set')
     parser.add_argument('ref_file', help='gapped reference set (fasta)')
     parser.add_argument('chain', help='chain as required by igblast (eg VH)')
     parser.add_argument('ndm_file', help='output file (ndm)')
-    args = parser.parse_args()
+    return parser
+
+
+def main():
+    args = get_parser().parse_args()
     
     seqs = simple.read_fasta(args.ref_file)
     
