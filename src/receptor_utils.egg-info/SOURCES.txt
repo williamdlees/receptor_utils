@@ -11,3 +11,12 @@ src/receptor_utils.egg-info/SOURCES.txt
 src/receptor_utils.egg-info/dependency_links.txt
 src/receptor_utils.egg-info/entry_points.txt
 src/receptor_utils.egg-info/top_level.txt
+src/scripts/__init__.py
+src/scripts/annotate_j.py
+src/scripts/at_coords.py
+src/scripts/extract_refs.py
+src/scripts/gap_inferred.py
+src/scripts/identical_seqs.py
+src/scripts/make_igblast_ndm.py
+src/scripts/name_allele.py
+src/scripts/reverse_complement.py

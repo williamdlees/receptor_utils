@@ -36,10 +36,20 @@ def main():
     # gene/allele name, FWR1 start, FWR1 stop, CDR1 start, CDR1 stop, FWR2 start, FWR2 stop, CDR2 start, CDR2 stop, FWR3 start, FWR3 stop, chain type, coding frame start.
     # FWR/CDR positions are 1-based while the coding frame start positions are 0-based
     
+    omitted = False
+
     with open(args.ndm_file, 'w') as fo:
         for id, seq in seqs.items():
             rec = []
             rec.append(id)
+
+            # If the sequence is truncated at the 5' end, don't include the sequence
+
+            if seq[0] == '.':
+                print(f"Omitting allele {id} as it is truncated at the 5' end")
+                omissions = True
+                continue
+
             pos = 1
             rec.append(str(pos))     # FWR start
             pos += len(seq[slice(*imgt_fr1)].replace('.', '')) - 1
@@ -63,3 +73,6 @@ def main():
             rec.append(args.chain)    # chain type
             rec.append('0')       # coding frame start
             fo.write('\t'.join(rec) + '\n')
+
+    if omissions:
+        print('Omissions will not affect results provided at least one non-truncated allele of the gene is present.')
