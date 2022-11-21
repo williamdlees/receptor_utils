@@ -41,6 +41,8 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="custom_igblast.html">Using custom databases with IgBlast</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="scripts.html">Command-Line Utilities</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="scripts.html#working-with-igblast">Working with IgBLAST</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="scripts.html#working-with-fasta-files">Working with FASTA files</a><ul class="current">
@@ -84,8 +86,12 @@
            <div itemprop="articleBody">
              
   <section id="gap-sequences">
-<h1>gap_sequences<a class="headerlink" href="#gap-sequences" title="Permalink to this heading"></a></h1>
-<p>Gap the sequences ina FASTA file, using the closest sequence in a gapped reference set as template</p>
+<span id="gap-sequences-label"></span><h1>gap_sequences<a class="headerlink" href="#gap-sequences" title="Permalink to this heading"></a></h1>
+<p>Gap the sequences in a FASTA file, using the closest sequence in a gapped reference set as template.</p>
+<p>The tool will only use as a template those sequences in the reference set that are complete at the 5’ end and extend at least to the
+second cysteine. Any others will not be used as a template, and neither will any that are apparently non-functional.
+Warnings will be given of any sequences with these issues. In most circumstances (that is, if they are only a small
+fraction of the total sequences in the reference set), these warnings can be ignored.</p>
 <p><p>Gap the sequences in a FASTA file, using the closest sequence in a gapped reference set as template</p>
 </p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">usage</span><span class="p">:</span> <span class="n">gap_sequences</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="n">inferred_file</span> <span class="n">ref_file</span> <span class="n">out_file</span>

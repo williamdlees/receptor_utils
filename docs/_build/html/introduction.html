@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Introduction &mdash; receptor-utils  documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Using custom databases with IgBlast" href="custom_igblast.html" />
+    <link rel="prev" title="Receptor-utils: code and utilities for working with IG/TR receptor sequences" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> receptor-utils
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Introduction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#naming-and-aligning-v-d-and-j-sequences">Naming and aligning V, D and J sequences</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#using-custom-databases-with-igblast">Using custom databases with IgBlast</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#convenience-tools">Convenience Tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#simple-bio-seq-api">simple_bio_seq API</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="custom_igblast.html">Using custom databases with IgBlast</a></li>
+<li class="toctree-l1"><a class="reference internal" href="scripts.html">Command-Line Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">receptor-utils</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a></li>
+      <li class="breadcrumb-item active">Introduction</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/introduction.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="introduction">
+<h1>Introduction<a class="headerlink" href="#introduction" title="Permalink to this heading"></a></h1>
+<p>This package contains utilities and code which I have found useful in working with IG/TR receptor sequences.</p>
+<section id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">receptor-utils</span></code></p>
+<p>The module requires <a class="reference external" href="https://biopython.org/">Biopython</a>, which needs to be installed separately.</p>
+</section>
+<section id="naming-and-aligning-v-d-and-j-sequences">
+<h2>Naming and aligning V, D and J sequences<a class="headerlink" href="#naming-and-aligning-v-d-and-j-sequences" title="Permalink to this heading"></a></h2>
+<p>Particularly when dealing with novel inferences of germline genes, but in some other contexts as well, when given an expressed or genomic sequence, it is useful to know which germline V, D or J sequence it
+is closest to, and what SNPs it contains. An allied task is to align such a sequence using the <a class="reference external" href="https://www.imgt.org/IMGTindex/AlleleAlignments.php">IMGT alignment</a>.</p>
+<p><a class="reference internal" href="name_allele.html#name-allele-label"><span class="std std-ref">name_allele</span></a> provides a name for a given sequence. The name includes the nearest germline allele (taken from a reference set supplied to the tool) and incorporating any SNPs. The naming scheme that it
+uses is described <a class="reference external" href="https://wordpress.vdjbase.org/index.php/vdjbase_help/airr-seq-data-allele-names/">here</a>.</p>
+<p><a class="reference internal" href="gap_sequences.html#gap-sequences-label"><span class="std std-ref">gap_sequences</span></a> will gap a supplied set of sequences according to the IMGT alignment, warning of any missing conserved residues. It employs a gapped reference set, which must be
+provided. For each sequence to be gapped, the tool identifies the closest reference sequence, and uses it as a template.</p>
+</section>
+<section id="using-custom-databases-with-igblast">
+<h2>Using custom databases with IgBlast<a class="headerlink" href="#using-custom-databases-with-igblast" title="Permalink to this heading"></a></h2>
+<p>The package contains some tools to support this: they are covered in <a class="reference internal" href="custom_igblast.html#custom-igblast-label"><span class="std std-ref">the next section</span></a>.</p>
+</section>
+<section id="convenience-tools">
+<h2>Convenience Tools<a class="headerlink" href="#convenience-tools" title="Permalink to this heading"></a></h2>
+<p>There are some smaller ‘convenience’ tools that may come in useful, for example to <a class="reference internal" href="extract_refs.html#extract-refs-label"><span class="std std-ref">extract sequences from an IMGT reference set</span></a>
+and to <a class="reference internal" href="reverse_complement.html#rev-comp-label"><span class="std std-ref">reverse-complement an nt sequence</span></a>.
+They are nothing special but may save some time. All tools are listed under <a class="reference internal" href="scripts.html#command-line-label"><span class="std std-ref">Command-Line Utilities</span></a>.</p>
+</section>
+<section id="simple-bio-seq-api">
+<h2>simple_bio_seq API<a class="headerlink" href="#simple-bio-seq-api" title="Permalink to this heading"></a></h2>
+<p>This is a set of simple wrappers around commonly-used functions in Biopython which suit my use case and are used in the tools above. They support, for example,
+one-line reading and writing of FASTA files and comma/tab-separated files, and manage sequences as strings in a dict, which I find simplifies code compared the
+Biopython functions, at the expense of flexibility which I rarely need. The are documented under <a class="reference internal" href="modules.html#api-label"><span class="std std-ref">API</span></a>.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Receptor-utils: code and utilities for working with IG/TR receptor sequences" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="custom_igblast.html" class="btn btn-neutral float-right" title="Using custom databases with IgBlast" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, William Lees.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

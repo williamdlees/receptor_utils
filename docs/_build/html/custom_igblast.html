@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Using custom databases with IgBlast &mdash; receptor-utils  documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Command-Line Utilities" href="scripts.html" />
+    <link rel="prev" title="Introduction" href="introduction.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> receptor-utils
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Using custom databases with IgBlast</a></li>
+<li class="toctree-l1"><a class="reference internal" href="scripts.html">Command-Line Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">receptor-utils</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a></li>
+      <li class="breadcrumb-item active">Using custom databases with IgBlast</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/custom_igblast.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="using-custom-databases-with-igblast">
+<span id="custom-igblast-label"></span><h1>Using custom databases with IgBlast<a class="headerlink" href="#using-custom-databases-with-igblast" title="Permalink to this heading"></a></h1>
+<p>Local installations of <a class="reference external" href="https://www.ncbi.nlm.nih.gov/igblast/">IgBlast</a>  can be <a class="reference external" href="https://ncbi.github.io/igblast/cook/How-to-set-up.html">configured</a> to support ‘custom organisms’ - either an organism for which no databases are provided with
+the tool, or a modified database for a supported organism. The procedure is significantly simplifed in version 1.20, and upgrading to at least this version is encouraged. For full
+annotation, two files are required, in addition to the germline database: the auxiliary_data file, which describes details of the J-genes such as frame orientation, and the ndm file,
+which describes the position of the CDRs in V-genes.</p>
+<p>If you just wish to add alleles to existing V-genes, or add D-genes or alleles, all that is necessary is to create a custom blast sequence database using the procedure linked above. The ndm and aux files provided
+with IgBlast will support this use case. If you wish to add V-genes that are not in the IgBlast database, or any J-genes or alleles, you will need to create a new ndm file and provide it to IgBlast using the
+<code class="docutils literal notranslate"><span class="pre">--custom_internal_data</span></code> command-line parameter. If you wish to modify or add to the J-gene database, you will need to provide a new aux file, using the <code class="docutils literal notranslate"><span class="pre">--auxiliary_data</span></code> command-line
+parameter.</p>
+<p><a class="reference internal" href="make_igblast_ndm.html#make-igblast-nd-label"><span class="std std-ref">make_igblast_ndm</span></a> will make an ndm file from a set of IMGT-gapped V-sequences. You should include all V-sequences in the reference set (if necessary, you can gap them using
+<a class="reference internal" href="gap_sequences.html#gap-sequences-label"><span class="std std-ref">gap_sequences</span></a> if you have at least a partial or near-matching set for your organism, or for a closely-related organism).</p>
+<p><a class="reference internal" href="annotate_j.html#annotate-j-label"><span class="std std-ref">annotate_j</span></a> will create an aux file from a set of J-sequences. You should include all sequences in your J gene database.</p>
+<p>It is very important to test the annotation carefully when using a custom database. If there are issues with the configuration - particularly issues with the two files above - IgBlast
+may fail to annotate a substantial proportion of submitted sequences. My own approach is as follows:</p>
+<ul class="simple">
+<li><p>Annotate a test repertoire using IgBlast output format  <code class="docutils literal notranslate"><span class="pre">-outfmt</span> <span class="pre">'7</span> <span class="pre">std</span> <span class="pre">qseq</span> <span class="pre">sseq</span> <span class="pre">btop'</span></code></p></li>
+<li><p>Convert to <a class="reference external" href="https://changeo.readthedocs.io">Changeo</a> format using <a class="reference external" href="https://changeo.readthedocs.io/en/stable/tools/MakeDb.html#makedb">MakeDb</a>. Use the <code class="docutils literal notranslate"><span class="pre">--failed</span></code> option to create a database of failed records. Use the <code class="docutils literal notranslate"><span class="pre">--log</span></code> option to create a log file.</p></li>
+<li><p>Examine the count of passed and failed records. Typically, you might expect under 10% of records to fail, possibly many fewer than that, depending on the quality of the reads. A higher count of failed records is a warning sign.</p></li>
+<li><p>Open db_fail, the failed database. Reads that were found to contain a stop codon can be discounted. How many others are there, and what proportion do they represent? If this is more than a few percent, it is a warning sign. Are they obviously short sequences, i.e. not full-length? Again, these can be discounted. Take a sample of reads that look as though they are full-length, and analyse them in <a class="reference external" href="https://www.imgt.org/IMGT_vquest/input">IMGT V-Quest</a>, either using your organism of interest, or a closely related one. Does V-Quest find them to be non-functional? If a substantial number of sequences in the failed database are found to be functional by V-Quest, you should strongly suspect a problem in the IgBlast configuration.</p></li>
+<li><p>Open the error log, and check the report for any sequences in the failed database that you suspect from the above analysis may have been mis-annotated. You may see the following errors in the log file:</p>
+<ul>
+<li><p><strong>IgBlast does not provide a junction analysis or a J assignment</strong> - this means that the junction analysis and/or J assignment are not in the IgBlast annotation file. If you open the file
+and look at the analysis of the read, you will see that indeed that part of the analysis is missing! There is no error or warning, it is simply not included! This is not an error if the read is
+too short to cover the entire junction, but, if V-quest annotates the sequence as functional, it is likely that the aux file incorrectly specifies one or more J-genes, or is empty.</p></li>
+<li><p><strong>MakDb.py: Junction does not match the sequence starting at position 310 in the IMGT numbered V(D)J sequence</strong> - Again this can occur with pseudogenes or corrupted sequences, but it
+V-quest annotates the sequence as functional, it is likely to indicate a problem in the ndm file, such that the sequence is incorrectly aligned. Another circumstance under which  it
+can occur is if MakeDb does not recognise the v, d or j-call as being in the canonical format, i.e. something along the lines of IGHV1-69*02. Some latitude is allowed, but if you
+are using allele names that depart from this format, check that they are not causing issues. In particular, a name without an allele suffix will cause this problem.</p></li>
+</ul>
+</li>
+<li><p>Once any problems identified in the above steps are resolved, open the ‘pass’ database in Excel or something similar. Check that a reasonable proportion of reads are annotated as functional, and that all V-gene and J-gene families result insome functional arrangements - investigate any exceptions</p></li>
+<li><p>Continue to exercise caution as you extend your analysis to more repertoires, being conscious of the possibility of annotation errors in your results.</p></li>
+</ul>
+<p>I hope that this section doesn’t put you off! But it should serve as a warning that you need to be systematic, and on the lookout for problems that are not well flagged
+by the tools, and also have an understanding of the underlying data in your repertoire, and what to expect from it.</p>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="introduction.html" class="btn btn-neutral float-left" title="Introduction" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="scripts.html" class="btn btn-neutral float-right" title="Command-Line Utilities" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, William Lees.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

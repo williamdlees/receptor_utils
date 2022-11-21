@@ -1,3 +1,5 @@
+.. _extract_refs_label:
+
 extract_refs
 ============
 

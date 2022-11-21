@@ -1,3 +1,5 @@
+.. _make_igblast_nd_label:
+
 make_igblast_ndm
 ================
 

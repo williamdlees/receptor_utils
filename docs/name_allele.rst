@@ -1,3 +1,5 @@
+.. _name_allele_label:
+
 name_allele
 ===========
 

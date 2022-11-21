@@ -1,3 +1,5 @@
+.. _annotate_j_label:
+
 annotate_j
 ==========
 

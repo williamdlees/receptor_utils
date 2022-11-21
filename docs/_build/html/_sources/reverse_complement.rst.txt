@@ -1,3 +1,5 @@
+.. _rev_comp_label:
+
 rev_comp
 ========
 

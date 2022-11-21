@@ -10,6 +10,8 @@ Receptor-utils: code and utilities for working with IG/TR receptor sequences
    :maxdepth: 1
    :caption: Contents:
 
+   introduction
+   custom_igblast
    scripts
    modules
 
