@@ -18,8 +18,8 @@ def find_gene(name):
 
 
 def get_parser():
-    parser = argparse.ArgumentParser(description='Name an allele by comparing to a reference set. Construct a novel name containing SNPs if necessary')
-    parser.add_argument('ref_set', help='reference set (FASTA) (V genes should be IMGT-gapped)')
+    parser = argparse.ArgumentParser(description='Name an allele by comparing to a reference set. Construct a novel name containing SNPs if necessary. Use extract_refs to create suitable reference sets.')
+    parser.add_argument('ref_set', help='reference set containing sequences from a single locus (e.g. IGH, TRB) (FASTA) (V genes should be IMGT-gapped)')
     parser.add_argument('sequence', help='input sequence')
     parser.add_argument('-g', '--gene', metavar='GENE_NAME', help='only consider reference sequences from the specified gene', dest='gene')
     parser.add_argument('-r', '--rev_comp', help='reverse-complement sequence before processing', action='store_true', dest='rev_comp')
@@ -30,7 +30,16 @@ def main():
     args = get_parser().parse_args()
 
     gene_refs = simple.read_fasta(args.ref_set)
-    
+
+    locus = list(set([x[:3] for x in gene_refs.keys()]))
+
+    if len(locus) == 0:
+        print('No valid sequences found in the reference set. Please ensure that each sequence name starts with the three-letter locus name (e.g. IGH, TRB)')
+        quit()
+    elif len(locus) > 1:
+        print('The reference set contains sequences from more than one locus. Please use a file that contains only sequences from a single locus (e.g. IGH, TRB)')
+        quit()
+
     if args.gene:
         gene_refs = {k: v for k, v in gene_refs.items() if find_gene(k) == args.gene}
         
