@@ -20,3 +20,4 @@ src/scripts/identical_seqs.py
 src/scripts/make_igblast_ndm.py
 src/scripts/name_allele.py
 src/scripts/reverse_complement.py
+tests/test_scored_gap_consensus.py
