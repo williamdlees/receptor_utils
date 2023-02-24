@@ -9,7 +9,7 @@ annotation, two files are required, in addition to the germline database: the au
 which describes the position of the CDRs in V-genes.
 
 If you just wish to add alleles to existing V-genes, or add D-genes or alleles, all that is necessary is to create a custom blast sequence database using the procedure linked above. The ndm and aux files provided
-with IgBlast will support this use case. If you wish to add V-genes that are not in the IgBlast database, or any J-genes or alleles, you will need to create a new ndm file and provide it to IgBlast using the
+with IgBlast will support this use case. If you wish to add V-genes that are not in the IgBlast database, you will need to create a new ndm file and provide it to IgBlast using the
 ``--custom_internal_data`` command-line parameter. If you wish to modify or add to the J-gene database, you will need to provide a new aux file, using the ``--auxiliary_data`` command-line
 parameter.
 

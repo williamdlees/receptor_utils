@@ -21,6 +21,12 @@ def get_parser():
 
 def main():
     args = get_parser().parse_args()
+
+    allowed_chains = ['VH', 'VK', 'VL', 'VA', 'VB', 'VD', 'VG']
+
+    if args.chain not in allowed_chains:
+        print(f"Error: chain must be one of {allowed_chains.join(', ')}")
+        exit(1)
     
     seqs = simple.read_fasta(args.ref_file)
     

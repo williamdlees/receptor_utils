@@ -78,7 +78,7 @@ the tool, or a modified database for a supported organism. The procedure is sign
 annotation, two files are required, in addition to the germline database: the auxiliary_data file, which describes details of the J-genes such as frame orientation, and the ndm file,
 which describes the position of the CDRs in V-genes.</p>
 <p>If you just wish to add alleles to existing V-genes, or add D-genes or alleles, all that is necessary is to create a custom blast sequence database using the procedure linked above. The ndm and aux files provided
-with IgBlast will support this use case. If you wish to add V-genes that are not in the IgBlast database, or any J-genes or alleles, you will need to create a new ndm file and provide it to IgBlast using the
+with IgBlast will support this use case. If you wish to add V-genes that are not in the IgBlast database, you will need to create a new ndm file and provide it to IgBlast using the
 <code class="docutils literal notranslate"><span class="pre">--custom_internal_data</span></code> command-line parameter. If you wish to modify or add to the J-gene database, you will need to provide a new aux file, using the <code class="docutils literal notranslate"><span class="pre">--auxiliary_data</span></code> command-line
 parameter.</p>
 <p><a class="reference internal" href="make_igblast_ndm.html#make-igblast-nd-label"><span class="std std-ref">make_igblast_ndm</span></a> will make an ndm file from a set of IMGT-gapped V-sequences. You should include all V-sequences in the reference set (if necessary, you can gap them using
