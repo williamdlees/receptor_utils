@@ -25,7 +25,7 @@ def main():
     allowed_chains = ['VH', 'VK', 'VL', 'VA', 'VB', 'VD', 'VG']
 
     if args.chain not in allowed_chains:
-        print(f"Error: chain must be one of {allowed_chains.join(', ')}")
+        print(f"Error: chain must be one of {', '.join(allowed_chains)}")
         exit(1)
     
     seqs = simple.read_fasta(args.ref_file)
