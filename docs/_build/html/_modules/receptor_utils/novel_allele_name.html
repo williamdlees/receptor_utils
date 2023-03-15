@@ -262,7 +262,7 @@
 
 
 <span class="c1"># Align novel sequence against the reference sequence and check for indels</span>
-<span class="k">def</span> <span class="nf">find_indels</span><span class="p">(</span><span class="n">closest_ref_seq</span><span class="p">,</span> <span class="n">novel_seq</span><span class="p">):</span>
+<div class="viewcode-block" id="find_indels"><a class="viewcode-back" href="../../receptor_utils.html#receptor_utils.novel_allele_name.find_indels">[docs]</a><span class="k">def</span> <span class="nf">find_indels</span><span class="p">(</span><span class="n">closest_ref_seq</span><span class="p">,</span> <span class="n">novel_seq</span><span class="p">):</span>
     <span class="n">a</span> <span class="o">=</span> <span class="n">align</span><span class="o">.</span><span class="n">globalms</span><span class="p">(</span><span class="n">closest_ref_seq</span><span class="p">,</span> <span class="n">novel_seq</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">one_alignment_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">penalize_end_gaps</span><span class="o">=</span><span class="p">(</span><span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">))</span>
     <span class="c1"># print(format_alignment(*a[0]))</span>
     
@@ -292,14 +292,14 @@
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">seqA</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">seqB</span><span class="p">)):</span>
             <span class="n">fixed_novel</span> <span class="o">+=</span> <span class="n">seqB</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
 
-    <span class="k">return</span> <span class="n">fixed_novel</span><span class="p">,</span> <span class="n">insertions</span>
+    <span class="k">return</span> <span class="n">fixed_novel</span><span class="p">,</span> <span class="n">insertions</span></div>
 
 
 <span class="c1"># Build (and name) a reference set for sequences truncated at the 5&#39; end</span>
 <span class="c1"># Start is 0-based index of first available bp</span>
 
 
-<span class="k">def</span> <span class="nf">build_ambiguous_ref</span><span class="p">(</span><span class="n">full_ref</span><span class="p">,</span> <span class="n">start</span><span class="p">):</span>
+<div class="viewcode-block" id="build_ambiguous_ref"><a class="viewcode-back" href="../../receptor_utils.html#receptor_utils.novel_allele_name.build_ambiguous_ref">[docs]</a><span class="k">def</span> <span class="nf">build_ambiguous_ref</span><span class="p">(</span><span class="n">full_ref</span><span class="p">,</span> <span class="n">start</span><span class="p">):</span>
     <span class="n">rev_ref</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">seq</span> <span class="ow">in</span> <span class="n">full_ref</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
         <span class="n">seq</span> <span class="o">=</span> <span class="s1">&#39;.&#39;</span> <span class="o">*</span> <span class="n">start</span> <span class="o">+</span> <span class="n">seq</span><span class="p">[</span><span class="n">start</span><span class="p">:]</span>
@@ -338,17 +338,17 @@
                         <span class="n">name</span> <span class="o">+=</span> <span class="s1">&#39;_&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">alleles</span><span class="p">)</span>
                 <span class="n">ref</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">seq</span>
 
-    <span class="k">return</span> <span class="n">ref</span>
+    <span class="k">return</span> <span class="n">ref</span></div>
 
 
-<span class="k">def</span> <span class="nf">run_tests</span><span class="p">():</span>
+<div class="viewcode-block" id="run_tests"><a class="viewcode-back" href="../../receptor_utils.html#receptor_utils.novel_allele_name.run_tests">[docs]</a><span class="k">def</span> <span class="nf">run_tests</span><span class="p">():</span>
     <span class="n">ref_set</span> <span class="o">=</span> <span class="n">simple</span><span class="o">.</span><span class="n">read_fasta</span><span class="p">(</span><span class="s1">&#39;Homo_sapiens_IGHV_gapped.fasta&#39;</span><span class="p">)</span>
     <span class="n">test_novels</span> <span class="o">=</span> <span class="n">simple</span><span class="o">.</span><span class="n">read_fasta</span><span class="p">(</span><span class="s1">&#39;IGHV3-20.04.fasta&#39;</span><span class="p">)</span>
 
     <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">seq</span> <span class="ow">in</span> <span class="n">test_novels</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
         <span class="n">novel_name</span> <span class="o">=</span> <span class="n">name_novel</span><span class="p">(</span><span class="n">seq</span><span class="p">,</span> <span class="n">ref_set</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">novel_name</span> <span class="o">!=</span> <span class="n">name</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Error: </span><span class="si">%s</span><span class="s1"> != </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">novel_name</span><span class="p">,</span> <span class="n">name</span><span class="p">))</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Error: </span><span class="si">%s</span><span class="s1"> != </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">novel_name</span><span class="p">,</span> <span class="n">name</span><span class="p">))</span></div>
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>

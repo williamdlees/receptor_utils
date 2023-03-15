@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>annotate_j &mdash; receptor-utils  documentation</title>
+  <title>fix_macaque_gaps &mdash; receptor-utils  documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -20,8 +20,8 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="extract_refs" href="extract_refs.html" />
-    <link rel="prev" title="make_igblast_ndm" href="make_igblast_ndm.html" /> 
+    <link rel="next" title="make_igblast_ndm" href="make_igblast_ndm.html" />
+    <link rel="prev" title="gap_sequences" href="gap_sequences.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -44,16 +44,28 @@
 <li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="custom_igblast.html">Using custom databases with IgBlast</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="scripts.html">Command-Line Utilities</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="scripts.html#naming-and-aligning-v-d-and-j-sequences">Naming and Aligning V, D and J Sequences</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="scripts.html#working-with-igblast">Working with IgBLAST</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="make_igblast_ndm.html">make_igblast_ndm</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">annotate_j</a><ul>
+<li class="toctree-l2 current"><a class="reference internal" href="scripts.html#naming-and-aligning-v-d-and-j-sequences">Naming and Aligning V, D and J Sequences</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="name_allele.html">name_allele</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gap_sequences.html">gap_sequences</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">fix_macaque_gaps</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#positional-arguments">Positional Arguments</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="scripts.html#convenience-tools">Convenience Tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scripts.html#working-with-igblast">Working with IgBLAST</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="scripts.html#convenience-tools">Convenience Tools</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="extract_refs.html">extract_refs</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">fix_macaque_gaps</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#positional-arguments">Positional Arguments</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="identical_seqs.html">identical_seqs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="rev_comp.html">rev_comp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="at_coords.html">at_coords</a></li>
+<li class="toctree-l3"><a class="reference internal" href="merge_fasta.html">merge_fasta</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="modules.html">API</a></li>
@@ -74,9 +86,9 @@
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home"></a></li>
           <li class="breadcrumb-item"><a href="scripts.html">Command-Line Utilities</a></li>
-      <li class="breadcrumb-item active">annotate_j</li>
+      <li class="breadcrumb-item active">fix_macaque_gaps</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="_sources/annotate_j.rst.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/fix_macaque_gaps.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -84,21 +96,31 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="annotate-j">
-<span id="annotate-j-label"></span><h1>annotate_j<a class="headerlink" href="#annotate-j" title="Permalink to this heading"></a></h1>
-<p><p>Annotate a set of J sequences, finding the frame alignment and 1-based index of the first nucleotide of the conserved PHE or TRP</p>
+  <section id="fix-macaque-gaps">
+<span id="fix-macaque-gaps-label"></span><h1>fix_macaque_gaps<a class="headerlink" href="#fix-macaque-gaps" title="Permalink to this heading"></a></h1>
+<p>IMGT’s gapped FASTA sequences for rhesus macaque IGHV, IGLV and IGKV contain inserted codons relative to the sequences for
+most other species (I am not aware of any other species for which this is the case, but have not conducted an
+exhaustive search). These additional codons in macaque sequences cause problems for downstream tools such as Change-o
+that expect features such as CDRs and conserved residues to be present at specific co-ordinates. This utility restores
+the ‘standard’ alignment by removing the inserted codons. A small number of sequences in the IMGT sets use these
+codons: the tool lists those sequences and removes them from the set. Personally I have not observed these sequences
+in rhesus repertoires, but this is something that you may wish to check before using the set produced by the tool.</p>
+<p><p>Remove unwanted inserted codons in IMGT alignment of rhesus macaque IG sequences</p>
 </p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">usage</span><span class="p">:</span> <span class="n">annotate_j</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="n">seq_file</span> <span class="n">out_file</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">usage</span><span class="p">:</span> <span class="n">fix_macaque_gaps</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="n">infile</span> <span class="n">outfile</span> <span class="n">chain</span>
 </pre></div>
 </div>
 <section id="positional-arguments">
 <h2>Positional Arguments<a class="headerlink" href="#positional-arguments" title="Permalink to this heading"></a></h2>
 <dl class="option-list">
-<dt><kbd>seq_file</kbd></dt>
-<dd><p>J sequences to annotate (fasta)</p>
+<dt><kbd>infile</kbd></dt>
+<dd><p>gapped file from IMGT</p>
 </dd>
-<dt><kbd>out_file</kbd></dt>
-<dd><p>Annotation output in aux format for use with IgBlast</p>
+<dt><kbd>outfile</kbd></dt>
+<dd><p>gapped file confirming to the customary alignment (without inserted codons)</p>
+</dd>
+<dt><kbd>chain</kbd></dt>
+<dd><p>IGH, IGK or IGL</p>
 </dd>
 </dl>
 </section>
@@ -108,8 +130,8 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="make_igblast_ndm.html" class="btn btn-neutral float-left" title="make_igblast_ndm" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="extract_refs.html" class="btn btn-neutral float-right" title="extract_refs" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="gap_sequences.html" class="btn btn-neutral float-left" title="gap_sequences" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="make_igblast_ndm.html" class="btn btn-neutral float-right" title="make_igblast_ndm" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

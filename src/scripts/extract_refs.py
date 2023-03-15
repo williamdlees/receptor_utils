@@ -10,17 +10,22 @@
 
 import argparse
 from receptor_utils import simple_bio_seq as simple
+import urllib.request
+import io
+
 
 def get_parser():
     parser = argparse.ArgumentParser(description='Extract reference files for nominated species from a gapped IMGT reference file')
-    parser.add_argument('imgt_file', help='gapped imgt reference file')
     parser.add_argument('species_name', help='species name for IMGT file in quotes, e.g. "Homo sapiens", "Macaca mulatta"')
+    parser.add_argument('-r', '--ref', help='gapped imgt reference file. If not specified, the current file will be downloaded from http://www.imgt.org/download/GENE-DB/IMGTGENEDB-ReferenceSequences.fasta-nt-WithGaps-F+ORF+inframeP')
     parser.add_argument('-L', '--locus', help='locus identifier, e.g. "IGH" (default), "IGK", "TRB", "TRG"', default='IGH', required=False)
     parser.add_argument('-F', '--functional_only', action='store_true')
     return parser
 
 def main():
     args = get_parser().parse_args()
+
+    imgt_url = "http://www.imgt.org/download/GENE-DB/IMGTGENEDB-ReferenceSequences.fasta-nt-WithGaps-F+ORF+inframeP"
 
     segs = {
         'IGH': ['IGHV', 'IGHD', 'IGHJ', 'CH'],
@@ -32,7 +37,11 @@ def main():
         'TRD': ['TRDV', 'TRDD', 'TRDJ', 'TRDC']
     }
 
-    refs = simple.read_imgt_fasta(args.imgt_file, [args.species_name], segs[args.locus], functional_only=args.functional_only)
+    if args.ref:
+        refs = simple.read_imgt_fasta(args.ref, [args.species_name], segs[args.locus], functional_only=args.functional_only)
+    else:
+        with urllib.request.urlopen(imgt_url) as fi:
+            refs = simple.read_imgt_fasta(io.StringIO(fi.read().decode('utf-8')), [args.species_name], segs[args.locus], functional_only=args.functional_only)
 
     simple.write_fasta(refs[args.species_name][args.locus + 'V'], '%s_IGHV_gapped.fasta'.replace('IGHV', args.locus + 'V') %args.species_name.replace(' ', '_'))
 

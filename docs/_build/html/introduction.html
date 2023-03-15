@@ -80,7 +80,7 @@
              
   <section id="introduction">
 <h1>Introduction<a class="headerlink" href="#introduction" title="Permalink to this heading"></a></h1>
-<p>This package contains utilities and code which I have found useful in working with IG/TR receptor sequences.</p>
+<p>This package contains utilities and code which are useful in working with IG/TR receptor sequences.</p>
 <section id="installation">
 <h2>Installation<a class="headerlink" href="#installation" title="Permalink to this heading"></a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">receptor-utils</span></code></p>
@@ -88,28 +88,33 @@
 </section>
 <section id="naming-and-aligning-v-d-and-j-sequences">
 <h2>Naming and aligning V, D and J sequences<a class="headerlink" href="#naming-and-aligning-v-d-and-j-sequences" title="Permalink to this heading"></a></h2>
-<p>Particularly when dealing with novel inferences of germline genes, but in some other contexts as well, when given an expressed or genomic sequence, it is useful to know which germline V, D or J sequence it
-is closest to, and what SNPs it contains. An allied task is to align such a sequence using the <a class="reference external" href="https://www.imgt.org/IMGTindex/AlleleAlignments.php">IMGT alignment</a>.</p>
-<p><a class="reference internal" href="name_allele.html#name-allele-label"><span class="std std-ref">name_allele</span></a> provides a name for a given sequence. The name includes the nearest germline allele (taken from a reference set supplied to the tool) and incorporating any SNPs. The naming scheme that it
-uses is described <a class="reference external" href="https://wordpress.vdjbase.org/index.php/vdjbase_help/airr-seq-data-allele-names/">here</a>.</p>
-<p><a class="reference internal" href="gap_sequences.html#gap-sequences-label"><span class="std std-ref">gap_sequences</span></a> will gap a supplied set of sequences according to the IMGT alignment, warning of any missing conserved residues. It employs a gapped reference set, which must be
-provided. For each sequence to be gapped, the tool identifies the closest reference sequence, and uses it as a template.</p>
+<p><a class="reference internal" href="name_allele.html#name-allele-label"><span class="std std-ref">name_allele</span></a> - Provide a name for a given sequence. The name includes the nearest
+germline allele (taken from a reference set supplied to the tool) and
+incorporating any SNPs. The naming scheme that it uses is described
+<a class="reference external" href="https://wordpress.vdjbase.org/index.php/vdjbase_help/airr-seq-data-allele-names/">here</a></p>
+<p><a class="reference internal" href="gap_sequences.html#gap-sequences-label"><span class="std std-ref">gap_sequences</span></a> - Gap a supplied set of sequences according to the <a class="reference external" href="https://www.imgt.org/IMGTindex/AlleleAlignments.php">IMGT alignment</a>, warning of any missing conserved residues. It employs a gapped reference set, which must be provided. For each sequence to be gapped, the tool identifies the closest reference sequence, and uses it as a template.</p>
+<p><a class="reference internal" href="fix_macaque_gaps.html#fix-macaque-gaps-label"><span class="std std-ref">fix_macaque_gaps</span></a> - The IMGT alignment for macaque IG sequences has inserted codons relative to the alignment used for most other species. This can cause problems for downstream tools. This utility removes the additional codons in macaque IG, reverting to the standard alignment</p>
 </section>
 <section id="using-custom-databases-with-igblast">
 <h2>Using custom databases with IgBlast<a class="headerlink" href="#using-custom-databases-with-igblast" title="Permalink to this heading"></a></h2>
-<p>The package contains some tools to support this: they are covered in <a class="reference internal" href="custom_igblast.html#custom-igblast-label"><span class="std std-ref">the next section</span></a>.</p>
+<p>These tools are covered in detail in <a class="reference internal" href="custom_igblast.html#custom-igblast-label"><span class="std std-ref">the next section</span></a>.</p>
+<p><a class="reference internal" href="make_igblast_ndm.html#make-igblast-ndm-label"><span class="std std-ref">make_igblast_ndm</span></a> - Create a custom ndm file for IgBlast</p>
+<p><a class="reference internal" href="annotate_j.html#annotate-j-label"><span class="std std-ref">annotate_j</span></a> - Create a custom auxiliary data file for IgBlast</p>
 </section>
 <section id="convenience-tools">
 <h2>Convenience Tools<a class="headerlink" href="#convenience-tools" title="Permalink to this heading"></a></h2>
-<p>There are some smaller ‘convenience’ tools that may come in useful, for example to <a class="reference internal" href="extract_refs.html#extract-refs-label"><span class="std std-ref">extract sequences from an IMGT reference set</span></a>
-and to <a class="reference internal" href="reverse_complement.html#rev-comp-label"><span class="std std-ref">reverse-complement an nt sequence</span></a>.
-They are nothing special but may save some time. All tools are listed under <a class="reference internal" href="scripts.html#command-line-label"><span class="std std-ref">Command-Line Utilities</span></a>.</p>
+<p><a class="reference internal" href="extract_refs.html#extract-refs-label"><span class="std std-ref">extract_refs</span></a> - Download reference sequences from IMGT for a specific species and locus</p>
+<p><a class="reference internal" href="fix_macaque_gaps.html#fix-macaque-gaps-label"><span class="std std-ref">fix_macaque_gaps</span></a> - The IMGT alignment for macaque IG sequences has inserted codons relative to the alignment used for most other species. This can cause problems for downstream tools. This utility removes the additional codons in macaque IG, reverting to the standard alignment</p>
+<p><a class="reference internal" href="identical_seqs.html#identical-seqs-label"><span class="std std-ref">identical_seqs</span></a> - Report cases where, in a FASTA file, the same sequence is listed more than once with different IDs</p>
+<p><a class="reference internal" href="rev_comp.html#rev-comp-label"><span class="std std-ref">rev_comp</span></a> - Reverse-complement a nucleotide sequence</p>
+<p><a class="reference internal" href="at_coords.html#at-coords-label"><span class="std std-ref">at_coords</span></a> - Find the sequence at specific co-ordinates within the sequence in a fasta file</p>
+<p><a class="reference internal" href="merge_fasta.html#merge-fasta-label"><span class="std std-ref">merge_fasta</span></a> - Merge sequences in two FASTA files, removing duplicates</p>
 </section>
 <section id="simple-bio-seq-api">
 <h2>simple_bio_seq API<a class="headerlink" href="#simple-bio-seq-api" title="Permalink to this heading"></a></h2>
 <p>This is a set of simple wrappers around commonly-used functions in Biopython which suit my use case and are used in the tools above. They support, for example,
 one-line reading and writing of FASTA files and comma/tab-separated files, and manage sequences as strings in a dict, which I find simplifies code compared to the
-Biopython functions, at the expense of flexibility which I rarely need. The are documented under <a class="reference internal" href="modules.html#api-label"><span class="std std-ref">API</span></a>.</p>
+Biopython functions, at the expense of flexibility which I rarely need. They are documented under <a class="reference internal" href="modules.html#api-label"><span class="std std-ref">API</span></a>.</p>
 </section>
 </section>
 

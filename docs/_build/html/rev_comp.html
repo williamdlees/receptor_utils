@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>annotate_j &mdash; receptor-utils  documentation</title>
+  <title>rev_comp &mdash; receptor-utils  documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -20,8 +20,8 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="extract_refs" href="extract_refs.html" />
-    <link rel="prev" title="make_igblast_ndm" href="make_igblast_ndm.html" /> 
+    <link rel="next" title="at_coords" href="at_coords.html" />
+    <link rel="prev" title="identical_seqs" href="identical_seqs.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -45,15 +45,19 @@
 <li class="toctree-l1"><a class="reference internal" href="custom_igblast.html">Using custom databases with IgBlast</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="scripts.html">Command-Line Utilities</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="scripts.html#naming-and-aligning-v-d-and-j-sequences">Naming and Aligning V, D and J Sequences</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="scripts.html#working-with-igblast">Working with IgBLAST</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="make_igblast_ndm.html">make_igblast_ndm</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">annotate_j</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="scripts.html#working-with-igblast">Working with IgBLAST</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="scripts.html#convenience-tools">Convenience Tools</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="extract_refs.html">extract_refs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="fix_macaque_gaps.html">fix_macaque_gaps</a></li>
+<li class="toctree-l3"><a class="reference internal" href="identical_seqs.html">identical_seqs</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">rev_comp</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#positional-arguments">Positional Arguments</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="at_coords.html">at_coords</a></li>
+<li class="toctree-l3"><a class="reference internal" href="merge_fasta.html">merge_fasta</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="scripts.html#convenience-tools">Convenience Tools</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="modules.html">API</a></li>
@@ -74,9 +78,9 @@
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home"></a></li>
           <li class="breadcrumb-item"><a href="scripts.html">Command-Line Utilities</a></li>
-      <li class="breadcrumb-item active">annotate_j</li>
+      <li class="breadcrumb-item active">rev_comp</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="_sources/annotate_j.rst.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/rev_comp.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -84,21 +88,18 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="annotate-j">
-<span id="annotate-j-label"></span><h1>annotate_j<a class="headerlink" href="#annotate-j" title="Permalink to this heading"></a></h1>
-<p><p>Annotate a set of J sequences, finding the frame alignment and 1-based index of the first nucleotide of the conserved PHE or TRP</p>
+  <section id="rev-comp">
+<span id="rev-comp-label"></span><h1>rev_comp<a class="headerlink" href="#rev-comp" title="Permalink to this heading"></a></h1>
+<p><p>Return the reverse complement of a nucleotide sequence</p>
 </p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">usage</span><span class="p">:</span> <span class="n">annotate_j</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="n">seq_file</span> <span class="n">out_file</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">usage</span><span class="p">:</span> <span class="n">rev_comp</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="n">sequence</span>
 </pre></div>
 </div>
 <section id="positional-arguments">
 <h2>Positional Arguments<a class="headerlink" href="#positional-arguments" title="Permalink to this heading"></a></h2>
 <dl class="option-list">
-<dt><kbd>seq_file</kbd></dt>
-<dd><p>J sequences to annotate (fasta)</p>
-</dd>
-<dt><kbd>out_file</kbd></dt>
-<dd><p>Annotation output in aux format for use with IgBlast</p>
+<dt><kbd>sequence</kbd></dt>
+<dd><p>input sequence</p>
 </dd>
 </dl>
 </section>
@@ -108,8 +109,8 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="make_igblast_ndm.html" class="btn btn-neutral float-left" title="make_igblast_ndm" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="extract_refs.html" class="btn btn-neutral float-right" title="extract_refs" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="identical_seqs.html" class="btn btn-neutral float-left" title="identical_seqs" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="at_coords.html" class="btn btn-neutral float-right" title="at_coords" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

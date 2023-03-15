@@ -13,7 +13,7 @@ with IgBlast will support this use case. If you wish to add V-genes that are not
 ``--custom_internal_data`` command-line parameter. If you wish to modify or add to the J-gene database, you will need to provide a new aux file, using the ``--auxiliary_data`` command-line
 parameter.
 
-:ref:`make_igblast_nd_label` will make an ndm file from a set of IMGT-gapped V-sequences. You should include all V-sequences in the reference set (if necessary, you can gap them using
+:ref:`make_igblast_ndm_label` will make an ndm file from a set of IMGT-gapped V-sequences. You should include all V-sequences in the reference set (if necessary, you can gap them using
 :ref:`gap_sequences_label` if you have at least a partial or near-matching set for your organism, or for a closely-related organism).
 
 :ref:`annotate_j_label` will create an aux file from a set of J-sequences. You should include all sequences in your J gene database.

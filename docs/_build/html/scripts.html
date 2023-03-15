@@ -20,7 +20,7 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="annotate_j" href="annotate_j.html" />
+    <link rel="next" title="name_allele" href="name_allele.html" />
     <link rel="prev" title="Using custom databases with IgBlast" href="custom_igblast.html" /> 
 </head>
 
@@ -44,21 +44,24 @@
 <li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="custom_igblast.html">Using custom databases with IgBlast</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Command-Line Utilities</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#working-with-igblast">Working with IgBLAST</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="annotate_j.html">annotate_j</a></li>
-<li class="toctree-l3"><a class="reference internal" href="make_igblast_ndm.html">make_igblast_ndm</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#working-with-fasta-files">Working with FASTA files</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="extract_refs.html">extract_refs</a></li>
-<li class="toctree-l3"><a class="reference internal" href="gap_sequences.html">gap_sequences</a></li>
-<li class="toctree-l3"><a class="reference internal" href="identical_seqs.html">identical_seqs</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#miscellaneous">Miscellaneous</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="at_coords.html">at_coords</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#naming-and-aligning-v-d-and-j-sequences">Naming and Aligning V, D and J Sequences</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="name_allele.html">name_allele</a></li>
-<li class="toctree-l3"><a class="reference internal" href="reverse_complement.html">rev_comp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gap_sequences.html">gap_sequences</a></li>
+<li class="toctree-l3"><a class="reference internal" href="fix_macaque_gaps.html">fix_macaque_gaps</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#working-with-igblast">Working with IgBLAST</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="make_igblast_ndm.html">make_igblast_ndm</a></li>
+<li class="toctree-l3"><a class="reference internal" href="annotate_j.html">annotate_j</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#convenience-tools">Convenience Tools</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="extract_refs.html">extract_refs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="fix_macaque_gaps.html">fix_macaque_gaps</a></li>
+<li class="toctree-l3"><a class="reference internal" href="identical_seqs.html">identical_seqs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="rev_comp.html">rev_comp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="at_coords.html">at_coords</a></li>
+<li class="toctree-l3"><a class="reference internal" href="merge_fasta.html">merge_fasta</a></li>
 </ul>
 </li>
 </ul>
@@ -92,32 +95,35 @@
              
   <section id="command-line-utilities">
 <span id="command-line-label"></span><h1>Command-Line Utilities<a class="headerlink" href="#command-line-utilities" title="Permalink to this heading"></a></h1>
+<section id="naming-and-aligning-v-d-and-j-sequences">
+<h2>Naming and Aligning V, D and J Sequences<a class="headerlink" href="#naming-and-aligning-v-d-and-j-sequences" title="Permalink to this heading"></a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="name_allele.html">name_allele</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gap_sequences.html">gap_sequences</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fix_macaque_gaps.html">fix_macaque_gaps</a></li>
+</ul>
+</div>
+</section>
 <section id="working-with-igblast">
 <h2>Working with IgBLAST<a class="headerlink" href="#working-with-igblast" title="Permalink to this heading"></a></h2>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="annotate_j.html">annotate_j</a></li>
 <li class="toctree-l1"><a class="reference internal" href="make_igblast_ndm.html">make_igblast_ndm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="annotate_j.html">annotate_j</a></li>
 </ul>
 </div>
 </section>
-<section id="working-with-fasta-files">
-<h2>Working with FASTA files<a class="headerlink" href="#working-with-fasta-files" title="Permalink to this heading"></a></h2>
+<section id="convenience-tools">
+<h2>Convenience Tools<a class="headerlink" href="#convenience-tools" title="Permalink to this heading"></a></h2>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="extract_refs.html">extract_refs</a></li>
-<li class="toctree-l1"><a class="reference internal" href="gap_sequences.html">gap_sequences</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fix_macaque_gaps.html">fix_macaque_gaps</a></li>
 <li class="toctree-l1"><a class="reference internal" href="identical_seqs.html">identical_seqs</a></li>
-</ul>
-</div>
-</section>
-<section id="miscellaneous">
-<h2>Miscellaneous<a class="headerlink" href="#miscellaneous" title="Permalink to this heading"></a></h2>
-<div class="toctree-wrapper compound">
-<ul>
+<li class="toctree-l1"><a class="reference internal" href="rev_comp.html">rev_comp</a></li>
 <li class="toctree-l1"><a class="reference internal" href="at_coords.html">at_coords</a></li>
-<li class="toctree-l1"><a class="reference internal" href="name_allele.html">name_allele</a></li>
-<li class="toctree-l1"><a class="reference internal" href="reverse_complement.html">rev_comp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="merge_fasta.html">merge_fasta</a></li>
 </ul>
 </div>
 </section>
@@ -128,7 +134,7 @@
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="custom_igblast.html" class="btn btn-neutral float-left" title="Using custom databases with IgBlast" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="annotate_j.html" class="btn btn-neutral float-right" title="annotate_j" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="name_allele.html" class="btn btn-neutral float-right" title="name_allele" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

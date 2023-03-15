@@ -1,3 +1,5 @@
+.. _at_coords_label:
+
 at_coords
 =========
 

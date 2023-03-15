@@ -21,7 +21,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="receptor_utils package" href="receptor_utils.html" />
-    <link rel="prev" title="rev_comp" href="reverse_complement.html" /> 
+    <link rel="prev" title="merge_fasta" href="merge_fasta.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -81,10 +81,29 @@
 <li class="toctree-l1"><a class="reference internal" href="receptor_utils.html">receptor_utils package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="receptor_utils.html#submodules">Submodules</a></li>
 <li class="toctree-l2"><a class="reference internal" href="receptor_utils.html#module-receptor_utils.novel_allele_name">receptor_utils.novel_allele_name module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="receptor_utils.html#receptor_utils.novel_allele_name.build_ambiguous_ref"><code class="docutils literal notranslate"><span class="pre">build_ambiguous_ref()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="receptor_utils.html#receptor_utils.novel_allele_name.find_indels"><code class="docutils literal notranslate"><span class="pre">find_indels()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="receptor_utils.html#receptor_utils.novel_allele_name.name_novel"><code class="docutils literal notranslate"><span class="pre">name_novel()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="receptor_utils.html#receptor_utils.novel_allele_name.run_tests"><code class="docutils literal notranslate"><span class="pre">run_tests()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="receptor_utils.html#module-receptor_utils.number_ighv">receptor_utils.number_ighv module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="receptor_utils.html#module-receptor_utils.number_ighv">receptor_utils.number_ighv module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="receptor_utils.html#receptor_utils.number_ighv.check_conserved_residues"><code class="docutils literal notranslate"><span class="pre">check_conserved_residues()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="receptor_utils.html#receptor_utils.number_ighv.distribute_cdr"><code class="docutils literal notranslate"><span class="pre">distribute_cdr()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="receptor_utils.html#receptor_utils.number_ighv.gap_align"><code class="docutils literal notranslate"><span class="pre">gap_align()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="receptor_utils.html#receptor_utils.number_ighv.gap_align_aa"><code class="docutils literal notranslate"><span class="pre">gap_align_aa()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="receptor_utils.html#receptor_utils.number_ighv.gap_align_aa_from_nt"><code class="docutils literal notranslate"><span class="pre">gap_align_aa_from_nt()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="receptor_utils.html#receptor_utils.number_ighv.gap_nt_from_aa"><code class="docutils literal notranslate"><span class="pre">gap_nt_from_aa()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="receptor_utils.html#receptor_utils.number_ighv.gap_sequence"><code class="docutils literal notranslate"><span class="pre">gap_sequence()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="receptor_utils.html#receptor_utils.number_ighv.insert_space"><code class="docutils literal notranslate"><span class="pre">insert_space()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="receptor_utils.html#receptor_utils.number_ighv.match_score"><code class="docutils literal notranslate"><span class="pre">match_score()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="receptor_utils.html#receptor_utils.number_ighv.nt_diff"><code class="docutils literal notranslate"><span class="pre">nt_diff()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="receptor_utils.html#receptor_utils.number_ighv.number_from_trp"><code class="docutils literal notranslate"><span class="pre">number_from_trp()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="receptor_utils.html#receptor_utils.number_ighv.number_ighv"><code class="docutils literal notranslate"><span class="pre">number_ighv()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="receptor_utils.html#receptor_utils.number_ighv.pretty_gapped"><code class="docutils literal notranslate"><span class="pre">pretty_gapped()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="receptor_utils.html#receptor_utils.number_ighv.run_tests"><code class="docutils literal notranslate"><span class="pre">run_tests()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="receptor_utils.html#module-receptor_utils.simple_bio_seq">receptor_utils.simple_bio_seq module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="receptor_utils.html#receptor_utils.simple_bio_seq.chunks"><code class="docutils literal notranslate"><span class="pre">chunks()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="receptor_utils.html#receptor_utils.simple_bio_seq.closest_ref"><code class="docutils literal notranslate"><span class="pre">closest_ref()</span></code></a></li>
@@ -115,7 +134,7 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="reverse_complement.html" class="btn btn-neutral float-left" title="rev_comp" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="merge_fasta.html" class="btn btn-neutral float-left" title="merge_fasta" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="receptor_utils.html" class="btn btn-neutral float-right" title="receptor_utils package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

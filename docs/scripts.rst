@@ -3,35 +3,37 @@
 Command-Line Utilities
 ======================
 
+Naming and Aligning V, D and J Sequences
+----------------------------------------
+
+.. toctree::
+   :maxdepth: 1
+
+   name_allele
+   gap_sequences
+   fix_macaque_gaps
+
+
 Working with IgBLAST
 --------------------
 
 .. toctree::
    :maxdepth: 1
 
-   annotate_j
    make_igblast_ndm
+   annotate_j
+
    
-   
-Working with FASTA files
-------------------------
+Convenience Tools
+-----------------
 
 .. toctree::
    :maxdepth: 1
 
    extract_refs
-   gap_sequences
+   fix_macaque_gaps
    identical_seqs
-
-   
-   
-Miscellaneous
--------------
-
-.. toctree::
-   :maxdepth: 1
-
+   rev_comp
    at_coords
-   name_allele
-   reverse_complement
+   merge_fasta
 

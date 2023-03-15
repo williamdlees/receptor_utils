@@ -20,8 +20,8 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="rev_comp" href="reverse_complement.html" />
-    <link rel="prev" title="at_coords" href="at_coords.html" /> 
+    <link rel="next" title="gap_sequences" href="gap_sequences.html" />
+    <link rel="prev" title="Command-Line Utilities" href="scripts.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -44,18 +44,18 @@
 <li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="custom_igblast.html">Using custom databases with IgBlast</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="scripts.html">Command-Line Utilities</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="scripts.html#working-with-igblast">Working with IgBLAST</a></li>
-<li class="toctree-l2"><a class="reference internal" href="scripts.html#working-with-fasta-files">Working with FASTA files</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="scripts.html#miscellaneous">Miscellaneous</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="at_coords.html">at_coords</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="scripts.html#naming-and-aligning-v-d-and-j-sequences">Naming and Aligning V, D and J Sequences</a><ul class="current">
 <li class="toctree-l3 current"><a class="current reference internal" href="#">name_allele</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#positional-arguments">Positional Arguments</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#named-arguments">Named Arguments</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="reverse_complement.html">rev_comp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gap_sequences.html">gap_sequences</a></li>
+<li class="toctree-l3"><a class="reference internal" href="fix_macaque_gaps.html">fix_macaque_gaps</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="scripts.html#working-with-igblast">Working with IgBLAST</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scripts.html#convenience-tools">Convenience Tools</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="modules.html">API</a></li>
@@ -88,7 +88,7 @@
              
   <section id="name-allele">
 <span id="name-allele-label"></span><h1>name_allele<a class="headerlink" href="#name-allele" title="Permalink to this heading"></a></h1>
-<p><p>Name an allele by comparing to a reference set. Construct a novel name containing SNPs if necessary</p>
+<p><p>Name an allele by comparing to a reference set. Construct a novel name containing SNPs if necessary. Use extract_refs to create suitable reference sets.</p>
 </p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">usage</span><span class="p">:</span> <span class="n">name_allele</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">g</span> <span class="n">GENE_NAME</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">r</span><span class="p">]</span> <span class="n">ref_set</span> <span class="n">sequence</span>
 </pre></div>
@@ -97,7 +97,7 @@
 <h2>Positional Arguments<a class="headerlink" href="#positional-arguments" title="Permalink to this heading"></a></h2>
 <dl class="option-list">
 <dt><kbd>ref_set</kbd></dt>
-<dd><p>reference set (FASTA) (V genes should be IMGT-gapped)</p>
+<dd><p>reference set containing sequences from a single locus (e.g. IGH, TRB) (FASTA) (V genes should be IMGT-gapped)</p>
 </dd>
 <dt><kbd>sequence</kbd></dt>
 <dd><p>input sequence</p>
@@ -122,8 +122,8 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="at_coords.html" class="btn btn-neutral float-left" title="at_coords" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="reverse_complement.html" class="btn btn-neutral float-right" title="rev_comp" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="scripts.html" class="btn btn-neutral float-left" title="Command-Line Utilities" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="gap_sequences.html" class="btn btn-neutral float-right" title="gap_sequences" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>rev_comp &mdash; receptor-utils  documentation</title>
+  <title>merge_fasta &mdash; receptor-utils  documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -21,7 +21,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="API" href="modules.html" />
-    <link rel="prev" title="name_allele" href="name_allele.html" /> 
+    <link rel="prev" title="at_coords" href="at_coords.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -44,12 +44,15 @@
 <li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="custom_igblast.html">Using custom databases with IgBlast</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="scripts.html">Command-Line Utilities</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="scripts.html#naming-and-aligning-v-d-and-j-sequences">Naming and Aligning V, D and J Sequences</a></li>
 <li class="toctree-l2"><a class="reference internal" href="scripts.html#working-with-igblast">Working with IgBLAST</a></li>
-<li class="toctree-l2"><a class="reference internal" href="scripts.html#working-with-fasta-files">Working with FASTA files</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="scripts.html#miscellaneous">Miscellaneous</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="scripts.html#convenience-tools">Convenience Tools</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="extract_refs.html">extract_refs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="fix_macaque_gaps.html">fix_macaque_gaps</a></li>
+<li class="toctree-l3"><a class="reference internal" href="identical_seqs.html">identical_seqs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="rev_comp.html">rev_comp</a></li>
 <li class="toctree-l3"><a class="reference internal" href="at_coords.html">at_coords</a></li>
-<li class="toctree-l3"><a class="reference internal" href="name_allele.html">name_allele</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">rev_comp</a><ul>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">merge_fasta</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#positional-arguments">Positional Arguments</a></li>
 </ul>
 </li>
@@ -75,9 +78,9 @@
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home"></a></li>
           <li class="breadcrumb-item"><a href="scripts.html">Command-Line Utilities</a></li>
-      <li class="breadcrumb-item active">rev_comp</li>
+      <li class="breadcrumb-item active">merge_fasta</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="_sources/reverse_complement.rst.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/merge_fasta.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -85,18 +88,26 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="rev-comp">
-<span id="rev-comp-label"></span><h1>rev_comp<a class="headerlink" href="#rev-comp" title="Permalink to this heading"></a></h1>
-<p><p>Return the reverse complement of a nucleotide sequence</p>
+  <section id="merge-fasta">
+<span id="merge-fasta-label"></span><h1>merge_fasta<a class="headerlink" href="#merge-fasta" title="Permalink to this heading"></a></h1>
+<p>This utility will merge sequences from two fasta files. The output will contain all sequences from file1, and any sequences
+from file2 that are not present in file1 (the sequences themselves are compared, rather than the sequence ids).</p>
+<p><p>Merge two fasta files, keeping records in file 2 that do not match sequences in file 1</p>
 </p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">usage</span><span class="p">:</span> <span class="n">rev_comp</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="n">sequence</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">usage</span><span class="p">:</span> <span class="n">merge_fasta</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="n">file_1</span> <span class="n">file_2</span> <span class="n">outfile</span>
 </pre></div>
 </div>
 <section id="positional-arguments">
 <h2>Positional Arguments<a class="headerlink" href="#positional-arguments" title="Permalink to this heading"></a></h2>
 <dl class="option-list">
-<dt><kbd>sequence</kbd></dt>
-<dd><p>input sequence</p>
+<dt><kbd>file_1</kbd></dt>
+<dd><p>first file to merge</p>
+</dd>
+<dt><kbd>file_2</kbd></dt>
+<dd><p>second file to merge</p>
+</dd>
+<dt><kbd>outfile</kbd></dt>
+<dd><p>output file</p>
 </dd>
 </dl>
 </section>
@@ -106,7 +117,7 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="name_allele.html" class="btn btn-neutral float-left" title="name_allele" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="at_coords.html" class="btn btn-neutral float-left" title="at_coords" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="modules.html" class="btn btn-neutral float-right" title="API" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

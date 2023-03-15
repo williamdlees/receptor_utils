@@ -2,8 +2,10 @@
 annotate_j = scripts.annotate_j:main
 at_coords = scripts.at_coords:main
 extract_refs = scripts.extract_refs:main
+fix_macaque_gaps = scripts.fix_macaque_gaps:main
 gap_sequences = scripts.gap_inferred:main
 identical_seqs = scripts.identical_seqs:main
 make_igblast_ndm = scripts.make_igblast_ndm:main
+merge_fasta = scripts.merge_fasta:main
 name_allele = scripts.name_allele:main
 rev_comp = scripts.reverse_complement:main

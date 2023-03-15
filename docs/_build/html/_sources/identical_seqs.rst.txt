@@ -1,3 +1,5 @@
+.. _identical_seqs_label:
+
 identical_seqs
 ==============
 

@@ -20,8 +20,8 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="gap_sequences" href="gap_sequences.html" />
-    <link rel="prev" title="make_igblast_ndm" href="make_igblast_ndm.html" /> 
+    <link rel="next" title="identical_seqs" href="identical_seqs.html" />
+    <link rel="prev" title="annotate_j" href="annotate_j.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -44,18 +44,21 @@
 <li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="custom_igblast.html">Using custom databases with IgBlast</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="scripts.html">Command-Line Utilities</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="scripts.html#naming-and-aligning-v-d-and-j-sequences">Naming and Aligning V, D and J Sequences</a></li>
 <li class="toctree-l2"><a class="reference internal" href="scripts.html#working-with-igblast">Working with IgBLAST</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="scripts.html#working-with-fasta-files">Working with FASTA files</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="scripts.html#convenience-tools">Convenience Tools</a><ul class="current">
 <li class="toctree-l3 current"><a class="current reference internal" href="#">extract_refs</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#positional-arguments">Positional Arguments</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#named-arguments">Named Arguments</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="gap_sequences.html">gap_sequences</a></li>
+<li class="toctree-l3"><a class="reference internal" href="fix_macaque_gaps.html">fix_macaque_gaps</a></li>
 <li class="toctree-l3"><a class="reference internal" href="identical_seqs.html">identical_seqs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="rev_comp.html">rev_comp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="at_coords.html">at_coords</a></li>
+<li class="toctree-l3"><a class="reference internal" href="merge_fasta.html">merge_fasta</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="scripts.html#miscellaneous">Miscellaneous</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="modules.html">API</a></li>
@@ -92,15 +95,12 @@
 downloaded <a class="reference external" href="http://www.imgt.org/download/GENE-DB/IMGTGENEDB-ReferenceSequences.fasta-nt-WithGaps-F+ORF+inframeP">here.</a></p>
 <p><p>Extract reference files for nominated species from a gapped IMGT reference file</p>
 </p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">usage</span><span class="p">:</span> <span class="n">extract_refs</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">L</span> <span class="n">LOCUS</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">F</span><span class="p">]</span> <span class="n">imgt_file</span> <span class="n">species_name</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">usage</span><span class="p">:</span> <span class="n">extract_refs</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">r</span> <span class="n">REF</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">L</span> <span class="n">LOCUS</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">F</span><span class="p">]</span> <span class="n">species_name</span>
 </pre></div>
 </div>
 <section id="positional-arguments">
 <h2>Positional Arguments<a class="headerlink" href="#positional-arguments" title="Permalink to this heading"></a></h2>
 <dl class="option-list">
-<dt><kbd>imgt_file</kbd></dt>
-<dd><p>gapped imgt reference file</p>
-</dd>
 <dt><kbd>species_name</kbd></dt>
 <dd><p>species name for IMGT file in quotes, e.g. “Homo sapiens”, “Macaca mulatta”</p>
 </dd>
@@ -109,6 +109,9 @@ downloaded <a class="reference external" href="http://www.imgt.org/download/GENE
 <section id="named-arguments">
 <h2>Named Arguments<a class="headerlink" href="#named-arguments" title="Permalink to this heading"></a></h2>
 <dl class="option-list">
+<dt><kbd>-r, --ref</kbd></dt>
+<dd><p>gapped imgt reference file. If not specified, the current file will be downloaded from <a class="reference external" href="http://www.imgt.org/download/GENE-DB/IMGTGENEDB-ReferenceSequences.fasta-nt-WithGaps-F+ORF+inframeP">http://www.imgt.org/download/GENE-DB/IMGTGENEDB-ReferenceSequences.fasta-nt-WithGaps-F+ORF+inframeP</a></p>
+</dd>
 <dt><kbd>-L, --locus</kbd></dt>
 <dd><p>locus identifier, e.g. “IGH” (default), “IGK”, “TRB”, “TRG”</p>
 <p>Default: “IGH”</p>
@@ -124,8 +127,8 @@ downloaded <a class="reference external" href="http://www.imgt.org/download/GENE
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="make_igblast_ndm.html" class="btn btn-neutral float-left" title="make_igblast_ndm" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="gap_sequences.html" class="btn btn-neutral float-right" title="gap_sequences" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="annotate_j.html" class="btn btn-neutral float-left" title="annotate_j" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="identical_seqs.html" class="btn btn-neutral float-right" title="identical_seqs" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
