@@ -73,7 +73,7 @@ def read_single_fasta(infile):
 # read V,D,J regions from one or more species from an IMGT reference file
 # species should be a ***list*** of species
 # returns a nested dict: [species][chain]
-def read_imgt_fasta(infile: str, species: str, chains=('IGHV', 'IGHD', 'IGHJ', 'CH'), functional_only: bool =False):
+def read_imgt_fasta(infile: str, species: str, chains=('IGHV', 'IGHD', 'IGHJ', 'CH'), functional_only: bool =False, include_orphon: bool =False):
     """read V,D,J regions from one or more species from an IMGT reference file
 
     :param infile: The IMGT reference file
@@ -83,6 +83,7 @@ def read_imgt_fasta(infile: str, species: str, chains=('IGHV', 'IGHD', 'IGHJ', '
     :param chains: List of chains to read (e.g. ['IGHV', 'IGHJ'])
     :type chains: list
     :param functional_only: If True, returns only sequences marked as functional (F)
+    :param functional_only: If True, includes orphons
     :return: A dict containing the serquences, indexed by name
     :rtype: dict
     """
@@ -101,13 +102,14 @@ def read_imgt_fasta(infile: str, species: str, chains=('IGHV', 'IGHD', 'IGHJ', '
                     if not functional_only or '|F|' in rec.description:
                         if 'V' not in chain or len(rec.seq) > 280:       # strip out obviously incomplete Vs
                             name = rec.description.split('|')[1]
-                            type = rec.description.split('|')[4]
+                            if include_orphon or '/OR' not in name:
+                                seq_type = rec.description.split('|')[4]
 
-                            if chain == 'CH' or ('EX' in rec.description and chain in rec.description):
-                                gene, allele = name.split('*')
-                                res[sp][chain][gene + '_' + type + '*' + allele] = str(rec.seq).upper()
-                            else:
-                                res[sp][chain][name] = str(rec.seq).upper()
+                                if chain == 'CH' or ('EX' in rec.description and chain in rec.description):
+                                    gene, allele = name.split('*')
+                                    res[sp][chain][gene + '_' + seq_type + '*' + allele] = str(rec.seq).upper()
+                                else:
+                                    res[sp][chain][name] = str(rec.seq).upper()
     return res
 
 

@@ -204,7 +204,7 @@ def gap_align(seq, ref):
 
     i = len(res) - 1
 
-    while res[i] == '.':
+    while i and res[i] == '.':
         i -= 1
 
     res = res[:i+1]
