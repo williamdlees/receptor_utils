@@ -1,6 +1,6 @@
 #!python
 # Extract reference files for nominated species
-# The current IMGT reference file can be downloaded from http://www.imgt.org/download/GENE-DB/IMGTGENEDB-ReferenceSequences.fasta-nt-WithGaps-F+ORF+inframeP
+# The current IMGT reference file can be downloaded from https://www.imgt.org/download/GENE-DB/IMGTGENEDB-ReferenceSequences.fasta-nt-WithGaps-F+ORF+inframeP
 
 # Copyright (c) 2021 William Lees
 
@@ -25,7 +25,7 @@ def get_parser():
 def main():
     args = get_parser().parse_args()
 
-    imgt_url = "http://www.imgt.org/download/GENE-DB/IMGTGENEDB-ReferenceSequences.fasta-nt-WithGaps-F+ORF+inframeP"
+    imgt_url = "https://www.imgt.org/download/GENE-DB/IMGTGENEDB-ReferenceSequences.fasta-nt-WithGaps-F+ORF+inframeP"
 
     segs = {
         'IGH': ['IGHV', 'IGHD', 'IGHJ', 'CH'],
