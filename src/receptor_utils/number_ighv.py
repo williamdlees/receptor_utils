@@ -295,7 +295,7 @@ def gap_sequence(seq, gapped_ref, ungapped_ref):
 
 
 def check_conserved_residues(aa):
-    notes = ''
+    notes = []
 
     if len(aa) < 104:
         return 'Sequence truncated before second cysteine'
@@ -304,16 +304,18 @@ def check_conserved_residues(aa):
     if '*' in aa:
         pos = aa.index('*')
         if pos <= 103:
-            notes = 'Stop codon in V-REGION before 2nd cysteine'
-    elif aa[22] != 'C':
-        notes = 'First cysteine not found'
-    elif aa[40] != 'W':
-        notes = 'Conserved Trp not found'
-    elif len(aa) < 104:
-        notes = 'Sequence truncated before second cysteine'
-    elif aa[103] != 'C':
-        notes = 'Second cysteine not found'
-    return notes
+            notes.append('Stop codon in V-REGION before 2nd cysteine')
+
+    if aa[22] != 'C':
+        notes.append('First cysteine not found')
+
+    if aa[40] != 'W':
+        notes.append('Conserved Trp not found')
+
+    if aa[103] != 'C':
+        notes.append('Second cysteine not found')
+
+    return ', '.join(notes)
 
 
 def run_tests():
