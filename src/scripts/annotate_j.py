@@ -12,11 +12,21 @@ from receptor_utils import simple_bio_seq as simple
 import argparse
 import re
 from collections import namedtuple
+import json
 
 
 def main():
     args = get_parser().parse_args()
-    seqs = simple.read_fasta(args.seq_file)
+
+    if args.seq_file.lower().endswith('.json'):
+        seqs = seqs_from_json(args)
+    elif args.ref_file.lower().endswith('.fasta'):
+        seqs = simple.read_fasta(args.seq_file)
+    else:
+        print("Error: reference file must be a .json or .fasta file")
+        exit(1)
+
+    
     annotations = []
     
     for seq_name, seq in seqs.items():
@@ -73,9 +83,27 @@ def main():
 def get_parser():
     parser = argparse.ArgumentParser(
         description='Annotate a set of J sequences, finding the frame alignment and 1-based index of the first nucleotide of the conserved PHE or TRP')
-    parser.add_argument('seq_file', help='J sequences to annotate (fasta)')
+    parser.add_argument('seq_file', help='J sequences to annotate (fasta or AIRR-C JSON format)')
     parser.add_argument('out_file', help='Annotation output in aux format for use with IgBlast')
     return parser
+
+
+def seqs_from_json(args):
+    with open(args.seq_file, 'r') as fo:
+        ref = json.load(fo)
+
+    if isinstance(ref["GermlineSet"], list):
+        germline_set = ref["GermlineSet"][0]
+    else:
+        germline_set = ref["GermlineSet"]
+
+    seqs = {}
+
+    for allele in germline_set['allele_descriptions']:
+        if allele['sequence_type'] == 'J':
+            seqs[allele['label']] = allele['coding_sequence']
+
+    return seqs
 
 
 if __name__ == "__main__":

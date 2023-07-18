@@ -275,7 +275,7 @@
 
     <span class="n">i</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">res</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
 
-    <span class="k">while</span> <span class="n">res</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;.&#39;</span><span class="p">:</span>
+    <span class="k">while</span> <span class="n">i</span> <span class="ow">and</span> <span class="n">res</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;.&#39;</span><span class="p">:</span>
         <span class="n">i</span> <span class="o">-=</span> <span class="mi">1</span>
 
     <span class="n">res</span> <span class="o">=</span> <span class="n">res</span><span class="p">[:</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
@@ -366,7 +366,7 @@
 
 
 <div class="viewcode-block" id="check_conserved_residues"><a class="viewcode-back" href="../../receptor_utils.html#receptor_utils.number_ighv.check_conserved_residues">[docs]</a><span class="k">def</span> <span class="nf">check_conserved_residues</span><span class="p">(</span><span class="n">aa</span><span class="p">):</span>
-    <span class="n">notes</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="n">notes</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">aa</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">104</span><span class="p">:</span>
         <span class="k">return</span> <span class="s1">&#39;Sequence truncated before second cysteine&#39;</span>
@@ -375,16 +375,18 @@
     <span class="k">if</span> <span class="s1">&#39;*&#39;</span> <span class="ow">in</span> <span class="n">aa</span><span class="p">:</span>
         <span class="n">pos</span> <span class="o">=</span> <span class="n">aa</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;*&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">pos</span> <span class="o">&lt;=</span> <span class="mi">103</span><span class="p">:</span>
-            <span class="n">notes</span> <span class="o">=</span> <span class="s1">&#39;Stop codon in V-REGION before 2nd cysteine&#39;</span>
-    <span class="k">elif</span> <span class="n">aa</span><span class="p">[</span><span class="mi">22</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;C&#39;</span><span class="p">:</span>
-        <span class="n">notes</span> <span class="o">=</span> <span class="s1">&#39;First cysteine not found&#39;</span>
-    <span class="k">elif</span> <span class="n">aa</span><span class="p">[</span><span class="mi">40</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;W&#39;</span><span class="p">:</span>
-        <span class="n">notes</span> <span class="o">=</span> <span class="s1">&#39;Conserved Trp not found&#39;</span>
-    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">aa</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">104</span><span class="p">:</span>
-        <span class="n">notes</span> <span class="o">=</span> <span class="s1">&#39;Sequence truncated before second cysteine&#39;</span>
-    <span class="k">elif</span> <span class="n">aa</span><span class="p">[</span><span class="mi">103</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;C&#39;</span><span class="p">:</span>
-        <span class="n">notes</span> <span class="o">=</span> <span class="s1">&#39;Second cysteine not found&#39;</span>
-    <span class="k">return</span> <span class="n">notes</span></div>
+            <span class="n">notes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;Stop codon in V-REGION before 2nd cysteine&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">aa</span><span class="p">[</span><span class="mi">22</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;C&#39;</span><span class="p">:</span>
+        <span class="n">notes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;First cysteine not found&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">aa</span><span class="p">[</span><span class="mi">40</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;W&#39;</span><span class="p">:</span>
+        <span class="n">notes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;Conserved Trp not found&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">aa</span><span class="p">[</span><span class="mi">103</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;C&#39;</span><span class="p">:</span>
+        <span class="n">notes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;Second cysteine not found&#39;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">notes</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="run_tests"><a class="viewcode-back" href="../../receptor_utils.html#receptor_utils.number_ighv.run_tests">[docs]</a><span class="k">def</span> <span class="nf">run_tests</span><span class="p">():</span>

@@ -36,8 +36,6 @@ Convenience Tools
 
 :ref:`extract_refs_label` - Download reference sequences from IMGT for a specific species and locus
 
-:ref:`fix_macaque_gaps_label` - The IMGT alignment for macaque IG sequences has inserted codons relative to the alignment used for most other species. This can cause problems for downstream tools. This utility removes the additional codons in macaque IG, reverting to the standard alignment
-
 :ref:`identical_seqs_label` - Report cases where, in a FASTA file, the same sequence is listed more than once with different IDs
 
 :ref:`rev_comp_label` - Reverse-complement a nucleotide sequence
