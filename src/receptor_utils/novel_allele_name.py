@@ -9,7 +9,7 @@
 
 
 from receptor_utils import simple_bio_seq as simple
-from receptor_utils import number_ighv
+from receptor_utils import number_v
 from Bio.pairwise2 import align, format_alignment
 from collections import namedtuple
 
@@ -64,7 +64,7 @@ def name_novel(novel_seq: str, ref_set: dict, v_gene: bool = True):
             ungapped_ref_set = {}
             for k, v in ref_set.items():
                 ungapped_ref_set[k] = v.replace('.', '')
-            novel_seq, aa, notes = number_ighv.gap_sequence(novel_seq, ref_set, ungapped_ref_set)
+            novel_seq, aa, notes = number_v.gap_sequence(novel_seq, ref_set, ungapped_ref_set)
 
 
     closest_ref_name = simple.closest_ref(novel_seq, ref_set)[0]

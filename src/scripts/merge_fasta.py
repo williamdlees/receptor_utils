@@ -27,7 +27,7 @@ def main():
             seqs[m_name] = m_seq
             added += 1
 
-    simple.write_fasta(seqs, args.outfile)
+    simple.write_fasta(args.outfile, seqs)
     print('%d items merged from %s.' % (added, args.file_2))
 
 

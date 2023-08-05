@@ -43,7 +43,7 @@ def main():
         with urllib.request.urlopen(imgt_url) as fi:
             refs = simple.read_imgt_fasta(io.StringIO(fi.read().decode('utf-8')), [args.species_name], segs[args.locus], functional_only=args.functional_only)
 
-    simple.write_fasta(refs[args.species_name][args.locus + 'V'], '%s_IGHV_gapped.fasta'.replace('IGHV', args.locus + 'V') %args.species_name.replace(' ', '_'))
+    simple.write_fasta('%s_IGHV_gapped.fasta'.replace('IGHV', args.locus + 'V') %args.species_name.replace(' ', '_'), refs[args.species_name][args.locus + 'V'])
 
     ungapped = {}
 
@@ -52,7 +52,7 @@ def main():
         for id, seq in refs[args.species_name][seg].items():
             ungapped[seg][id] = seq.replace('.', '')
 
-        simple.write_fasta(ungapped[seg], '%s_%s.fasta' % (args.species_name.replace(' ', '_'), seg))
+        simple.write_fasta('%s_%s.fasta' % (args.species_name.replace(' ', '_'), seg), ungapped[seg])
 
 
 if __name__ == "__main__":

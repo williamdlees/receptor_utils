@@ -7,7 +7,7 @@
 # the English version of which is available here: https://perma.cc/DK5U-NDVE
 
 
-from receptor_utils import number_ighv
+from receptor_utils import number_v
 import argparse
 from receptor_utils import simple_bio_seq as simple
 import Bio.Data.CodonTable
@@ -40,7 +40,7 @@ def main():
             else:
                 aa = simple.translate(trial_seq, ignore_partial_codon=False)
 
-            notes = number_ighv.check_conserved_residues(aa)
+            notes = number_v.check_conserved_residues(aa)
 
             if notes:
                 if 'truncated' in notes:
@@ -60,11 +60,11 @@ def main():
     gapped = {}
 
     for id, seq in inferred.items():
-        gapped[id], aa, notes = number_ighv.gap_sequence(seq, refs, ungapped_refs)
+        gapped[id], aa, notes = number_v.gap_sequence(seq, refs, ungapped_refs)
         if notes:
             print('%s: %s' % (id, notes))
 
-    simple.write_fasta(gapped, args.out_file)
+    simple.write_fasta(args.out_file, gapped)
 
 
 

@@ -53,23 +53,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#receptor_utils.novel_allele_name.run_tests"><code class="docutils literal notranslate"><span class="pre">run_tests()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#module-receptor_utils.number_ighv">receptor_utils.number_ighv module</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#receptor_utils.number_ighv.check_conserved_residues"><code class="docutils literal notranslate"><span class="pre">check_conserved_residues()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#receptor_utils.number_ighv.distribute_cdr"><code class="docutils literal notranslate"><span class="pre">distribute_cdr()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#receptor_utils.number_ighv.gap_align"><code class="docutils literal notranslate"><span class="pre">gap_align()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#receptor_utils.number_ighv.gap_align_aa"><code class="docutils literal notranslate"><span class="pre">gap_align_aa()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#receptor_utils.number_ighv.gap_align_aa_from_nt"><code class="docutils literal notranslate"><span class="pre">gap_align_aa_from_nt()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#receptor_utils.number_ighv.gap_nt_from_aa"><code class="docutils literal notranslate"><span class="pre">gap_nt_from_aa()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#receptor_utils.number_ighv.gap_sequence"><code class="docutils literal notranslate"><span class="pre">gap_sequence()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#receptor_utils.number_ighv.insert_space"><code class="docutils literal notranslate"><span class="pre">insert_space()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#receptor_utils.number_ighv.match_score"><code class="docutils literal notranslate"><span class="pre">match_score()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#receptor_utils.number_ighv.nt_diff"><code class="docutils literal notranslate"><span class="pre">nt_diff()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#receptor_utils.number_ighv.number_from_trp"><code class="docutils literal notranslate"><span class="pre">number_from_trp()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#receptor_utils.number_ighv.number_ighv"><code class="docutils literal notranslate"><span class="pre">number_ighv()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#receptor_utils.number_ighv.pretty_gapped"><code class="docutils literal notranslate"><span class="pre">pretty_gapped()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#receptor_utils.number_ighv.run_tests"><code class="docutils literal notranslate"><span class="pre">run_tests()</span></code></a></li>
-</ul>
-</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-receptor_utils.number_ighv">receptor_utils.number_ighv module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#module-receptor_utils.simple_bio_seq">receptor_utils.simple_bio_seq module</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#receptor_utils.simple_bio_seq.chunks"><code class="docutils literal notranslate"><span class="pre">chunks()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#receptor_utils.simple_bio_seq.closest_ref"><code class="docutils literal notranslate"><span class="pre">closest_ref()</span></code></a></li>
@@ -169,76 +153,6 @@ The sequence must be full-length at the 5 prime end, or gapped</p>
 </section>
 <section id="module-receptor_utils.number_ighv">
 <span id="receptor-utils-number-ighv-module"></span><h2>receptor_utils.number_ighv module<a class="headerlink" href="#module-receptor_utils.number_ighv" title="Permalink to this heading"></a></h2>
-<dl class="py function">
-<dt class="sig sig-object py" id="receptor_utils.number_ighv.check_conserved_residues">
-<span class="sig-prename descclassname"><span class="pre">receptor_utils.number_ighv.</span></span><span class="sig-name descname"><span class="pre">check_conserved_residues</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">aa</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/receptor_utils/number_ighv.html#check_conserved_residues"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#receptor_utils.number_ighv.check_conserved_residues" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="receptor_utils.number_ighv.distribute_cdr">
-<span class="sig-prename descclassname"><span class="pre">receptor_utils.number_ighv.</span></span><span class="sig-name descname"><span class="pre">distribute_cdr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cdr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">length</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/receptor_utils/number_ighv.html#distribute_cdr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#receptor_utils.number_ighv.distribute_cdr" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="receptor_utils.number_ighv.gap_align">
-<span class="sig-prename descclassname"><span class="pre">receptor_utils.number_ighv.</span></span><span class="sig-name descname"><span class="pre">gap_align</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seq</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/receptor_utils/number_ighv.html#gap_align"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#receptor_utils.number_ighv.gap_align" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="receptor_utils.number_ighv.gap_align_aa">
-<span class="sig-prename descclassname"><span class="pre">receptor_utils.number_ighv.</span></span><span class="sig-name descname"><span class="pre">gap_align_aa</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seq</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/receptor_utils/number_ighv.html#gap_align_aa"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#receptor_utils.number_ighv.gap_align_aa" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="receptor_utils.number_ighv.gap_align_aa_from_nt">
-<span class="sig-prename descclassname"><span class="pre">receptor_utils.number_ighv.</span></span><span class="sig-name descname"><span class="pre">gap_align_aa_from_nt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">aa_seq</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nt_gapped</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/receptor_utils/number_ighv.html#gap_align_aa_from_nt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#receptor_utils.number_ighv.gap_align_aa_from_nt" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="receptor_utils.number_ighv.gap_nt_from_aa">
-<span class="sig-prename descclassname"><span class="pre">receptor_utils.number_ighv.</span></span><span class="sig-name descname"><span class="pre">gap_nt_from_aa</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nucleotide_seq</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">peptide_seq</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/receptor_utils/number_ighv.html#gap_nt_from_aa"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#receptor_utils.number_ighv.gap_nt_from_aa" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="receptor_utils.number_ighv.gap_sequence">
-<span class="sig-prename descclassname"><span class="pre">receptor_utils.number_ighv.</span></span><span class="sig-name descname"><span class="pre">gap_sequence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seq</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gapped_ref</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ungapped_ref</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/receptor_utils/number_ighv.html#gap_sequence"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#receptor_utils.number_ighv.gap_sequence" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="receptor_utils.number_ighv.insert_space">
-<span class="sig-prename descclassname"><span class="pre">receptor_utils.number_ighv.</span></span><span class="sig-name descname"><span class="pre">insert_space</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seq</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pos</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/receptor_utils/number_ighv.html#insert_space"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#receptor_utils.number_ighv.insert_space" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="receptor_utils.number_ighv.match_score">
-<span class="sig-prename descclassname"><span class="pre">receptor_utils.number_ighv.</span></span><span class="sig-name descname"><span class="pre">match_score</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">match_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">thresh</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/receptor_utils/number_ighv.html#match_score"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#receptor_utils.number_ighv.match_score" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="receptor_utils.number_ighv.nt_diff">
-<span class="sig-prename descclassname"><span class="pre">receptor_utils.number_ighv.</span></span><span class="sig-name descname"><span class="pre">nt_diff</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/receptor_utils/number_ighv.html#nt_diff"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#receptor_utils.number_ighv.nt_diff" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="receptor_utils.number_ighv.number_from_trp">
-<span class="sig-prename descclassname"><span class="pre">receptor_utils.number_ighv.</span></span><span class="sig-name descname"><span class="pre">number_from_trp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seq</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">next_p</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gapped</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trp_pos</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/receptor_utils/number_ighv.html#number_from_trp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#receptor_utils.number_ighv.number_from_trp" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="receptor_utils.number_ighv.number_ighv">
-<span class="sig-prename descclassname"><span class="pre">receptor_utils.number_ighv.</span></span><span class="sig-name descname"><span class="pre">number_ighv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seq</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/receptor_utils/number_ighv.html#number_ighv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#receptor_utils.number_ighv.number_ighv" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="receptor_utils.number_ighv.pretty_gapped">
-<span class="sig-prename descclassname"><span class="pre">receptor_utils.number_ighv.</span></span><span class="sig-name descname"><span class="pre">pretty_gapped</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seq</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/receptor_utils/number_ighv.html#pretty_gapped"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#receptor_utils.number_ighv.pretty_gapped" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="receptor_utils.number_ighv.run_tests">
-<span class="sig-prename descclassname"><span class="pre">receptor_utils.number_ighv.</span></span><span class="sig-name descname"><span class="pre">run_tests</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/receptor_utils/number_ighv.html#run_tests"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#receptor_utils.number_ighv.run_tests" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
 </section>
 <section id="module-receptor_utils.simple_bio_seq">
 <span id="receptor-utils-simple-bio-seq-module"></span><h2>receptor_utils.simple_bio_seq module<a class="headerlink" href="#module-receptor_utils.simple_bio_seq" title="Permalink to this heading"></a></h2>
@@ -518,13 +432,13 @@ The output is modified to provide, as well as the consensus string, the mimimum 
 
 <dl class="py function">
 <dt class="sig sig-object py" id="receptor_utils.simple_bio_seq.write_fasta">
-<span class="sig-prename descclassname"><span class="pre">receptor_utils.simple_bio_seq.</span></span><span class="sig-name descname"><span class="pre">write_fasta</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seqs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outfile</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/receptor_utils/simple_bio_seq.html#write_fasta"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#receptor_utils.simple_bio_seq.write_fasta" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">receptor_utils.simple_bio_seq.</span></span><span class="sig-name descname"><span class="pre">write_fasta</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">outfile</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seqs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/receptor_utils/simple_bio_seq.html#write_fasta"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#receptor_utils.simple_bio_seq.write_fasta" title="Permalink to this definition"></a></dt>
 <dd><p>Write a dict into a FASTA file. The dict should be indexed by sequence name</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>seqs</strong> (<em>dict</em>) – The sequences to write</p></li>
 <li><p><strong>outfile</strong> (<em>str</em>) – Pathname of the file to be written</p></li>
+<li><p><strong>seqs</strong> (<em>dict</em>) – The sequences to write</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>

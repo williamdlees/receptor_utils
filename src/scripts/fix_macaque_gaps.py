@@ -42,7 +42,7 @@ def main():
     for unw in unwanted_seqs:
         del seqs[unw]
 
-    simple.write_fasta(seqs, args.outfile)
+    simple.write_fasta(args.outfile, seqs)
 
 
 if __name__ == "__main__":

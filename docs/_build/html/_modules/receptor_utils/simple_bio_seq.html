@@ -83,7 +83,7 @@
 <span class="c1"># This source code, and any executable file compiled or derived from it, is governed by the European Union Public License v. 1.2,</span>
 <span class="c1"># the English version of which is available here: https://perma.cc/DK5U-NDVE</span>
 
-
+<span class="kn">from</span> <span class="nn">warnings</span> <span class="kn">import</span> <span class="n">warn</span>
 <span class="kn">from</span> <span class="nn">Bio</span> <span class="kn">import</span> <span class="n">SeqIO</span>
 <span class="kn">from</span> <span class="nn">Bio.Seq</span> <span class="kn">import</span> <span class="n">Seq</span>
 <span class="kn">from</span> <span class="nn">Bio.SeqRecord</span> <span class="kn">import</span> <span class="n">SeqRecord</span>
@@ -115,17 +115,21 @@
     <span class="k">return</span> <span class="n">res</span></div>
 
 
-<div class="viewcode-block" id="write_fasta"><a class="viewcode-back" href="../../receptor_utils.html#receptor_utils.simple_bio_seq.write_fasta">[docs]</a><span class="k">def</span> <span class="nf">write_fasta</span><span class="p">(</span><span class="n">seqs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">outfile</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<div class="viewcode-block" id="write_fasta"><a class="viewcode-back" href="../../receptor_utils.html#receptor_utils.simple_bio_seq.write_fasta">[docs]</a><span class="k">def</span> <span class="nf">write_fasta</span><span class="p">(</span><span class="n">outfile</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">seqs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Write a dict into a FASTA file. The dict should be indexed by sequence name</span>
 
-<span class="sd">    :param seqs: The sequences to write</span>
-<span class="sd">    :type seqs: dict</span>
 <span class="sd">    :param outfile: Pathname of the file to be written</span>
 <span class="sd">    :type outfile: str</span>
+<span class="sd">    :param seqs: The sequences to write</span>
+<span class="sd">    :type seqs: dict</span>
 <span class="sd">    :returns: the number of records written</span>
 <span class="sd">    :rtype: int</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">SeqIO</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">toSeqRecords</span><span class="p">(</span><span class="n">seqs</span><span class="p">),</span> <span class="n">outfile</span><span class="p">,</span> <span class="s1">&#39;fasta&#39;</span><span class="p">)</span></div>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">SeqIO</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">toSeqRecords</span><span class="p">(</span><span class="n">seqs</span><span class="p">),</span> <span class="n">outfile</span><span class="p">,</span> <span class="s1">&#39;fasta&#39;</span><span class="p">)</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="n">SeqIO</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">toSeqRecords</span><span class="p">(</span><span class="n">outfile</span><span class="p">),</span> <span class="n">seqs</span><span class="p">,</span> <span class="s1">&#39;fasta&#39;</span><span class="p">)</span>
+        <span class="n">warn</span><span class="p">(</span><span class="s2">&quot;write_fasta(seqs, outfile) is deprecated. Please use  write_fasta(outfile, seqs) instead&quot;</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="read_single_fasta"><a class="viewcode-back" href="../../receptor_utils.html#receptor_utils.simple_bio_seq.read_single_fasta">[docs]</a><span class="k">def</span> <span class="nf">read_single_fasta</span><span class="p">(</span><span class="n">infile</span><span class="p">):</span>

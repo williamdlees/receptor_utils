@@ -1,12 +1,8 @@
-# De novo IMGT-gapping of IGHV germline genes, using guidance from http://www.bioinf.org.uk/abs/info.html#cdrid to confirm CDR1 and 2
-# This is experimental. Not used in the examples and specific to IGHV. Maybe a recourse if there is no suitable gapped reference template
-# to rely on
 
 # Copyright (c) 2021 William Lees
 
 # This source code, and any executable file compiled or derived from it, is governed by the European Union Public License v. 1.2,
 # the English version of which is available here: https://perma.cc/DK5U-NDVE
-
 
 import re
 from receptor_utils import simple_bio_seq as simple
@@ -23,7 +19,9 @@ def nt_diff(s1, s2):
     return diffs
 
 
-# De-novo numbering of the protein translation of an entire IGHV V-gene
+# De novo IMGT-gapping of IGHV germline genes, using guidance from http://www.bioinf.org.uk/abs/info.html#cdrid to confirm CDR1 and 2
+# This is experimental. Not used in the examples and specific to IGHV. Maybe a recourse if there is no suitable gapped reference template
+# to rely on
 def number_ighv(seq):
     gapped = ''
     # find the conserved Cys at 23

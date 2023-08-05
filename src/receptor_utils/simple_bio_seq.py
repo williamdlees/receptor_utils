@@ -12,7 +12,7 @@ __author__ = 'William Lees'
 # This source code, and any executable file compiled or derived from it, is governed by the European Union Public License v. 1.2,
 # the English version of which is available here: https://perma.cc/DK5U-NDVE
 
-
+from warnings import warn
 from Bio import SeqIO
 from Bio.Seq import Seq
 from Bio.SeqRecord import SeqRecord
@@ -44,17 +44,21 @@ def read_fasta(infile: str):
     return res
 
 
-def write_fasta(seqs: dict, outfile: str):
+def write_fasta(outfile: str, seqs: dict):
     """Write a dict into a FASTA file. The dict should be indexed by sequence name
 
-    :param seqs: The sequences to write
-    :type seqs: dict
     :param outfile: Pathname of the file to be written
     :type outfile: str
+    :param seqs: The sequences to write
+    :type seqs: dict
     :returns: the number of records written
     :rtype: int
     """
-    SeqIO.write(toSeqRecords(seqs), outfile, 'fasta')
+    try:
+        SeqIO.write(toSeqRecords(seqs), outfile, 'fasta')
+    except:
+        SeqIO.write(toSeqRecords(outfile), seqs, 'fasta')
+        warn("write_fasta(seqs, outfile) is deprecated. Please use  write_fasta(outfile, seqs) instead", DeprecationWarning, stacklevel=2)
 
 
 def read_single_fasta(infile):
