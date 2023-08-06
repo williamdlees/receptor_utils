@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>receptor_utils.number_v &mdash; receptor-utils  documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> receptor-utils
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../custom_igblast.html">Using custom databases with IgBlast</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../scripts.html">Command-Line Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">receptor-utils</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">receptor_utils.number_v</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for receptor_utils.number_v</h1><div class="highlight"><pre>
+<span></span>
+<span class="c1"># Copyright (c) 2021 William Lees</span>
+
+<span class="c1"># This source code, and any executable file compiled or derived from it, is governed by the European Union Public License v. 1.2,</span>
+<span class="c1"># the English version of which is available here: https://perma.cc/DK5U-NDVE</span>
+
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">from</span> <span class="nn">receptor_utils</span> <span class="kn">import</span> <span class="n">simple_bio_seq</span> <span class="k">as</span> <span class="n">simple</span>
+
+<div class="viewcode-block" id="nt_diff"><a class="viewcode-back" href="../../receptor_utils.html#receptor_utils.number_v.nt_diff">[docs]</a><span class="k">def</span> <span class="nf">nt_diff</span><span class="p">(</span><span class="n">s1</span><span class="p">,</span> <span class="n">s2</span><span class="p">):</span>
+    <span class="n">diffs</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">row</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">s1</span><span class="o">.</span><span class="n">upper</span><span class="p">(),</span> <span class="n">s2</span><span class="o">.</span><span class="n">upper</span><span class="p">()))</span>
+
+    <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">row</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="n">row</span><span class="p">[</span><span class="n">p</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">row</span><span class="p">[</span><span class="n">p</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="ow">and</span> <span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="n">p</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;X&#39;</span><span class="p">,</span> <span class="s1">&#39;N&#39;</span><span class="p">]</span> <span class="ow">and</span> <span class="n">row</span><span class="p">[</span><span class="n">p</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;X&#39;</span><span class="p">,</span> <span class="s1">&#39;N&#39;</span><span class="p">]):</span>
+            <span class="n">diffs</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="n">diffs</span> <span class="o">+=</span> <span class="nb">abs</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">s1</span><span class="p">)</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">s2</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">diffs</span></div>
+
+
+<span class="c1"># De novo IMGT-gapping of IGHV germline genes, using guidance from http://www.bioinf.org.uk/abs/info.html#cdrid to confirm CDR1 and 2</span>
+<span class="c1"># This is experimental. Not used in the examples and specific to IGHV. Maybe a recourse if there is no suitable gapped reference template</span>
+<span class="c1"># to rely on</span>
+<div class="viewcode-block" id="number_ighv"><a class="viewcode-back" href="../../receptor_utils.html#receptor_utils.number_v.number_ighv">[docs]</a><span class="k">def</span> <span class="nf">number_ighv</span><span class="p">(</span><span class="n">seq</span><span class="p">):</span>
+    <span class="n">gapped</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="c1"># find the conserved Cys at 23</span>
+    <span class="k">if</span> <span class="s1">&#39;C&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">seq</span><span class="p">[</span><span class="mi">21</span><span class="p">:</span><span class="mi">23</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;First conserved cysteine not found&#39;</span>
+
+    <span class="k">if</span> <span class="n">seq</span><span class="p">[</span><span class="mi">21</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;C&#39;</span><span class="p">:</span>
+        <span class="n">gapped</span> <span class="o">+=</span> <span class="n">seq</span><span class="p">[:</span><span class="mi">9</span><span class="p">]</span>
+        <span class="n">gapped</span> <span class="o">+=</span> <span class="s1">&#39;.&#39;</span>
+        <span class="n">gapped</span> <span class="o">+=</span> <span class="n">seq</span><span class="p">[</span><span class="mi">9</span><span class="p">:</span><span class="mi">25</span><span class="p">]</span>
+        <span class="n">next_p</span> <span class="o">=</span> <span class="mi">25</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">gapped</span> <span class="o">+=</span> <span class="n">seq</span><span class="p">[:</span><span class="mi">26</span><span class="p">]</span>
+        <span class="n">next_p</span> <span class="o">=</span> <span class="mi">26</span>
+
+    <span class="c1"># find the conserved Trp</span>
+
+    <span class="k">if</span> <span class="s1">&#39;W&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">seq</span><span class="p">[</span><span class="mi">33</span><span class="p">:</span><span class="mi">42</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;Conserved Trp not found&#39;</span>
+
+    <span class="n">trp_pos</span> <span class="o">=</span> <span class="p">[</span><span class="n">pos</span><span class="o">.</span><span class="n">start</span><span class="p">()</span><span class="o">+</span><span class="mi">33</span> <span class="k">for</span> <span class="n">pos</span> <span class="ow">in</span> <span class="n">re</span><span class="o">.</span><span class="n">finditer</span><span class="p">(</span><span class="s1">&#39;W&#39;</span><span class="p">,</span> <span class="n">seq</span><span class="p">[</span><span class="mi">33</span><span class="p">:</span><span class="mi">42</span><span class="p">])]</span>
+
+    <span class="n">max_conf</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="n">best_result</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="k">for</span> <span class="n">pos</span> <span class="ow">in</span> <span class="n">trp_pos</span><span class="p">:</span>
+        <span class="p">(</span><span class="n">confidence</span><span class="p">,</span> <span class="n">ret</span><span class="p">)</span> <span class="o">=</span> <span class="n">number_from_trp</span><span class="p">(</span><span class="n">seq</span><span class="p">,</span> <span class="n">next_p</span><span class="p">,</span> <span class="n">gapped</span><span class="p">,</span> <span class="n">pos</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">confidence</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">confidence</span> <span class="o">&gt;</span> <span class="n">max_conf</span><span class="p">:</span>
+            <span class="n">best_result</span> <span class="o">=</span> <span class="n">ret</span>
+            <span class="n">max_conf</span> <span class="o">=</span> <span class="n">confidence</span>
+
+    <span class="k">if</span> <span class="n">max_conf</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">best_result</span><span class="p">,</span> <span class="s1">&#39;&#39;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;CDR2 or 2nd Cys not found&#39;</span></div>
+
+
+<div class="viewcode-block" id="number_from_trp"><a class="viewcode-back" href="../../receptor_utils.html#receptor_utils.number_v.number_from_trp">[docs]</a><span class="k">def</span> <span class="nf">number_from_trp</span><span class="p">(</span><span class="n">seq</span><span class="p">,</span> <span class="n">next_p</span><span class="p">,</span> <span class="n">gapped</span><span class="p">,</span> <span class="n">trp_pos</span><span class="p">):</span>
+    <span class="c1"># add the CDR1 residues</span>
+    <span class="n">gapped</span> <span class="o">+=</span> <span class="n">distribute_cdr</span><span class="p">(</span><span class="n">seq</span><span class="p">[</span><span class="n">next_p</span><span class="p">:</span><span class="n">trp_pos</span><span class="o">-</span><span class="mi">2</span><span class="p">],</span> <span class="mi">12</span><span class="p">)</span>
+    <span class="n">gapped</span> <span class="o">+=</span> <span class="n">seq</span><span class="p">[</span><span class="n">trp_pos</span><span class="o">-</span><span class="mi">2</span><span class="p">:</span><span class="n">trp_pos</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">next_p</span> <span class="o">=</span> <span class="n">trp_pos</span><span class="o">+</span><span class="mi">1</span>
+
+    <span class="c1"># allocate FR2 residues</span>
+    <span class="n">gapped</span> <span class="o">+=</span> <span class="n">seq</span><span class="p">[</span><span class="n">next_p</span><span class="p">:</span><span class="n">next_p</span> <span class="o">+</span> <span class="mi">14</span><span class="p">]</span>
+    <span class="n">next_p</span> <span class="o">=</span> <span class="n">next_p</span> <span class="o">+</span> <span class="mi">14</span>        <span class="c1"># seq[next_p] is now the first aa of cdr2</span>
+
+    <span class="c1"># look for motif trailing cdr2 (should start at position 75)</span>
+
+    <span class="n">found_motif</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">motif_range</span> <span class="o">=</span> <span class="n">seq</span><span class="p">[</span><span class="n">next_p</span><span class="o">+</span><span class="mi">2</span><span class="o">+</span><span class="mi">8</span><span class="p">:</span><span class="n">next_p</span><span class="o">+</span><span class="mi">10</span><span class="o">+</span><span class="mi">8</span><span class="o">+</span><span class="mi">3</span><span class="p">]</span>    <span class="c1"># allow for cdr2 min length 2, max length 10 and motif length 3</span>
+    <span class="k">for</span> <span class="n">match</span> <span class="ow">in</span> <span class="n">match_score</span><span class="p">(</span><span class="n">motif_range</span><span class="p">,</span> <span class="p">[[</span><span class="s1">&#39;K&#39;</span><span class="p">,</span> <span class="s1">&#39;R&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;L&#39;</span><span class="p">,</span> <span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="s1">&#39;V&#39;</span><span class="p">,</span> <span class="s1">&#39;F&#39;</span><span class="p">,</span> <span class="s1">&#39;T&#39;</span><span class="p">,</span> <span class="s1">&#39;A&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;T&#39;</span><span class="p">,</span> <span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="s1">&#39;A&#39;</span><span class="p">]],</span> <span class="mi">2</span><span class="p">):</span>
+        <span class="c1"># check for conserved cysteine at position 104</span>
+        <span class="n">cys_range</span> <span class="o">=</span> <span class="n">seq</span><span class="p">[</span><span class="n">next_p</span><span class="o">+</span><span class="mi">2</span><span class="o">+</span><span class="mi">10</span><span class="o">+</span><span class="n">match</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="mi">26</span><span class="p">:</span><span class="n">next_p</span><span class="o">+</span><span class="mi">2</span><span class="o">+</span><span class="mi">10</span><span class="o">+</span><span class="n">match</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="mi">29</span><span class="p">]</span>
+        <span class="k">if</span> <span class="s1">&#39;C&#39;</span> <span class="ow">in</span> <span class="n">cys_range</span><span class="p">:</span>
+            <span class="n">c_index</span> <span class="o">=</span> <span class="n">cys_range</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;C&#39;</span><span class="p">)</span>
+            <span class="n">match</span> <span class="o">=</span> <span class="n">next_p</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">10</span> <span class="o">+</span> <span class="n">match</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>     <span class="c1"># now an absolute index of the motif in seq</span>
+            <span class="n">found_motif</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">break</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">found_motif</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+    <span class="c1"># Build a confidence score based on leading residue sequence</span>
+    <span class="n">cdr2_leader</span> <span class="o">=</span> <span class="n">gapped</span><span class="p">[</span><span class="mi">49</span><span class="p">:</span><span class="mi">54</span><span class="p">]</span>
+    <span class="n">confidence</span> <span class="o">=</span> <span class="n">match_score</span><span class="p">(</span><span class="n">cdr2_leader</span><span class="p">,</span> <span class="p">[[</span><span class="s1">&#39;L&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;E&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;W&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;I&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;G&#39;</span><span class="p">]],</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">confidence</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">confidence</span> <span class="o">=</span> <span class="n">confidence</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>  <span class="c1"># only one result, because string lengths are the same</span>
+
+    <span class="c1"># add the CDR2 residues</span>
+    <span class="n">cdr2</span> <span class="o">=</span> <span class="n">seq</span><span class="p">[</span><span class="n">next_p</span><span class="p">:</span><span class="n">match</span> <span class="o">-</span> <span class="mi">10</span><span class="p">]</span>
+    <span class="n">gapped</span> <span class="o">+=</span> <span class="n">distribute_cdr</span><span class="p">(</span><span class="n">cdr2</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+
+    <span class="c1"># add the remaining v-region residues</span>
+    <span class="n">gapped</span> <span class="o">+=</span> <span class="n">seq</span><span class="p">[</span><span class="n">match</span> <span class="o">-</span> <span class="mi">10</span><span class="p">:]</span>
+
+    <span class="c1"># insert gaps in FR3</span>
+    <span class="k">if</span> <span class="n">c_index</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="n">gaps</span> <span class="o">=</span> <span class="s1">&#39;.&#39;</span> <span class="o">*</span> <span class="p">(</span><span class="mi">2</span> <span class="o">-</span> <span class="n">c_index</span><span class="p">)</span>
+        <span class="n">gapped</span> <span class="o">=</span> <span class="n">gapped</span><span class="p">[:</span><span class="mi">72</span><span class="p">]</span> <span class="o">+</span> <span class="n">gaps</span> <span class="o">+</span> <span class="n">gapped</span><span class="p">[</span><span class="mi">72</span><span class="p">:]</span>
+
+    <span class="k">return</span> <span class="p">(</span><span class="n">confidence</span><span class="p">,</span> <span class="n">gapped</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="match_score"><a class="viewcode-back" href="../../receptor_utils.html#receptor_utils.number_v.match_score">[docs]</a><span class="k">def</span> <span class="nf">match_score</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">match_list</span><span class="p">,</span> <span class="n">thresh</span><span class="p">):</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">target</span><span class="p">)</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">match_list</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">score</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">match_list</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="n">target</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="n">j</span><span class="p">]</span> <span class="ow">in</span> <span class="n">match_list</span><span class="p">[</span><span class="n">j</span><span class="p">]:</span>
+                <span class="n">score</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="k">if</span> <span class="n">score</span> <span class="o">&gt;=</span> <span class="n">thresh</span><span class="p">:</span>
+            <span class="n">res</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">i</span><span class="p">,</span> <span class="n">score</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">res</span></div>
+
+<span class="c1"># distribute aas in the cdr according to the numbering scheme</span>
+<div class="viewcode-block" id="distribute_cdr"><a class="viewcode-back" href="../../receptor_utils.html#receptor_utils.number_v.distribute_cdr">[docs]</a><span class="k">def</span> <span class="nf">distribute_cdr</span><span class="p">(</span><span class="n">cdr</span><span class="p">,</span> <span class="n">length</span><span class="p">):</span>
+    <span class="n">cdr_div</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">cdr</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">cdr_div</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">cdr</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">cdr</span><span class="p">[:</span><span class="n">cdr_div</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;.&#39;</span> <span class="o">*</span> <span class="p">(</span><span class="n">length</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">cdr</span><span class="p">))</span> <span class="o">+</span> <span class="n">cdr</span><span class="p">[</span><span class="n">cdr_div</span><span class="p">:]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">cdr</span><span class="p">[:</span><span class="n">cdr_div</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;.&#39;</span> <span class="o">*</span> <span class="p">(</span><span class="n">length</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">cdr</span><span class="p">))</span> <span class="o">+</span> <span class="n">cdr</span><span class="p">[</span><span class="n">cdr_div</span><span class="o">+</span><span class="mi">1</span><span class="p">:]</span></div>
+
+<span class="n">pretty_header</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">           FR1-IMGT          CDR1-IMGT       FR2-IMGT     CDR2-IMGT                 FR3-IMGT</span>
+<span class="s2">            (1-26)            (27-38)        (39-55)       (56-65)                  (66-104)</span>
+<span class="s2">1       10        20         30         40        50         60         70        80        90        100     </span>
+<span class="s2">.........|.........|...... ...|........ .|.........|..... ....|..... ....|.........|.........|.........|....&quot;&quot;&quot;</span>
+
+
+<span class="c1"># insert space before the position pos (zero numbering)</span>
+<div class="viewcode-block" id="insert_space"><a class="viewcode-back" href="../../receptor_utils.html#receptor_utils.number_v.insert_space">[docs]</a><span class="k">def</span> <span class="nf">insert_space</span><span class="p">(</span><span class="n">seq</span><span class="p">,</span> <span class="n">pos</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">seq</span><span class="p">[:</span><span class="n">pos</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39; &#39;</span> <span class="o">+</span> <span class="n">seq</span><span class="p">[</span><span class="n">pos</span><span class="p">:]</span></div>
+
+<span class="c1"># pretty print of gapped sequence</span>
+<div class="viewcode-block" id="pretty_gapped"><a class="viewcode-back" href="../../receptor_utils.html#receptor_utils.number_v.pretty_gapped">[docs]</a><span class="k">def</span> <span class="nf">pretty_gapped</span><span class="p">(</span><span class="n">seq</span><span class="p">):</span>
+    <span class="n">seq</span> <span class="o">=</span> <span class="n">insert_space</span><span class="p">(</span><span class="n">seq</span><span class="p">,</span> <span class="mi">65</span><span class="p">)</span>
+    <span class="n">seq</span> <span class="o">=</span> <span class="n">insert_space</span><span class="p">(</span><span class="n">seq</span><span class="p">,</span> <span class="mi">55</span><span class="p">)</span>
+    <span class="n">seq</span> <span class="o">=</span> <span class="n">insert_space</span><span class="p">(</span><span class="n">seq</span><span class="p">,</span> <span class="mi">38</span><span class="p">)</span>
+    <span class="n">seq</span> <span class="o">=</span> <span class="n">insert_space</span><span class="p">(</span><span class="n">seq</span><span class="p">,</span> <span class="mi">26</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="n">pretty_header</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">seq</span><span class="p">)</span></div>
+
+
+<span class="c1"># Given a gapped AA sequence and an ungapped nt sequence, produce a gapped nt sequence</span>
+<div class="viewcode-block" id="gap_nt_from_aa"><a class="viewcode-back" href="../../receptor_utils.html#receptor_utils.number_v.gap_nt_from_aa">[docs]</a><span class="k">def</span> <span class="nf">gap_nt_from_aa</span><span class="p">(</span><span class="n">nucleotide_seq</span><span class="p">,</span> <span class="n">peptide_seq</span><span class="p">):</span>
+    <span class="n">codons</span> <span class="o">=</span> <span class="p">[</span><span class="n">codon</span> <span class="k">for</span> <span class="n">codon</span> <span class="ow">in</span> <span class="n">simple</span><span class="o">.</span><span class="n">chunks</span><span class="p">(</span><span class="n">nucleotide_seq</span><span class="p">,</span> <span class="mi">3</span><span class="p">)]</span>  <span class="c1">#splits nucleotides into codons (triplets)</span>
+    <span class="n">remains</span> <span class="o">=</span> <span class="n">nucleotide_seq</span><span class="p">[</span><span class="mi">3</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">codons</span><span class="p">):]</span> <span class="k">if</span> <span class="mi">3</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">codons</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">nucleotide_seq</span><span class="p">)</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span>
+    <span class="n">gapped_codons</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">codon_count</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">for</span> <span class="n">aa</span> <span class="ow">in</span> <span class="n">peptide_seq</span><span class="p">:</span>  <span class="c1">#adds &#39;---&#39; gaps to nucleotide seq corresponding to peptide</span>
+        <span class="k">if</span> <span class="n">aa</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;.&#39;</span><span class="p">):</span>
+            <span class="n">gapped_codons</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">codons</span><span class="p">[</span><span class="n">codon_count</span><span class="p">])</span>
+            <span class="n">codon_count</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">gapped_codons</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;...&#39;</span><span class="p">)</span>
+
+    <span class="k">while</span> <span class="n">codon_count</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">codons</span><span class="p">):</span>                <span class="c1"># account for trailing nt, eg fragment of a codon</span>
+        <span class="n">gapped_codons</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">codons</span><span class="p">[</span><span class="n">codon_count</span><span class="p">])</span>
+        <span class="n">codon_count</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="k">return</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">gapped_codons</span><span class="p">)</span> <span class="o">+</span> <span class="n">remains</span></div>
+
+
+<div class="viewcode-block" id="gap_align"><a class="viewcode-back" href="../../receptor_utils.html#receptor_utils.number_v.gap_align">[docs]</a><span class="k">def</span> <span class="nf">gap_align</span><span class="p">(</span><span class="n">seq</span><span class="p">,</span> <span class="n">ref</span><span class="p">):</span>
+    <span class="n">seq_i</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="n">seq</span><span class="p">)</span>
+
+    <span class="n">res</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="n">started</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">ref</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">r</span> <span class="o">!=</span> <span class="s1">&#39;.&#39;</span><span class="p">:</span>
+            <span class="n">started</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">res</span> <span class="o">+=</span> <span class="nb">next</span><span class="p">(</span><span class="n">seq_i</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
+                <span class="n">res</span> <span class="o">+=</span> <span class="s1">&#39;.&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">started</span><span class="p">:</span>
+                <span class="n">res</span> <span class="o">+=</span> <span class="s1">&#39;.&#39;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">res</span> <span class="o">+=</span> <span class="nb">next</span><span class="p">(</span><span class="n">seq_i</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
+                    <span class="n">res</span> <span class="o">+=</span> <span class="s1">&#39;.&#39;</span>
+
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">res</span> <span class="o">+=</span> <span class="nb">next</span><span class="p">(</span><span class="n">seq_i</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
+            <span class="k">break</span>
+
+    <span class="c1"># remove trailing gaps</span>
+
+    <span class="n">i</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">res</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+
+    <span class="k">while</span> <span class="n">i</span> <span class="ow">and</span> <span class="n">res</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;.&#39;</span><span class="p">:</span>
+        <span class="n">i</span> <span class="o">-=</span> <span class="mi">1</span>
+
+    <span class="n">res</span> <span class="o">=</span> <span class="n">res</span><span class="p">[:</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
+
+
+    <span class="k">return</span> <span class="n">res</span></div>
+
+
+<div class="viewcode-block" id="gap_align_aa"><a class="viewcode-back" href="../../receptor_utils.html#receptor_utils.number_v.gap_align_aa">[docs]</a><span class="k">def</span> <span class="nf">gap_align_aa</span><span class="p">(</span><span class="n">seq</span><span class="p">,</span> <span class="n">ref</span><span class="p">):</span>
+    <span class="n">seq_i</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="n">seq</span><span class="p">)</span>
+
+    <span class="n">res</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="n">started</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">ref</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">r</span> <span class="o">!=</span> <span class="s1">&#39;.&#39;</span><span class="p">:</span>
+            <span class="n">started</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">res</span> <span class="o">+=</span> <span class="nb">next</span><span class="p">(</span><span class="n">seq_i</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
+                <span class="k">break</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">started</span><span class="p">:</span>
+                <span class="n">res</span> <span class="o">+=</span> <span class="s1">&#39;.&#39;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">res</span> <span class="o">+=</span> <span class="nb">next</span><span class="p">(</span><span class="n">seq_i</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
+                    <span class="k">break</span>
+
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">res</span> <span class="o">+=</span> <span class="nb">next</span><span class="p">(</span><span class="n">seq_i</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
+            <span class="k">break</span>
+
+    <span class="k">return</span> <span class="n">res</span></div>
+
+
+<div class="viewcode-block" id="gap_align_aa_from_nt"><a class="viewcode-back" href="../../receptor_utils.html#receptor_utils.number_v.gap_align_aa_from_nt">[docs]</a><span class="k">def</span> <span class="nf">gap_align_aa_from_nt</span><span class="p">(</span><span class="n">aa_seq</span><span class="p">,</span> <span class="n">nt_gapped</span><span class="p">):</span>
+    <span class="n">aa_i</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="n">aa_seq</span><span class="p">)</span>
+    <span class="n">gapped_aa</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+
+    <span class="n">started</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="k">for</span> <span class="n">codon</span> <span class="ow">in</span> <span class="n">simple</span><span class="o">.</span><span class="n">chunks</span><span class="p">(</span><span class="n">nt_gapped</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span>
+        <span class="k">if</span> <span class="s1">&#39;.&#39;</span> <span class="ow">in</span> <span class="n">codon</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">started</span><span class="p">:</span>
+                <span class="n">gapped_aa</span> <span class="o">+=</span> <span class="s1">&#39;.&#39;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">gapped_aa</span> <span class="o">+=</span> <span class="nb">next</span><span class="p">(</span><span class="n">aa_i</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
+                    <span class="k">break</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">started</span> <span class="o">=</span> <span class="kc">True</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">gapped_aa</span> <span class="o">+=</span> <span class="nb">next</span><span class="p">(</span><span class="n">aa_i</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
+                <span class="k">break</span>
+
+    <span class="k">return</span> <span class="n">gapped_aa</span></div>
+
+
+<span class="c1"># gap using the closest reference</span>
+<div class="viewcode-block" id="gap_sequence"><a class="viewcode-back" href="../../receptor_utils.html#receptor_utils.number_v.gap_sequence">[docs]</a><span class="k">def</span> <span class="nf">gap_sequence</span><span class="p">(</span><span class="n">seq</span><span class="p">,</span> <span class="n">gapped_ref</span><span class="p">,</span> <span class="n">ungapped_ref</span><span class="p">):</span>
+    <span class="n">diffs</span> <span class="o">=</span> <span class="mi">999</span>
+    <span class="n">closest</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">ref</span> <span class="ow">in</span> <span class="n">ungapped_ref</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="n">nt_diff</span><span class="p">(</span><span class="n">seq</span><span class="p">,</span> <span class="n">ref</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">d</span> <span class="o">&lt;</span> <span class="n">diffs</span><span class="p">:</span>
+            <span class="n">closest</span> <span class="o">=</span> <span class="n">name</span>
+            <span class="n">diffs</span> <span class="o">=</span> <span class="n">d</span>
+
+    <span class="c1"># print(f&#39;gapping with {closest}&#39;)</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">gap_align</span><span class="p">(</span><span class="n">seq</span><span class="p">,</span> <span class="n">gapped_ref</span><span class="p">[</span><span class="n">closest</span><span class="p">])</span>
+    <span class="n">aa</span> <span class="o">=</span> <span class="n">simple</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="n">seq</span><span class="p">)</span>
+    <span class="n">aa</span> <span class="o">=</span> <span class="n">gap_align_aa_from_nt</span><span class="p">(</span><span class="n">aa</span><span class="p">,</span> <span class="n">res</span><span class="p">)</span>
+
+    <span class="n">notes</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="c1"># checks</span>
+    <span class="k">if</span> <span class="s1">&#39;V&#39;</span> <span class="ow">in</span> <span class="n">closest</span><span class="p">:</span>
+        <span class="n">notes</span> <span class="o">=</span> <span class="n">check_conserved_residues</span><span class="p">(</span><span class="n">aa</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="p">(</span><span class="n">res</span><span class="p">,</span> <span class="n">aa</span><span class="p">,</span> <span class="n">notes</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="check_conserved_residues"><a class="viewcode-back" href="../../receptor_utils.html#receptor_utils.number_v.check_conserved_residues">[docs]</a><span class="k">def</span> <span class="nf">check_conserved_residues</span><span class="p">(</span><span class="n">aa</span><span class="p">):</span>
+    <span class="n">notes</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">aa</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">104</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39;Sequence truncated before second cysteine&#39;</span>
+
+    <span class="c1"># allow stop codon in final nucleotides without warning</span>
+    <span class="k">if</span> <span class="s1">&#39;*&#39;</span> <span class="ow">in</span> <span class="n">aa</span><span class="p">:</span>
+        <span class="n">pos</span> <span class="o">=</span> <span class="n">aa</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;*&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">pos</span> <span class="o">&lt;=</span> <span class="mi">103</span><span class="p">:</span>
+            <span class="n">notes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;Stop codon in V-REGION before 2nd cysteine&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">aa</span><span class="p">[</span><span class="mi">22</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;C&#39;</span><span class="p">:</span>
+        <span class="n">notes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;First cysteine not found&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">aa</span><span class="p">[</span><span class="mi">40</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;W&#39;</span><span class="p">:</span>
+        <span class="n">notes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;Conserved Trp not found&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">aa</span><span class="p">[</span><span class="mi">103</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;C&#39;</span><span class="p">:</span>
+        <span class="n">notes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;Second cysteine not found&#39;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">notes</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="run_tests"><a class="viewcode-back" href="../../receptor_utils.html#receptor_utils.number_v.run_tests">[docs]</a><span class="k">def</span> <span class="nf">run_tests</span><span class="p">():</span>
+    <span class="n">failed</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;1-64&#39;</span><span class="p">)</span>
+    <span class="n">query</span> <span class="o">=</span> <span class="s1">&#39;EMQLVQSEAEVKKPGASVKISCKASGYTFTYRYLHWLRQTPGQGLEWMGWITPYNGNTNYAQKFQDRATITRDRSMSTAYMELSSLRSEDTAVYYCAR&#39;</span>
+
+    <span class="p">(</span><span class="n">seq</span><span class="p">,</span> <span class="n">status</span><span class="p">)</span> <span class="o">=</span> <span class="n">number_ighv</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">seq</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">pretty_gapped</span><span class="p">(</span><span class="n">seq</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">seq</span> <span class="o">==</span> <span class="s1">&#39;EMQLVQSEA.EVKKPGASVKISCKASGYTF....TYRYLHWLRQTPGQGLEWMGWITPY..NGNTNYAQKFQ.DRATITRDRSMSTAYMELSSLRSEDTAVYYCAR&#39;</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;passed&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;FAILED&#39;</span><span class="p">)</span>
+            <span class="n">failed</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">query</span> <span class="o">+</span> <span class="s1">&#39;-&gt;&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">status</span><span class="p">)</span>
+        <span class="n">failed</span> <span class="o">+=</span> <span class="mi">1</span>
+
+
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;2 -143&#39;</span><span class="p">)</span>
+    <span class="n">query</span> <span class="o">=</span> <span class="s1">&#39;QVTLKESGPALVKPTQTLTLTCTFSGFSLTTSGMGVGWIRQPPGKALEWLALIYWDDDKRYSTSLKSRLTISKDTSKNQVVLTMTNMDPMDTATYYCARG&#39;</span>
+
+    <span class="p">(</span><span class="n">seq</span><span class="p">,</span> <span class="n">status</span><span class="p">)</span> <span class="o">=</span> <span class="n">number_ighv</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">seq</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">pretty_gapped</span><span class="p">(</span><span class="n">seq</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">seq</span> <span class="o">==</span> <span class="s1">&#39;QVTLKESGP.ALVKPTQTLTLTCTFSGFSLT..TSGMGVGWIRQPPGKALEWLALIYWD...DDKRYSTSLK.SRLTISKDTSKNQVVLTMTNMDPMDTATYYCARG&#39;</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;passed&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;FAILED&#39;</span><span class="p">)</span>
+            <span class="n">failed</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">query</span> <span class="o">+</span> <span class="s1">&#39;-&gt;&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">status</span><span class="p">)</span>
+        <span class="n">failed</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;3-8&#39;</span><span class="p">)</span>
+    <span class="n">query</span> <span class="o">=</span> <span class="s1">&#39;EVQLVESGGGLVQPGRSLRPSCAASGFTFSSYGMHWVRQAPEEGLVWVSYIGSSTMYYADSVKGRFTISRDNAKNSLYLQMNSLRAEDTAVYYCVR&#39;</span>
+
+    <span class="p">(</span><span class="n">seq</span><span class="p">,</span> <span class="n">status</span><span class="p">)</span> <span class="o">=</span> <span class="n">number_ighv</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">seq</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">pretty_gapped</span><span class="p">(</span><span class="n">seq</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">seq</span> <span class="o">==</span> <span class="s1">&#39;EVQLVESGG.GLVQPGRSLRPSCAASGFTF....SSYGMHWVRQAPEEGLVWVSYIGS....STMYYADSVK.GRFTISRDNAKNSLYLQMNSLRAEDTAVYYCVR&#39;</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;passed&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;FAILED&#39;</span><span class="p">)</span>
+            <span class="n">failed</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">query</span> <span class="o">+</span> <span class="s1">&#39;-&gt;&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">status</span><span class="p">)</span>
+        <span class="n">failed</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;4-86&#39;</span><span class="p">)</span>
+    <span class="n">query</span> <span class="o">=</span> <span class="s1">&#39;QVQLQESGPGLVKPSETLSLTCAVSGGSISSSNWWSWIRQPPGKGLEWIGRISGSGGSTSDNPSLKSRVTISKDTSKNQFSLKLSSVTAADTAVYYCAR&#39;</span>
+
+    <span class="p">(</span><span class="n">seq</span><span class="p">,</span> <span class="n">status</span><span class="p">)</span> <span class="o">=</span> <span class="n">number_ighv</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">seq</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">pretty_gapped</span><span class="p">(</span><span class="n">seq</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">seq</span> <span class="o">==</span> <span class="s1">&#39;QVQLQESGP.GLVKPSETLSLTCAVSGGSIS...SSNWWSWIRQPPGKGLEWIGRISGS..GGSTSDNPSLK.SRVTISKDTSKNQFSLKLSSVTAADTAVYYCAR&#39;</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;passed&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;FAILED&#39;</span><span class="p">)</span>
+            <span class="n">failed</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">query</span> <span class="o">+</span> <span class="s1">&#39;-&gt;&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">status</span><span class="p">)</span>
+        <span class="n">failed</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;5-16&#39;</span><span class="p">)</span>
+    <span class="n">query</span> <span class="o">=</span> <span class="s1">&#39;EVQLVQSGAEVKRPGESLKISCKTSGYSFTSYWISWVRQMPGKGLEWMGAIDPSDSDTRYNPSFQGQVTISADKSISTAYLQWSRLKASDTATYYCAK&#39;</span>
+
+    <span class="p">(</span><span class="n">seq</span><span class="p">,</span> <span class="n">status</span><span class="p">)</span> <span class="o">=</span> <span class="n">number_ighv</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">seq</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">pretty_gapped</span><span class="p">(</span><span class="n">seq</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">seq</span> <span class="o">==</span> <span class="s1">&#39;EVQLVQSGA.EVKRPGESLKISCKTSGYSF....TSYWISWVRQMPGKGLEWMGAIDPS..DSDTRYNPSFQ.GQVTISADKSISTAYLQWSRLKASDTATYYCAK&#39;</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;passed&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;FAILED&#39;</span><span class="p">)</span>
+            <span class="n">failed</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">query</span> <span class="o">+</span> <span class="s1">&#39;-&gt;&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">status</span><span class="p">)</span>
+        <span class="n">failed</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;6-1&#39;</span><span class="p">)</span>
+    <span class="n">query</span> <span class="o">=</span> <span class="s1">&#39;QVQLQESGPGLVKPSQTLSLTCAISGDSVSSNSATWNWIRQSPSRGLEWLGRTYYRSKWYNDYAQSVQNRISINPDTSKNQFSLQLNSVTPEDMAVYYCAR&#39;</span>
+
+    <span class="p">(</span><span class="n">seq</span><span class="p">,</span> <span class="n">status</span><span class="p">)</span> <span class="o">=</span> <span class="n">number_ighv</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">seq</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">pretty_gapped</span><span class="p">(</span><span class="n">seq</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">seq</span> <span class="o">==</span> <span class="s1">&#39;QVQLQESGP.GLVKPSQTLSLTCAISGDSVS..SNSATWNWIRQSPSRGLEWLGRTYYRS.KWYNDYAQSVQ.NRISINPDTSKNQFSLQLNSVTPEDMAVYYCAR&#39;</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;passed&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;FAILED&#39;</span><span class="p">)</span>
+            <span class="n">failed</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">query</span> <span class="o">+</span> <span class="s1">&#39;-&gt;&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">status</span><span class="p">)</span>
+        <span class="n">failed</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;7-108&#39;</span><span class="p">)</span>
+    <span class="n">query</span> <span class="o">=</span> <span class="s1">&#39;QVQLVQSGAEVKQPGASVKVSCKASGYTFTSYGMNWVRQAHGQRLEWMGWINTDTGNPTYAQGFKERFTFSMDTSISTAYLQISSLKAEDTAVYYCAR&#39;</span>
+
+    <span class="p">(</span><span class="n">seq</span><span class="p">,</span> <span class="n">status</span><span class="p">)</span> <span class="o">=</span> <span class="n">number_ighv</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">seq</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">pretty_gapped</span><span class="p">(</span><span class="n">seq</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">seq</span> <span class="o">==</span> <span class="s1">&#39;QVQLVQSGA.EVKQPGASVKVSCKASGYTF....TSYGMNWVRQAHGQRLEWMGWINTD..TGNPTYAQGFK.ERFTFSMDTSISTAYLQISSLKAEDTAVYYCAR&#39;</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;passed&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;FAILED&#39;</span><span class="p">)</span>
+            <span class="n">failed</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">query</span> <span class="o">+</span> <span class="s1">&#39;-&gt;&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">status</span><span class="p">)</span>
+        <span class="n">failed</span> <span class="o">+=</span> <span class="mi">1</span>
+
+
+    <span class="k">if</span> <span class="n">failed</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;All tests passed.&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%d</span><span class="s1"> tests failed.&#39;</span> <span class="o">%</span> <span class="n">failed</span><span class="p">)</span></div>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">run_tests</span><span class="p">()</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, William Lees.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

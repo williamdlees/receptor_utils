@@ -12,10 +12,10 @@ receptor\_utils.novel\_allele\_name module
    :undoc-members:
    :show-inheritance:
 
-receptor\_utils.number\_ighv module
+receptor\_utils.number\_v module
 -----------------------------------
 
-.. automodule:: receptor_utils.number_ighv
+.. automodule:: receptor_utils.number_v
    :members:
    :undoc-members:
    :show-inheritance:
