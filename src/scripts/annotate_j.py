@@ -20,7 +20,7 @@ def main():
 
     if args.seq_file.lower().endswith('.json'):
         seqs = seqs_from_json(args)
-    elif args.ref_file.lower().endswith('.fasta'):
+    elif args.seq_file.lower().endswith('.fasta'):
         seqs = simple.read_fasta(args.seq_file)
     else:
         print("Error: reference file must be a .json or .fasta file")
