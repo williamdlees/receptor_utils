@@ -319,7 +319,7 @@ def closest_ref(seq: str, ref: dict):
     :return: the name of the closest entry, entries, if >1 sequences in the reference set were equally close
     :rtype: list
     """
-    closest_diff = 999
+    closest_diff = 99999
     closest_names = []
     for ref_name, ref_seq in ref.items():
         diff = nt_diff(seq, ref_seq)
