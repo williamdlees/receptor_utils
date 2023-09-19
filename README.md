@@ -4,6 +4,9 @@ Some tools I find useful for working with Ig receptor sequences, including suppo
 the creation of custom IgBlast databases. Please see the [documentation](https://williamdlees.github.io/receptor_utils/_build/html/introduction.html)
 for further details.
 
+Changes in version 0.0.42:
+- better handling of long target sequences
+
 Changes in version 0.0.41:
 - annotate_j: fix issue with processing FASTA input
 
