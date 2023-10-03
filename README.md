@@ -4,6 +4,10 @@ Some tools I find useful for working with Ig receptor sequences, including suppo
 the creation of custom IgBlast databases. Please see the [documentation](https://williamdlees.github.io/receptor_utils/_build/html/introduction.html)
 for further details.
 
+Changes in version 0.0.43:
+- remove dependency on deprecated Bio.pairwise2
+- improve naming of insertions, e.g. IGHV1-2*03_i7g_i7a would now be IGHV1-2*03_i7ga
+
 Changes in version 0.0.42:
 - better handling of long target sequences
 
