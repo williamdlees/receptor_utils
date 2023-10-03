@@ -10,8 +10,8 @@
 
 from receptor_utils import simple_bio_seq as simple
 from receptor_utils import number_v
-from Bio.pairwise2 import align, format_alignment
 from collections import namedtuple
+from Bio import Align
 
 
 # Make a name for the novel allele, given its gapped or ungapped sequence
@@ -67,7 +67,7 @@ def name_novel(novel_seq: str, ref_set: dict, v_gene: bool = True):
             novel_seq, aa, notes = number_v.gap_sequence(novel_seq, ref_set, ungapped_ref_set)
 
 
-    closest_ref_name = simple.closest_ref(novel_seq, ref_set)[0]
+    closest_ref_name = closest_aligned_ref(novel_seq, ref_set)[0]
     closest_ref_seq = ref_set[closest_ref_name]
 
     diffs = {}
@@ -75,10 +75,10 @@ def name_novel(novel_seq: str, ref_set: dict, v_gene: bool = True):
     class Diff:
         pass
 
-    # if we have a lot of diffs, check for indels
+    # check for indels
 
     n_diffs = simple.nt_diff(closest_ref_seq, novel_seq)
-    if n_diffs > 10:
+    if n_diffs > 0:
         ungapped_closest_ref = closest_ref_seq.replace('.', '')
         fixed_seq, insertions = find_indels(ungapped_closest_ref, novel_seq.replace('.', ''))
         fixed_diffs = simple.nt_diff(ungapped_closest_ref, fixed_seq)
@@ -174,15 +174,13 @@ def name_novel(novel_seq: str, ref_set: dict, v_gene: bool = True):
             else:
                 suffs.append('%d%s%d' % (d.pos + 1, d.novel.lower(), d.pos + len(d.novel)))
 
-        for insertion in insertions:
-            if insertion[0] == i:
-                suffs.append('i%d%s' % (insertion[0] + 1, insertion[1].lower()))
+        insertions_at_i = [insertion for insertion in insertions if insertion[0] == i]
+        if len(insertions_at_i) > 0:
+            suffs.append('i%d%s' % (i + 1, ''.join([insertion[1].lower() for insertion in insertions_at_i])))
 
     novel_name = closest_ref_name + '_' + '_'.join(suffs) if len(suffs) else closest_ref_name
 
-    # put the insertions into the sequence. Note the order, we process the cigar without the insertions in the sequence,
-    # but cigar_state.processed_seq_len includes a count of the insertions. So we need to put them in before checking lengths
-    # ...and this gives us an honest comparison of the seq we want and its cigar
+    # put the insertions into the sequence. 
 
     for i in range(len(insertions) - 1, -1, -1):
         novel_seq = novel_seq[:insertions[i][0] + 1] + insertions[i][1] + novel_seq[insertions[i][0] + 1:]
@@ -190,20 +188,53 @@ def name_novel(novel_seq: str, ref_set: dict, v_gene: bool = True):
     return novel_name, novel_seq, notes
 
 
+def aligned_diff(novel_seq: str, ref_seq: str):
+    aligner = Align.PairwiseAligner()
+    aligner.mode = 'global'
+    aligner.open_gap_score = -5
+    aligner.extend_gap_score = -1
+    aligner.match_score = 2
+    aligner.mismatch_score = 0
+    aligner.target_end_gap_score = 1
+
+    best_alignment = aligner.align(novel_seq, ref_seq)[0]
+
+    # return 0-based start, end and score
+    return best_alignment[0], best_alignment[1], best_alignment.score
+
+
+# Find the closest reference sequence to a query sequence using a global alignment
+# Returns a list of equally close reference names
+def closest_aligned_ref(seq: str, ref: dict):
+    """Given an input sequence, find the closest entry or entries in an IMGT or other reference set as determined by a global alignment.
+
+    :param seq: the input sequence
+    :type seq: str
+    :param ref: the reference set
+    :type ref: dict
+    :return: the name of the closest entry, entries, if >1 sequences in the reference set were equally close
+    :rtype: list
+    """
+    closest_score = 0
+    closest_names = []
+    for ref_name, ref_seq in ref.items():
+        score = aligned_diff(seq, ref_seq)[2]
+        if score > closest_score:
+            closest_score = score
+            closest_names = [ref_name]
+        elif score == closest_score:
+            closest_names.append(ref_name)
+    return closest_names
+
+
 # Align novel sequence against the reference sequence and check for indels
 def find_indels(closest_ref_seq, novel_seq):
-    a = align.globalms(closest_ref_seq, novel_seq, 2, 0, -5, -1, one_alignment_only=True, penalize_end_gaps=(False, False))
-    # print(format_alignment(*a[0]))
-    
     insertions = []
     fixed_novel = ''        # this will be the novel without any insertions, and now aligned so that there is a '-' for any deletion
-        
-    a = a[0]
 
-    # remove any insertions at the end, as we don't want them represented this way
+    seqA, seqB, _ = aligned_diff(closest_ref_seq, novel_seq)
+    seqA = list(seqA)
 
-    seqA = list(a.seqA)
-    seqB = a.seqB
     for i in range(len(seqA)-1, -1, -1):
         if seqA[i] == '-':
             del seqA[i]
