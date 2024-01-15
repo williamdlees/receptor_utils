@@ -1,5 +1,5 @@
 Metadata-Version: 2.1
-Name: receptor-utils
+Name: receptor_utils
 Version: 0.0.43
 Summary: Some tools I find useful for working with Ig receptor sequences
 Home-page: https://github.com/williamdlees/receptor_utils

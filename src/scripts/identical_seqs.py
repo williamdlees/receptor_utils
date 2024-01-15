@@ -36,10 +36,10 @@ def main():
             print(', '.join(names))
 
     print('Sub-sequences:')
-    for n1 in seqs:
-        for n2 in seqs:
-            if n1 != n2 and seqs[n1] != seqs[n2] and n1 in n2:
-                print('%s is a sub-sequence of %s' % (n1, n2))
+    for n1, s1 in seqs.items():
+        for n2, s2 in seqs.items():
+            if s1 != s2  and s1 in s2:
+                print(f'{n1} ({s1})is a sub-sequence of {n2} ({s2})')
 
 
 
