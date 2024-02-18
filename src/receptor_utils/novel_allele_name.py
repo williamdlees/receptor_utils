@@ -218,7 +218,7 @@ def closest_aligned_ref(seq: str, ref: dict):
     closest_score = -1000000
     closest_names = []
     for ref_name, ref_seq in ref.items():
-        score = aligned_diff(seq, ref_seq)[2]
+        score = aligned_diff(ref_seq, seq)[2]
         if score > closest_score:
             closest_score = score
             closest_names = [ref_name]
