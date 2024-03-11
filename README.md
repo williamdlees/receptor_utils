@@ -4,6 +4,10 @@ Some tools I find useful for working with Ig receptor sequences, including suppo
 the creation of custom IgBlast databases. Please see the [documentation](https://williamdlees.github.io/receptor_utils/_build/html/introduction.html)
 for further details.
 
+Changes in version 0.0.47:
+- write_csv now takes a n optional scan_all argument. If True, all records to be added are scanned for keywords and the 
+columns are extended to include keywords found in any records
+
 Changes in version 0.0.46:
 - fix issue with naming of D novel alleles - this could cause existing alleles to be named as novel by the utilities
 
