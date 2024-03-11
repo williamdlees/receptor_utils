@@ -355,7 +355,7 @@ def read_csv(file: str, delimiter: str = None):
 
 
 # Write csv file given a list of dicts. Fieldnames are taken from the first row
-def write_csv(file: str, rows: list, delimiter: str = None):
+def write_csv(file: str, rows: list, delimiter: str = None, scan_all: bool = False):
     """Write a list of dicts to a delimited file. The header row is determined from the keys of the first item
 
     :param file: filename of the delimited file to create
@@ -364,16 +364,26 @@ def write_csv(file: str, rows: list, delimiter: str = None):
     :type rows: list
     :param delimiter: the delimiter (',' by default)
     :type delimiter: str
+    :param scan_all: If True, scan all rows to find the full set of keys
+    :type scan_all: bool
     :return: None
     :rtype: None
     """
     if not rows:
         return
 
-    fieldnames = rows[0].keys()
+    if scan_all:
+        fieldnames = list()
+        for row in rows:
+            for key in row.keys():
+                if key not in fieldnames:
+                    fieldnames.append(key)       # use lists rather set so we can retain ordering 
+    else:
+        fieldnames = rows[0].keys()
+
     with open(file, 'w', newline='') as fo:
         if delimiter:
-            writer = csv.DictWriter(fo, fieldnames=fieldnames, delimiter=delimiter)
+            writer = csv.DictWriter(fo, fieldnames=list(fieldnames), delimiter=delimiter)
         else:
             writer = csv.DictWriter(fo, fieldnames=fieldnames)
 
@@ -381,4 +391,3 @@ def write_csv(file: str, rows: list, delimiter: str = None):
         
         for row in rows:
             writer.writerow(row)
-            
