@@ -41,7 +41,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../introduction.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../custom_igblast.html">Using custom databases with IgBlast</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../scripts.html">Command-Line Utilities</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../modules.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">receptor_utils</a></li>
 </ul>
 
         </div>
@@ -390,7 +390,7 @@
 <span class="sd">    :return: the name of the closest entry, entries, if &gt;1 sequences in the reference set were equally close</span>
 <span class="sd">    :rtype: list</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">closest_diff</span> <span class="o">=</span> <span class="mi">999</span>
+    <span class="n">closest_diff</span> <span class="o">=</span> <span class="mi">99999</span>
     <span class="n">closest_names</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">ref_name</span><span class="p">,</span> <span class="n">ref_seq</span> <span class="ow">in</span> <span class="n">ref</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
         <span class="n">diff</span> <span class="o">=</span> <span class="n">nt_diff</span><span class="p">(</span><span class="n">seq</span><span class="p">,</span> <span class="n">ref_seq</span><span class="p">)</span>
@@ -426,7 +426,7 @@
 
 
 <span class="c1"># Write csv file given a list of dicts. Fieldnames are taken from the first row</span>
-<div class="viewcode-block" id="write_csv"><a class="viewcode-back" href="../../receptor_utils.html#receptor_utils.simple_bio_seq.write_csv">[docs]</a><span class="k">def</span> <span class="nf">write_csv</span><span class="p">(</span><span class="n">file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">rows</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">delimiter</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="write_csv"><a class="viewcode-back" href="../../receptor_utils.html#receptor_utils.simple_bio_seq.write_csv">[docs]</a><span class="k">def</span> <span class="nf">write_csv</span><span class="p">(</span><span class="n">file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">rows</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">delimiter</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">scan_all</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Write a list of dicts to a delimited file. The header row is determined from the keys of the first item</span>
 
 <span class="sd">    :param file: filename of the delimited file to create</span>
@@ -435,16 +435,26 @@
 <span class="sd">    :type rows: list</span>
 <span class="sd">    :param delimiter: the delimiter (&#39;,&#39; by default)</span>
 <span class="sd">    :type delimiter: str</span>
+<span class="sd">    :param scan_all: If True, scan all rows to find the full set of keys</span>
+<span class="sd">    :type scan_all: bool</span>
 <span class="sd">    :return: None</span>
 <span class="sd">    :rtype: None</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">rows</span><span class="p">:</span>
         <span class="k">return</span>
 
-    <span class="n">fieldnames</span> <span class="o">=</span> <span class="n">rows</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">scan_all</span><span class="p">:</span>
+        <span class="n">fieldnames</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">rows</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">row</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">fieldnames</span><span class="p">:</span>
+                    <span class="n">fieldnames</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>       <span class="c1"># use lists rather set so we can retain ordering </span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">fieldnames</span> <span class="o">=</span> <span class="n">rows</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">newline</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fo</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">delimiter</span><span class="p">:</span>
-            <span class="n">writer</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">DictWriter</span><span class="p">(</span><span class="n">fo</span><span class="p">,</span> <span class="n">fieldnames</span><span class="o">=</span><span class="n">fieldnames</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="n">delimiter</span><span class="p">)</span>
+            <span class="n">writer</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">DictWriter</span><span class="p">(</span><span class="n">fo</span><span class="p">,</span> <span class="n">fieldnames</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">fieldnames</span><span class="p">),</span> <span class="n">delimiter</span><span class="o">=</span><span class="n">delimiter</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">writer</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">DictWriter</span><span class="p">(</span><span class="n">fo</span><span class="p">,</span> <span class="n">fieldnames</span><span class="o">=</span><span class="n">fieldnames</span><span class="p">)</span>
 
@@ -452,7 +462,6 @@
         
         <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">rows</span><span class="p">:</span>
             <span class="n">writer</span><span class="o">.</span><span class="n">writerow</span><span class="p">(</span><span class="n">row</span><span class="p">)</span></div>
-            
 </pre></div>
 
            </div>

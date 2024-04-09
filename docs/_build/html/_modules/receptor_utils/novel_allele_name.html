@@ -41,7 +41,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../introduction.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../custom_igblast.html">Using custom databases with IgBlast</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../scripts.html">Command-Line Utilities</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../modules.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">receptor_utils</a></li>
 </ul>
 
         </div>
@@ -81,8 +81,8 @@
 
 <span class="kn">from</span> <span class="nn">receptor_utils</span> <span class="kn">import</span> <span class="n">simple_bio_seq</span> <span class="k">as</span> <span class="n">simple</span>
 <span class="kn">from</span> <span class="nn">receptor_utils</span> <span class="kn">import</span> <span class="n">number_v</span>
-<span class="kn">from</span> <span class="nn">Bio.pairwise2</span> <span class="kn">import</span> <span class="n">align</span><span class="p">,</span> <span class="n">format_alignment</span>
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">namedtuple</span>
+<span class="kn">from</span> <span class="nn">Bio</span> <span class="kn">import</span> <span class="n">Align</span>
 
 
 <span class="c1"># Make a name for the novel allele, given its gapped or ungapped sequence</span>
@@ -95,6 +95,7 @@
 
 
 <div class="viewcode-block" id="name_novel"><a class="viewcode-back" href="../../receptor_utils.html#receptor_utils.novel_allele_name.name_novel">[docs]</a><span class="k">def</span> <span class="nf">name_novel</span><span class="p">(</span><span class="n">novel_seq</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">ref_set</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">v_gene</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+
     <span class="sd">&quot;&quot;&quot;Make a name for the novel allele, given its gapped or ungapped sequence.</span>
 <span class="sd">    The name conforms to the description `here &lt;https://wordpress.vdjbase.org/index.php/vdjbase_help/airr-seq-data-allele-names/&gt;`_ .</span>
 <span class="sd">    The sequence must be full-length at the 5 prime end, or gapped</span>
@@ -108,10 +109,6 @@
 <span class="sd">    :return: tuple consisting of three strings: novel_name, novel_seq, notes. novel_seq is gapped in the case of a V-gene</span>
 <span class="sd">    :rtype: tuple</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="c1">#if novel_seq == &#39;CAGGTGCAGCTGCAGGAGTCGGGCCCAGGACTGGTGAAGCCTTCGGACACCCTGTCCCTCACCTGCGCTGTCTCTGGTTACTCCATCAGCAGTAGTAACTGGTGGGGCTGGATCCGGCAGCCCCCAGGGAAGGGACTGGAGTGGATTGGGTACATCTATTATAGTGGGAGCATCTACTACAACCCGTCCCTCAAGAGTCGAGTCACCATGTCAGTAGACACGTCCAAGAACCAGTTCTCCCTGAAGCTGAGCTCTGTGACCGCCGTGGACACGGCCGTGTATTACTACCGAGAAA&#39;:</span>
-    <span class="c1">#    breakpoint()</span>
-
 
     <span class="n">novel_seq</span> <span class="o">=</span> <span class="n">novel_seq</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
     <span class="n">notes</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
@@ -138,7 +135,7 @@
             <span class="n">novel_seq</span><span class="p">,</span> <span class="n">aa</span><span class="p">,</span> <span class="n">notes</span> <span class="o">=</span> <span class="n">number_v</span><span class="o">.</span><span class="n">gap_sequence</span><span class="p">(</span><span class="n">novel_seq</span><span class="p">,</span> <span class="n">ref_set</span><span class="p">,</span> <span class="n">ungapped_ref_set</span><span class="p">)</span>
 
 
-    <span class="n">closest_ref_name</span> <span class="o">=</span> <span class="n">simple</span><span class="o">.</span><span class="n">closest_ref</span><span class="p">(</span><span class="n">novel_seq</span><span class="p">,</span> <span class="n">ref_set</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">closest_ref_name</span> <span class="o">=</span> <span class="n">closest_aligned_ref</span><span class="p">(</span><span class="n">novel_seq</span><span class="p">,</span> <span class="n">ref_set</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
     <span class="n">closest_ref_seq</span> <span class="o">=</span> <span class="n">ref_set</span><span class="p">[</span><span class="n">closest_ref_name</span><span class="p">]</span>
 
     <span class="n">diffs</span> <span class="o">=</span> <span class="p">{}</span>
@@ -146,10 +143,10 @@
     <span class="k">class</span> <span class="nc">Diff</span><span class="p">:</span>
         <span class="k">pass</span>
 
-    <span class="c1"># if we have a lot of diffs, check for indels</span>
+    <span class="c1"># check for indels</span>
 
     <span class="n">n_diffs</span> <span class="o">=</span> <span class="n">simple</span><span class="o">.</span><span class="n">nt_diff</span><span class="p">(</span><span class="n">closest_ref_seq</span><span class="p">,</span> <span class="n">novel_seq</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">n_diffs</span> <span class="o">&gt;</span> <span class="mi">10</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">n_diffs</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">ungapped_closest_ref</span> <span class="o">=</span> <span class="n">closest_ref_seq</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
         <span class="n">fixed_seq</span><span class="p">,</span> <span class="n">insertions</span> <span class="o">=</span> <span class="n">find_indels</span><span class="p">(</span><span class="n">ungapped_closest_ref</span><span class="p">,</span> <span class="n">novel_seq</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">))</span>
         <span class="n">fixed_diffs</span> <span class="o">=</span> <span class="n">simple</span><span class="o">.</span><span class="n">nt_diff</span><span class="p">(</span><span class="n">ungapped_closest_ref</span><span class="p">,</span> <span class="n">fixed_seq</span><span class="p">)</span>
@@ -245,15 +242,13 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">suffs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%d%s%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">pos</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">d</span><span class="o">.</span><span class="n">novel</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span> <span class="n">d</span><span class="o">.</span><span class="n">pos</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">novel</span><span class="p">)))</span>
 
-        <span class="k">for</span> <span class="n">insertion</span> <span class="ow">in</span> <span class="n">insertions</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">insertion</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">i</span><span class="p">:</span>
-                <span class="n">suffs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;i</span><span class="si">%d%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">insertion</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">insertion</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()))</span>
+        <span class="n">insertions_at_i</span> <span class="o">=</span> <span class="p">[</span><span class="n">insertion</span> <span class="k">for</span> <span class="n">insertion</span> <span class="ow">in</span> <span class="n">insertions</span> <span class="k">if</span> <span class="n">insertion</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">i</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">insertions_at_i</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">suffs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;i</span><span class="si">%d%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">insertion</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">for</span> <span class="n">insertion</span> <span class="ow">in</span> <span class="n">insertions_at_i</span><span class="p">])))</span>
 
     <span class="n">novel_name</span> <span class="o">=</span> <span class="n">closest_ref_name</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">suffs</span><span class="p">)</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">suffs</span><span class="p">)</span> <span class="k">else</span> <span class="n">closest_ref_name</span>
 
-    <span class="c1"># put the insertions into the sequence. Note the order, we process the cigar without the insertions in the sequence,</span>
-    <span class="c1"># but cigar_state.processed_seq_len includes a count of the insertions. So we need to put them in before checking lengths</span>
-    <span class="c1"># ...and this gives us an honest comparison of the seq we want and its cigar</span>
+    <span class="c1"># put the insertions into the sequence. </span>
 
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">insertions</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
         <span class="n">novel_seq</span> <span class="o">=</span> <span class="n">novel_seq</span><span class="p">[:</span><span class="n">insertions</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">insertions</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">novel_seq</span><span class="p">[</span><span class="n">insertions</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:]</span>
@@ -261,20 +256,53 @@
     <span class="k">return</span> <span class="n">novel_name</span><span class="p">,</span> <span class="n">novel_seq</span><span class="p">,</span> <span class="n">notes</span></div>
 
 
+<div class="viewcode-block" id="aligned_diff"><a class="viewcode-back" href="../../receptor_utils.html#receptor_utils.novel_allele_name.aligned_diff">[docs]</a><span class="k">def</span> <span class="nf">aligned_diff</span><span class="p">(</span><span class="n">novel_seq</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">ref_seq</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="n">aligner</span> <span class="o">=</span> <span class="n">Align</span><span class="o">.</span><span class="n">PairwiseAligner</span><span class="p">()</span>
+    <span class="n">aligner</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="s1">&#39;global&#39;</span>
+    <span class="n">aligner</span><span class="o">.</span><span class="n">open_gap_score</span> <span class="o">=</span> <span class="o">-</span><span class="mi">5</span>
+    <span class="n">aligner</span><span class="o">.</span><span class="n">extend_gap_score</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="n">aligner</span><span class="o">.</span><span class="n">match_score</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">aligner</span><span class="o">.</span><span class="n">mismatch_score</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">aligner</span><span class="o">.</span><span class="n">target_end_gap_score</span> <span class="o">=</span> <span class="mi">1</span>
+
+    <span class="n">best_alignment</span> <span class="o">=</span> <span class="n">aligner</span><span class="o">.</span><span class="n">align</span><span class="p">(</span><span class="n">novel_seq</span><span class="p">,</span> <span class="n">ref_seq</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="c1"># return 0-based start, end and score</span>
+    <span class="k">return</span> <span class="n">best_alignment</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">best_alignment</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">best_alignment</span><span class="o">.</span><span class="n">score</span></div>
+
+
+<span class="c1"># Find the closest reference sequence to a query sequence using a global alignment</span>
+<span class="c1"># Returns a list of equally close reference names</span>
+<div class="viewcode-block" id="closest_aligned_ref"><a class="viewcode-back" href="../../receptor_utils.html#receptor_utils.novel_allele_name.closest_aligned_ref">[docs]</a><span class="k">def</span> <span class="nf">closest_aligned_ref</span><span class="p">(</span><span class="n">seq</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">ref</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Given an input sequence, find the closest entry or entries in an IMGT or other reference set as determined by a global alignment.</span>
+
+<span class="sd">    :param seq: the input sequence</span>
+<span class="sd">    :type seq: str</span>
+<span class="sd">    :param ref: the reference set</span>
+<span class="sd">    :type ref: dict</span>
+<span class="sd">    :return: the name of the closest entry, entries, if &gt;1 sequences in the reference set were equally close</span>
+<span class="sd">    :rtype: list</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">closest_score</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1000000</span>
+    <span class="n">closest_names</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">ref_name</span><span class="p">,</span> <span class="n">ref_seq</span> <span class="ow">in</span> <span class="n">ref</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">score</span> <span class="o">=</span> <span class="n">aligned_diff</span><span class="p">(</span><span class="n">ref_seq</span><span class="p">,</span> <span class="n">seq</span><span class="p">)[</span><span class="mi">2</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">score</span> <span class="o">&gt;</span> <span class="n">closest_score</span><span class="p">:</span>
+            <span class="n">closest_score</span> <span class="o">=</span> <span class="n">score</span>
+            <span class="n">closest_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">ref_name</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">score</span> <span class="o">==</span> <span class="n">closest_score</span><span class="p">:</span>
+            <span class="n">closest_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ref_name</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">closest_names</span></div>
+
+
 <span class="c1"># Align novel sequence against the reference sequence and check for indels</span>
 <div class="viewcode-block" id="find_indels"><a class="viewcode-back" href="../../receptor_utils.html#receptor_utils.novel_allele_name.find_indels">[docs]</a><span class="k">def</span> <span class="nf">find_indels</span><span class="p">(</span><span class="n">closest_ref_seq</span><span class="p">,</span> <span class="n">novel_seq</span><span class="p">):</span>
-    <span class="n">a</span> <span class="o">=</span> <span class="n">align</span><span class="o">.</span><span class="n">globalms</span><span class="p">(</span><span class="n">closest_ref_seq</span><span class="p">,</span> <span class="n">novel_seq</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">one_alignment_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">penalize_end_gaps</span><span class="o">=</span><span class="p">(</span><span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">))</span>
-    <span class="c1"># print(format_alignment(*a[0]))</span>
-    
     <span class="n">insertions</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">fixed_novel</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>        <span class="c1"># this will be the novel without any insertions, and now aligned so that there is a &#39;-&#39; for any deletion</span>
-        
-    <span class="n">a</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
-    <span class="c1"># remove any insertions at the end, as we don&#39;t want them represented this way</span>
+    <span class="n">seqA</span><span class="p">,</span> <span class="n">seqB</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">aligned_diff</span><span class="p">(</span><span class="n">closest_ref_seq</span><span class="p">,</span> <span class="n">novel_seq</span><span class="p">)</span>
+    <span class="n">seqA</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">seqA</span><span class="p">)</span>
 
-    <span class="n">seqA</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">seqA</span><span class="p">)</span>
-    <span class="n">seqB</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">seqB</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">seqA</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">seqA</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;-&#39;</span><span class="p">:</span>
             <span class="k">del</span> <span class="n">seqA</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>

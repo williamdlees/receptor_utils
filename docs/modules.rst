@@ -1,7 +1,7 @@
 .. _api_label:
 
-API
-===
+receptor_utils
+==============
 
 .. toctree::
    :maxdepth: 4

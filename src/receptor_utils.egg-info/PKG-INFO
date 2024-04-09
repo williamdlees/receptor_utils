@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: receptor_utils
-Version: 0.0.47
+Version: 0.0.48
 Summary: Some tools I find useful for working with Ig receptor sequences
 Home-page: https://github.com/williamdlees/receptor_utils
 Author: William Lees
@@ -21,7 +21,11 @@ the creation of custom IgBlast databases. Please see the [documentation](https:/
 for further details.
 
 Changes in version 0.0.47:
-- write_csv now takes a n optional scan_all argument. If True, all records to be added are scanned for keywords and the 
+- Added an option to make_igblast_ndm to specify CDR positions, for use with IMGT-gapped germline sets that do not follow
+the canonical alignment. Added further explanation to the documentation.
+
+Changes in version 0.0.47:
+- write_csv now takes an optional scan_all argument. If True, all records to be added are scanned for keywords and the 
 columns are extended to include keywords found in any records
 
 Changes in version 0.0.46:

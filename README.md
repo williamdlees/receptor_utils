@@ -4,8 +4,12 @@ Some tools I find useful for working with Ig receptor sequences, including suppo
 the creation of custom IgBlast databases. Please see the [documentation](https://williamdlees.github.io/receptor_utils/_build/html/introduction.html)
 for further details.
 
+Changes in version 0.0.48:
+- Added an option to make_igblast_ndm to specify CDR positions, for use with IMGT-gapped germline sets that do not follow
+the canonical alignment. Added further explanation to the documentation.
+
 Changes in version 0.0.47:
-- write_csv now takes a n optional scan_all argument. If True, all records to be added are scanned for keywords and the 
+- write_csv now takes an optional scan_all argument. If True, all records to be added are scanned for keywords and the 
 columns are extended to include keywords found in any records
 
 Changes in version 0.0.46:

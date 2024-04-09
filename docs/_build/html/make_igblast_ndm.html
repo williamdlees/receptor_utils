@@ -48,15 +48,17 @@
 <li class="toctree-l2 current"><a class="reference internal" href="scripts.html#working-with-igblast">Working with IgBLAST</a><ul class="current">
 <li class="toctree-l3 current"><a class="current reference internal" href="#">make_igblast_ndm</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#positional-arguments">Positional Arguments</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#named-arguments">Named Arguments</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="#notes">Notes</a></li>
 <li class="toctree-l3"><a class="reference internal" href="annotate_j.html">annotate_j</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="scripts.html#convenience-tools">Convenience Tools</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="modules.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">receptor_utils</a></li>
 </ul>
 
         </div>
@@ -88,7 +90,7 @@
 <span id="make-igblast-ndm-label"></span><h1>make_igblast_ndm<a class="headerlink" href="#make-igblast-ndm" title="Permalink to this heading"></a></h1>
 <p><p>Make IMGT-delineated igblast ndm file from an IMGT-gapped variable-region reference set or AIRR-C JSON format file.</p>
 </p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">usage</span><span class="p">:</span> <span class="n">make_igblast_ndm</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="n">ref_file</span> <span class="n">chain</span> <span class="n">ndm_file</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">usage</span><span class="p">:</span> <span class="n">make_igblast_ndm</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">cdr_coords</span> <span class="n">CDR_COORDS</span><span class="p">]</span> <span class="n">ref_file</span> <span class="n">chain</span> <span class="n">ndm_file</span>
 </pre></div>
 </div>
 <section id="positional-arguments">
@@ -105,6 +107,26 @@
 </dd>
 </dl>
 </section>
+<section id="named-arguments">
+<h2>Named Arguments<a class="headerlink" href="#named-arguments" title="Permalink to this heading"></a></h2>
+<dl class="option-list">
+<dt><kbd>--cdr_coords, -c</kbd></dt>
+<dd><p>comma-separated list of 1-based co-ordinates for CDR1, CDR2 and CDR3-start (default 79,114,166,195,313)</p>
+</dd>
+</dl>
+</section>
+</section>
+<section id="notes">
+<h1>Notes<a class="headerlink" href="#notes" title="Permalink to this heading"></a></h1>
+<p>If the reference set is available in AIRR-C JSON format, it is recommended to use this format as it will ensure correct placement of the CDRs using coordinates for each sequence from the file.
+All germline sets on <a class="reference external" href="https://ogrdb.airr-community.org">OGRDB</a> are available in this format.</p>
+<p>If the fasta format is used, V sequences must be IMGT gapped. By default, make_igblast_ndm assumes that the gapped alignment follows the  <a class="reference external" href="https://www.imgt.org/IMGTScientificChart/Numbering/IMGTnumbering.html">IMGT numbering scheme</a>
+with no inserted codons. Please note that some reference sets available from IMGT, such as those for rhesus macaque, do contain insertions in the alignment. In this case, you can use the <code class="docutils literal notranslate"><span class="pre">--cdr_coords</span></code> option to
+specify coordinates of the CDRs. If in doubt, please analyse one sequence from the gapped set in IMGT V-QUEST and review the codon alignment: if there are insertions, denoted by a codon number followed by A, B, C, etc.,
+you will need to specify the CDR coordinates using the <code class="docutils literal notranslate"><span class="pre">--cdr_coords</span></code> option. An alternative is to review the sequences in the reference set and remove the insertions. This may be an option, depending upon
+the application, the number of germline sequences that have the insertion, and their usage in your samples. We offer a specific tool, <a class="reference internal" href="fix_macaque_gaps.html#fix-macaque-gaps-label"><span class="std std-ref">fix_macaque_gaps</span></a> to conduct this realignment for IMGT rhesus macaque sets.</p>
+<p>Please note that downstream analysis tools may assume that IMGT-gapped sequences follow the default alignment with no inserted codons. If you use a tool that requires a gapped set of V sequences and there is no
+provision to specify CDR coordinates, this is likely to be the case.</p>
 </section>
 
 

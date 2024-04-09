@@ -17,6 +17,7 @@ def get_parser():
     parser.add_argument('ref_file', help='gapped reference set (.fasta, .json)')
     parser.add_argument('chain', help='chain as required by igblast (eg VH)')
     parser.add_argument('ndm_file', help='output file (ndm)')
+    parser.add_argument('--cdr_coords', '-c', help='comma-separated list of 1-based co-ordinates for CDR1, CDR2 and CDR3-start (default 79,114,166,195,313)')
     return parser
 
 
@@ -28,16 +29,39 @@ def main():
     if args.chain not in allowed_chains:
         print(f"Error: chain must be one of {', '.join(allowed_chains)}")
         exit(1)
+
+    cdr_coords = [79, 114, 166, 195, 313]
+    if args.cdr_coords is not None:
+        if not args.ref_file.lower().endswith('.fasta'):
+            print("Error: CDR coordinates are only used with fasta files")
+            exit(1)
+        cdr_coords = args.cdr_coords.split(',')
+        if len(cdr_coords) != 5:
+            print("Error: CDR coordinates must be a comma-separated list of 5 integers")
+            exit(1)
+        try:
+            cdr_coords = [int(x) for x in cdr_coords]
+        except:
+            print("Error: CDR coordinates must be a comma-separated list of 5 integers")
+            exit(1)
+        
+        last_coord = 0
+        for coord in cdr_coords:
+            if coord < 0 or coord <= last_coord:
+                print("Error: CDR coordinates must be positive integers in ascending order")
+                exit(1)
+            last_coord = coord
     
     if args.ref_file.lower().endswith('.json'):
         from_json(args)
     elif args.ref_file.lower().endswith('.fasta'):
-        from_fasta(args)
+        from_fasta(args, cdr_coords)
     else:
         print("Error: reference file must be a .json or .fasta file")
         exit(1)
 
-def from_fasta(args):
+
+def from_fasta(args, cdr_coords):
     seqs = simple.read_fasta(args.ref_file)
     
     
@@ -57,20 +81,21 @@ def from_fasta(args):
                 omissions = True
                 continue
 
-            fo.write(record_from_gapped_seq(label, seq, args.chain))
+            fo.write(record_from_gapped_seq(label, seq, args.chain, cdr_coords))
 
     if omissions:
         print('Omissions will not affect results provided at least one non-truncated allele of the gene is present.')
 
 
-def record_from_gapped_seq(label, seq, chain):
+def record_from_gapped_seq(label, seq, chain, cdr_coords):
     # Python-based ranges of IMGT elements
+    # default: 79,114,166,195,313
     # <---------------------------------- FR1-IMGT -------------------------------->______________ CDR1-IMGT ___________<-------------------- FR2-IMGT ------------------->___________ CDR2-IMGT ________<----------------------------------------------------- FR3-IMGT ----------------------------------------------------> CDR3-IMGT
-    imgt_fr1 = (0, 78)
-    imgt_cdr1 = (78, 114)
-    imgt_fr2 = (114, 165)
-    imgt_cdr2 = (165, 195)
-    imgt_fr3 = (195, 312)
+    imgt_fr1 = (0, cdr_coords[0] - 1)
+    imgt_cdr1 = (cdr_coords[0] - 1, cdr_coords[1])
+    imgt_fr2 = (cdr_coords[1], cdr_coords[2] - 1)
+    imgt_cdr2 = (cdr_coords[2] - 1, cdr_coords[3])
+    imgt_fr3 = (cdr_coords[3], cdr_coords[4] - 1)
 
     rec = []
     rec.append(label)
@@ -126,10 +151,11 @@ def from_json(args):
                         rec = record_from_json(allele['label'], delineation, args.chain)
                         
                         # compare with gapped sequence derivation and warn if there is a mismatch
-                        rec_from_gapped = record_from_gapped_seq(allele['label'], delineation['aligned_sequence'], args.chain)
+                        # can't make this comparison any longer because we don't know the coordinates used in the gapped alignment
+                        # rec_from_gapped = record_from_gapped_seq(allele['label'], delineation['aligned_sequence'], args.chain)
 
-                        if rec != rec_from_gapped:
-                            print(f"Warning: mismatch between IMGT gapped sequence and CDR delineation for allele {allele['label']}")
+                        # if rec != rec_from_gapped:
+                        #     print(f"Warning: mismatch between IMGT gapped sequence and CDR delineation for allele {allele['label']}")
 
                         fo.write(rec)
 

@@ -13,7 +13,7 @@ receptor\_utils.novel\_allele\_name module
    :show-inheritance:
 
 receptor\_utils.number\_v module
------------------------------------
+--------------------------------
 
 .. automodule:: receptor_utils.number_v
    :members:
