@@ -212,15 +212,11 @@ def closest_aligned_ref(seq: str, ref: dict):
     :return: the name of the closest entry, entries, if >1 sequences in the reference set were equally close
     :rtype: list
     """
-    closest_score = -1000000
-    closest_names = []
-    for ref_name, ref_seq in ref.items():
-        score = aligned_diff(ref_seq, seq)[2]
-        if score > closest_score:
-            closest_score = score
-            closest_names = [ref_name]
-        elif score == closest_score:
-            closest_names.append(ref_name)
+
+    scores = [(seq_name, aligned_diff(seq, ref_seq)[2]) for seq_name, ref_seq in ref.items()]
+    max_score = max(scores, key=lambda x: x[1])[1]
+    closest_names = [seq_name for seq_name, score in scores if score == max_score]
+
     return closest_names
 
 

@@ -4,6 +4,10 @@ Some tools I find useful for working with IG/TR receptor sequences, including su
 the creation of custom IgBlast databases. Please see the [documentation](https://williamdlees.github.io/receptor_utils/_build/html/introduction.html)
 for further details.
 
+Changes in version 0.0.49:
+- Added an option to allow at_coords to be used with FASTA files containing multiple sequences
+- Fixed problems in name_alleles that could be caused by erroneously long V-sequences
+
 Changes in version 0.0.48:
 - Added an option to make_igblast_ndm to specify CDR positions, for use with IMGT-gapped germline sets that do not follow
 the canonical alignment. Added further explanation to the documentation.

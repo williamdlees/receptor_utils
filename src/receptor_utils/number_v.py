@@ -271,13 +271,8 @@ def gap_align_aa_from_nt(aa_seq, nt_gapped):
 
 # gap using the closest reference
 def gap_sequence(seq, gapped_ref, ungapped_ref):
-    diffs = 999
-    closest = ''
-    for name, ref in ungapped_ref.items():
-        d = nt_diff(seq, ref)
-        if d < diffs:
-            closest = name
-            diffs = d
+    differences = [(k, nt_diff(seq, v)) for k, v in ungapped_ref.items()]
+    closest = min(differences, key=lambda x: x[1])[0]
 
     # print(f'gapping with {closest}')
     res = gap_align(seq, gapped_ref[closest])
