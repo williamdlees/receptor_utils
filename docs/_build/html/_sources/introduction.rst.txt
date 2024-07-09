@@ -34,7 +34,9 @@ These tools are covered in detail in :ref:`the next section <custom_igblast_labe
 Convenience Tools
 -----------------
 
-:ref:`extract_refs_label` - Download reference sequences from IMGT for a specific species and locus
+:ref:`download_germline_set` - Download reference sequences from the `Open Germline Receptor Database (OGRDB) <https://www.ogrdb.airr-community.org>`_
+
+:ref:`extract_refs_label` - Download reference sequences from `IMGT <https://www.imgt.org>`_
 
 :ref:`identical_seqs_label` - Report cases where, in a FASTA file, the same sequence is listed more than once with different IDs
 
