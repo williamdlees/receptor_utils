@@ -15,6 +15,7 @@ src/receptor_utils.egg-info/top_level.txt
 src/scripts/__init__.py
 src/scripts/annotate_j.py
 src/scripts/at_coords.py
+src/scripts/download_germline_set.py
 src/scripts/extract_refs.py
 src/scripts/fix_macaque_gaps.py
 src/scripts/gap_inferred.py

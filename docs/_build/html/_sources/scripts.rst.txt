@@ -30,6 +30,7 @@ Convenience Tools
 .. toctree::
    :maxdepth: 1
 
+   download_germline_set
    extract_refs
    fix_macaque_gaps
    identical_seqs

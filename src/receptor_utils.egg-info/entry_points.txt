@@ -1,6 +1,7 @@
 [console_scripts]
 annotate_j = scripts.annotate_j:main
 at_coords = scripts.at_coords:main
+download_germline_set = scripts.download_germline_set:main
 extract_refs = scripts.extract_refs:main
 fix_macaque_gaps = scripts.fix_macaque_gaps:main
 gap_sequences = scripts.gap_inferred:main

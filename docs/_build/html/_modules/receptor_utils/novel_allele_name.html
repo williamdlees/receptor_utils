@@ -283,15 +283,11 @@
 <span class="sd">    :return: the name of the closest entry, entries, if &gt;1 sequences in the reference set were equally close</span>
 <span class="sd">    :rtype: list</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">closest_score</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1000000</span>
-    <span class="n">closest_names</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">ref_name</span><span class="p">,</span> <span class="n">ref_seq</span> <span class="ow">in</span> <span class="n">ref</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-        <span class="n">score</span> <span class="o">=</span> <span class="n">aligned_diff</span><span class="p">(</span><span class="n">ref_seq</span><span class="p">,</span> <span class="n">seq</span><span class="p">)[</span><span class="mi">2</span><span class="p">]</span>
-        <span class="k">if</span> <span class="n">score</span> <span class="o">&gt;</span> <span class="n">closest_score</span><span class="p">:</span>
-            <span class="n">closest_score</span> <span class="o">=</span> <span class="n">score</span>
-            <span class="n">closest_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">ref_name</span><span class="p">]</span>
-        <span class="k">elif</span> <span class="n">score</span> <span class="o">==</span> <span class="n">closest_score</span><span class="p">:</span>
-            <span class="n">closest_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ref_name</span><span class="p">)</span>
+
+    <span class="n">scores</span> <span class="o">=</span> <span class="p">[(</span><span class="n">seq_name</span><span class="p">,</span> <span class="n">aligned_diff</span><span class="p">(</span><span class="n">seq</span><span class="p">,</span> <span class="n">ref_seq</span><span class="p">)[</span><span class="mi">2</span><span class="p">])</span> <span class="k">for</span> <span class="n">seq_name</span><span class="p">,</span> <span class="n">ref_seq</span> <span class="ow">in</span> <span class="n">ref</span><span class="o">.</span><span class="n">items</span><span class="p">()]</span>
+    <span class="n">max_score</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">scores</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">closest_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">seq_name</span> <span class="k">for</span> <span class="n">seq_name</span><span class="p">,</span> <span class="n">score</span> <span class="ow">in</span> <span class="n">scores</span> <span class="k">if</span> <span class="n">score</span> <span class="o">==</span> <span class="n">max_score</span><span class="p">]</span>
+
     <span class="k">return</span> <span class="n">closest_names</span></div>
 
 
