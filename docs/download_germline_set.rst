@@ -11,7 +11,7 @@ This utility will download reference sequences from the Open Germline Receptor D
    :prog: download_germline_set
 
 Explanation of the -f argument
-==============================
+------------------------------
 
 The utility has been designed to download germline sequences in a flexible manner.
 

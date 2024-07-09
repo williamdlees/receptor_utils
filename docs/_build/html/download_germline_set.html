@@ -50,9 +50,9 @@
 <li class="toctree-l3 current"><a class="current reference internal" href="#">download_germline_set</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#positional-arguments">Positional Arguments</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#named-arguments">Named Arguments</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#explanation-of-the-f-argument">Explanation of the -f argument</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#explanation-of-the-f-argument">Explanation of the -f argument</a></li>
 <li class="toctree-l3"><a class="reference internal" href="extract_refs.html">extract_refs</a></li>
 <li class="toctree-l3"><a class="reference internal" href="fix_macaque_gaps.html">fix_macaque_gaps</a></li>
 <li class="toctree-l3"><a class="reference internal" href="identical_seqs.html">identical_seqs</a></li>
@@ -134,9 +134,8 @@
 </dd>
 </dl>
 </section>
-</section>
 <section id="explanation-of-the-f-argument">
-<h1>Explanation of the -f argument<a class="headerlink" href="#explanation-of-the-f-argument" title="Permalink to this heading"></a></h1>
+<h2>Explanation of the -f argument<a class="headerlink" href="#explanation-of-the-f-argument" title="Permalink to this heading"></a></h2>
 <p>The utility has been designed to download germline sequences in a flexible manner.</p>
 <p>By default, germline sets are downloaded in <a class="reference external" href="https://docs.airr-community.org/en/stable/datarep/germline.html/">AIRR-C JSON format</a>. The advantage of this format
 is that it contains full information on the germline set including delineation of the V-sequence CDRs and delieation of the J-sequences. This means that it can,
@@ -148,6 +147,7 @@ specified with the argument -f AIRRC-JSON.</p>
 The -p argument can be used to replace the &lt;species&gt;_&lt;locus&gt;_ prefix with a custom prefix.</p>
 <p>The final option is to download the sequences into four FASTA files. These are named, by default, &lt;species&gt;_&lt;locus&gt;_V.fasta, &lt;species&gt;_&lt;locus&gt;_D.fasta, &lt;species&gt;_&lt;locus&gt;_J.fasta,
 &lt;species&gt;_&lt;locus&gt;_V_gapped.fasta. This is specified by the -f MULTI_F argument. The -p argument can be used to replace the &lt;species&gt;_&lt;locus&gt;_ prefix with a custom prefix.</p>
+</section>
 </section>
 
 
