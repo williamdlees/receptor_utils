@@ -39,7 +39,7 @@ Examples
 
 Download the latest version of the human IGK germline set in AIRR-C JSON format::
 
-   download_germline_set -"Homo sapiens" IGK
+   download_germline_set "Homo sapiens" IGK
 
 Download the latest version of the human IGH germline set in single FASTA format, with gapped V sequences::
 
