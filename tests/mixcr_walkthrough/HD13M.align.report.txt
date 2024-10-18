@@ -1,0 +1,29 @@
+Analysis date: Fri Oct 18 13:59:48 UTC 2024
+Input file(s): HD13M.fasta
+Output file(s): HD13M.alignments.vdjca
+Version: 4.7.0; built=Thu Aug 08 01:42:27 UTC 2024; rev=976ba14139; lib=repseqio.v5.1
+Command line arguments: align --report HD13M.align.report.txt --json-report HD13M.align.report.json --preset generic-pacbio --save-output-file-names HD13M.align.list.tsv --species human --library human-IGH --assemble-clonotypes-by VDJRegion HD13M.fasta HD13M.alignments.vdjca
+Analysis time: 6.43s
+Total sequencing reads: 9289
+Successfully aligned reads: 7800 (83.97%)
+Coverage (percent of successfully aligned):
+  CDR3: 7621 (97.71%)
+  FR3_TO_FR4: 7735 (99.17%)
+  CDR2_TO_FR4: 7746 (99.31%)
+  FR2_TO_FR4: 7739 (99.22%)
+  CDR1_TO_FR4: 7645 (98.01%)
+  VDJRegion: 7503 (96.19%)
+Alignment failed: no hits (not TCR/IG?): 1282 (13.8%)
+Alignment failed: absence of J hits: 207 (2.23%)
+Overlapped: 0 (0%)
+Overlapped and aligned: 0 (0%)
+Overlapped and not aligned: 0 (0%)
+Alignment-aided overlaps, percent of overlapped and aligned: 0 (NaN%)
+No CDR3 parts alignments, percent of successfully aligned: 17 (0.22%)
+Partial aligned reads, percent of successfully aligned: 162 (2.08%)
+Realigned with forced non-floating bound: 0 (0%)
+Realigned with forced non-floating right bound in left read: 0 (0%)
+Realigned with forced non-floating left bound in right read: 0 (0%)
+IGH chains: 7800 (100%)
+IGH non-functional: 245 (3.14%)
+======================================

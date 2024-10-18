@@ -9,7 +9,7 @@ make_igblast_ndm
    :prog: make_igblast_ndm
 
 Notes
-=====
+-----
 
 If the reference set is available in AIRR-C JSON format, it is recommended to use this format as it will ensure correct placement of the CDRs using coordinates for each sequence from the file. 
 All germline sets on `OGRDB <https://ogrdb.airr-community.org>`_ are available in this format.

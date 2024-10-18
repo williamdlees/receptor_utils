@@ -3,7 +3,7 @@
 extract_refs
 ============
 
-This utility will extract sections from an IMGT gapped reference file. The latest file can be
+This utility will extract sections from an IMGT gapped reference file, or download the file and extract. The latest file can also be
 downloaded `here. <https://www.imgt.org/download/GENE-DB/IMGTGENEDB-ReferenceSequences.fasta-nt-WithGaps-F+ORF+inframeP>`_
 
 .. argparse::

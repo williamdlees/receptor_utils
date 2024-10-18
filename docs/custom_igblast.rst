@@ -1,7 +1,7 @@
 .. _custom_igblast_label:
 
 Using custom databases with IgBlast
------------------------------------
+===================================
 
 Local installations of `IgBlast <https://www.ncbi.nlm.nih.gov/igblast/>`_  can be `configured <https://ncbi.github.io/igblast/cook/How-to-set-up.html>`_ to support 'custom organisms' - either an organism for which no databases are provided with
 the tool, or a modified database for a supported organism. The procedure is significantly simplifed in version 1.20, and upgrading to at least this version is encouraged. For full

@@ -1,0 +1,68 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "make_igblast_ndm",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/scripts/make_igblast_ndm.py",
+            "args": ["Human_IGKappa_VJ_rev_1.json", "VH", "Human_IGKappa_VJ_rev_1.ndm"],
+            "cwd": "${workspaceFolder}/tests",
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        {
+            "name": "annotate_j",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/scripts/annotate_j.py",
+            "args": ["Homo_sapiens_IGLJ.fasta", "Human_IGH_VDJ_rev_2.aux"],
+            "cwd": "${workspaceFolder}/tests",
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        {
+            "name": "download_germline_set",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/scripts/download_germline_set.py",
+            "args": ["Mus musculus", "-n", "IGLJ (all strains)", "IGL", "-f", "MULTI-IGBLAST", "-u", "http://127.0.0.1:5000/api_v2/"],
+            "cwd": "${workspaceFolder}/tests",
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        {
+            "name": "gap_inferred",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/scripts/gap_inferred.py",
+            "args": ["manual_seqs_ungapped.fasta", "../imgt_trout/Oncorhynchus_mykiss_TRBV_gapped_corrected.fasta", "manual_seqs_regapped.fasta"],
+            "cwd": "D:/Research/ogrdb_data/atlantic_salmon/gapping",
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        {
+            "name": "novel_allele_name tests",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/receptor_utils/novel_allele_name.py",
+            "args": [],
+            "cwd": "${workspaceFolder}/tests",
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        {
+            "name": "check_ndm",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/receptor_utils/check_ndm.py",
+            "args": ["Homo_sapiens_IGK_.ndm", "human.ndm.imgt"],
+            "cwd": "${workspaceFolder}/tests",
+            "console": "integratedTerminal",
+            "justMyCode": true
+        }
+    ]
+}

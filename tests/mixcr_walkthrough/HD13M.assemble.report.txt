@@ -1,0 +1,29 @@
+Analysis date: Fri Oct 18 13:59:55 UTC 2024
+Input file(s): HD13M.alignments.vdjca
+Output file(s): HD13M.clns
+Version: 4.7.0; built=Thu Aug 08 01:42:27 UTC 2024; rev=976ba14139; lib=repseqio.v5.1
+Command line arguments: assemble --report HD13M.assemble.report.txt --json-report HD13M.assemble.report.json HD13M.alignments.vdjca HD13M.clns
+Analysis time: 32.22s
+Final clonotype count: 5124
+Reads used in clonotypes, percent of total: 6574 (70.77%)
+Average number of reads per clonotype: 1.28
+Reads dropped due to the lack of a clone sequence, percent of total: 297 (3.2%)
+Reads dropped due to a too short clonal sequence, percent of total: 0 (0%)
+Reads dropped due to low quality, percent of total: 0 (0%)
+Reads dropped due to failed mapping, percent of total: 929 (10%)
+Reads dropped with low quality clones, percent of total: 0 (0%)
+Aligned reads processed: 7503
+Reads used in clonotypes before clustering, percent of total: 6574 (70.77%)
+Number of reads used as a core, percent of used: 6331 (96.3%)
+Mapped low quality reads, percent of used: 243 (3.7%)
+Reads clustered in PCR error correction, percent of used: 0 (0%)
+Reads pre-clustered due to the similar VJC-lists, percent of used: 0 (0%)
+Clonotypes dropped as low quality: 0
+Clonotypes eliminated by PCR error correction: 0
+Clonotypes pre-clustered due to the similar VJC-lists: 0
+Clones dropped in post filtering: 0 (0%)
+Reads dropped in post filtering: 0.0 (0%)
+Reads filtered by tag prefix: 0 (0%)
+IGH chains: 5124 (100%)
+IGH non-functional: 147 (2.87%)
+======================================

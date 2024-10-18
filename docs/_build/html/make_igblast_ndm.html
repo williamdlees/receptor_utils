@@ -21,7 +21,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="annotate_j" href="annotate_j.html" />
-    <link rel="prev" title="fix_macaque_gaps" href="fix_macaque_gaps.html" /> 
+    <link rel="prev" title="download_germline_set" href="download_germline_set.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -42,16 +42,19 @@
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="airrc_sets_with_igblast.html">Using AIRR Community Reference Sets with IgBLAST</a></li>
+<li class="toctree-l1"><a class="reference internal" href="airrc_sets_with_mixcr.html">Using AIRR Community Reference Sets with MiXCR</a></li>
 <li class="toctree-l1"><a class="reference internal" href="custom_igblast.html">Using custom databases with IgBlast</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="scripts.html">Command-Line Utilities</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="scripts.html#naming-and-aligning-v-d-and-j-sequences">Naming and Aligning V, D and J Sequences</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="scripts.html#working-with-igblast">Working with IgBLAST</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="download_germline_set.html">download_germline_set</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">make_igblast_ndm</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#positional-arguments">Positional Arguments</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#named-arguments">Named Arguments</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#notes">Notes</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#notes">Notes</a></li>
 <li class="toctree-l3"><a class="reference internal" href="annotate_j.html">annotate_j</a></li>
 </ul>
 </li>
@@ -115,9 +118,8 @@
 </dd>
 </dl>
 </section>
-</section>
 <section id="notes">
-<h1>Notes<a class="headerlink" href="#notes" title="Permalink to this heading"></a></h1>
+<h2>Notes<a class="headerlink" href="#notes" title="Permalink to this heading"></a></h2>
 <p>If the reference set is available in AIRR-C JSON format, it is recommended to use this format as it will ensure correct placement of the CDRs using coordinates for each sequence from the file.
 All germline sets on <a class="reference external" href="https://ogrdb.airr-community.org">OGRDB</a> are available in this format.</p>
 <p>If the fasta format is used, V sequences must be IMGT gapped. By default, make_igblast_ndm assumes that the gapped alignment follows the  <a class="reference external" href="https://www.imgt.org/IMGTScientificChart/Numbering/IMGTnumbering.html">IMGT numbering scheme</a>
@@ -128,12 +130,13 @@ the application, the number of germline sequences that have the insertion, and t
 <p>Please note that downstream analysis tools may assume that IMGT-gapped sequences follow the default alignment with no inserted codons. If you use a tool that requires a gapped set of V sequences and there is no
 provision to specify CDR coordinates, this is likely to be the case.</p>
 </section>
+</section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="fix_macaque_gaps.html" class="btn btn-neutral float-left" title="fix_macaque_gaps" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="download_germline_set.html" class="btn btn-neutral float-left" title="download_germline_set" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="annotate_j.html" class="btn btn-neutral float-right" title="annotate_j" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

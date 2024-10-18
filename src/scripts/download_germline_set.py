@@ -4,6 +4,7 @@ import json
 from Bio import SeqIO
 from io import StringIO
 from receptor_utils import simple_bio_seq as simple
+from receptor_utils import aux_formats
 
 
 def do_request(url):
@@ -49,7 +50,10 @@ def download_germline_set(species, locus, version='latest', germline_set_name=No
         germline_set_id = find_available_sets(url, species_id, locus, germline_set_name)
         if germline_set_id is not None:
             if prefix is None:
-                prefix = species.replace(' ', '_') + '_' + locus + '_'
+                if germline_set_name:
+                    prefix = species.replace(' ', '_') + '_' + germline_set_name.replace(' ', '_').replace('/', '_') + '_' + locus + '_'
+                else:
+                    prefix = species.replace(' ', '_') + '_' + locus + '_'
             elif prefix == 'NONE':
                 prefix = ''
 
@@ -75,11 +79,17 @@ def download_germline_set(species, locus, version='latest', germline_set_name=No
                     simple.write_fasta(f"{prefix}V_gapped.fasta", seqs)
                     files_written.append(f"{prefix}V_gapped.fasta")
                 print(f"FASTA files saved to {', '.join(files_written)}")
+
+                if file_format == 'MULTI-IGBLAST':
+                    data = request_set(url, germline_set_id, version, species, germline_set_name, locus, 'AIRRC-JSON')
+                    write_igblast_to_disk(data, locus, prefix)
             else:
                 data = request_set(url, germline_set_id, version, species, germline_set_name, locus, file_format)
                 if not data:
                     return
                 if file_format == 'AIRRC-JSON':
+                    if prefix[-1] == '_':
+                        prefix = prefix[:-1]
                     output_file = f"{prefix}.json"
                     write_json_to_disk(data, output_file)
                 elif file_format == 'SINGLE-FG':
@@ -89,7 +99,6 @@ def download_germline_set(species, locus, version='latest', germline_set_name=No
                     output_file = f"{prefix}gapped.fasta"
                     write_fasta_to_disk(data.text, output_file)
 
-                
 
 
 def write_fasta_to_disk(data, output_file):
@@ -119,6 +128,28 @@ def write_json_to_disk(data, output_file):
     print(f"JSON file saved to {output_file}")
 
 
+def write_igblast_to_disk(data, locus, prefix):
+    """
+    Writes IGBLAST data to a file.
+
+    Args:
+        data (str): The JSON data structure.
+        output_file (str): The name of the output file.
+    """
+    p = prefix
+    if p[-1] == '_':
+        p = p[:-1]
+    if aux_formats.ndm_from_json(data, f"{p}.ndm", f"V{locus[2]}", 'IMGT'):
+        print(f"IGBLAST ndm file saved to {p}.ndm")
+    else:
+        print("No V genes found in reference set. Skipping ndm file creation.")
+
+    if aux_formats.aux_from_json(data, f"{p}.aux", False):
+        print(f"IGBLAST aux file saved to {p}.aux")
+    else:
+        print("No J genes found in reference set. Skipping aux file creation.")
+
+
 def request_set(url, germline_set_id, version, species, germline_set_name, locus, format):
     """
     Requests the germline set data from the API.
@@ -140,6 +171,8 @@ def request_set(url, germline_set_id, version, species, germline_set_name, locus
     else:
         versions_list = []
 
+    ex = '_ex' if species == 'Homo sapiens' else ''
+
     if version == "latest" or version in versions_list:
         if format == 'AIRRC-JSON':
             api_url = f"{url}/germline/set/{germline_set_id}/{version}"
@@ -147,9 +180,9 @@ def request_set(url, germline_set_id, version, species, germline_set_name, locus
             return response.json()
         else:
             if format == "SINGLE-FG":
-                api_url = f"{url}/germline/set/{germline_set_id}/{version}/gapped"
+                api_url = f"{url}/germline/set/{germline_set_id}/{version}/gapped{ex}"
             elif format == "SINGLE-FU":
-                api_url = f"{url}/germline/set/{germline_set_id}/{version}/ungapped"
+                api_url = f"{url}/germline/set/{germline_set_id}/{version}/ungapped{ex}"
 
             response = do_request(api_url)
             return response 
@@ -195,19 +228,22 @@ def find_available_sets(url, species_id, locus, germline_set_name):
     response = do_request(api_url)
     sets_list = response.json().get('germline_species')
     found = False
+    locus_found = False
     found_count = 0
     available_sets = []
     available_versions = []
     germline_set_id = None
     for set in sets_list:
         if set.get('locus') == locus:
+            locus_found = True
+            available_sets.append(set['germline_set_name'])
+        if set.get('locus') == locus and (germline_set_name is None or germline_set_name == set['germline_set_name']):
             found = True
             found_count += 1
-            available_sets.append(set['germline_set_name'])
             available_versions.append(set['germline_set_id'])
             germline_set_id = set['germline_set_id']
     
-    if not found:
+    if not locus_found:
         available_locus = []
         for obj in sets_list:
             if obj.get('locus') not in available_locus:
@@ -215,7 +251,11 @@ def find_available_sets(url, species_id, locus, germline_set_name):
 
         print(f'''No sets for locus {locus} in species {species_id}. Available loci:
 {', '.join(available_locus)}''')
-
+        
+    if not found and germline_set_name:
+        print(f'''Error: set {germline_set_name} not found for species {species_id} locus {locus}. Available sets:
+{', '.join(available_sets)}''')
+        
     elif found_count > 1 and germline_set_name is None:
         if len(set(available_sets)) >= 1:
             germline_set_id = None
@@ -264,11 +304,11 @@ def find_species_id(url, species):
 
 def get_parser():
     parser = argparse.ArgumentParser(description='Download germline sets from the Open Germline Receptor Database (OGRDB)')
-    parser.add_argument('species', type=str, help='Species (e.g. "Human")')
+    parser.add_argument('species', type=str, help='Species (e.g. "Homo sapiens")')
     parser.add_argument('locus', type=str, help='Locus (IGH, IGK, IGL, TRA, TRB, TRD, TRD)')
     parser.add_argument('-n', '--name', type=str, help='germline set name (the utility will attempt to determine the name, if none is specified)')
     parser.add_argument('-v', '--version', type=str, default='latest', help='Specific version to download, otherwise the latest version will be downloaded')
-    parser.add_argument('-f', '--format', type=str, default='AIRRC-JSON', choices=['AIRRC-JSON', 'SINGLE-FG', 'SINGLE-FU', 'MULTI-F'], help='Format to download')
+    parser.add_argument('-f', '--format', type=str, default='AIRRC-JSON', choices=['AIRRC-JSON', 'SINGLE-FG', 'SINGLE-FU', 'MULTI-F', 'MULTI-IGBLAST'], help='Format to download')
     parser.add_argument('-u', '--url', type=str, default='https://ogrdb.airr-community.org/api_v2', help='URL to use')
     parser.add_argument('-p', '--prefix', type=str, help='Prefix for filenames. Default prefix is species_locus (with _ substituted for space). If PREFIX is NONE, no prefix will be used for multi files, and the default prefix will be used for single files.')
     return parser

@@ -3,6 +3,10 @@ README.md
 pyproject.toml
 setup.cfg
 src/receptor_utils/__init__.py
+src/receptor_utils/aux_formats.py
+src/receptor_utils/check_aux.py
+src/receptor_utils/check_fastas.py
+src/receptor_utils/check_ndm.py
 src/receptor_utils/novel_allele_name.py
 src/receptor_utils/number_v.py
 src/receptor_utils/simple_bio_seq.py

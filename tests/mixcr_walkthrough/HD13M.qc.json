@@ -1,0 +1,14 @@
+[ {
+  "step" : "align",
+  "status" : "WARN",
+  "check" : {
+    "type" : "SuccessfullyAlignedReads",
+    "upper" : 0.85,
+    "middle" : 0.7,
+    "label" : "Successfully aligned reads"
+  },
+  "payload" : {
+    "printedValue" : "83.97%",
+    "value" : 0.8397028743675314
+  }
+} ]

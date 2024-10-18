@@ -20,6 +20,7 @@ Working with IgBLAST
 .. toctree::
    :maxdepth: 1
 
+   download_germline_set
    make_igblast_ndm
    annotate_j
 

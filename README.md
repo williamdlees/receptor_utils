@@ -5,6 +5,10 @@ the creation of custom IgBlast databases. Please see the [documentation](https:/
 for further details.
 
 Changes in version 0.0.50:
+- Updates to download_germline_set, to create files for IgBlast.
+- New documentation sections: using AIRR-C sets with IgBlast, using AIRR-C sets with MiXCR
+
+Changes in version 0.0.50:
 - Added a new utility, download_germline_set, to download germline sets from the Open Germline Receptor Database (OGRDB)
 
 Changes in version 0.0.49:

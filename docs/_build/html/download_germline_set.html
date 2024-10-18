@@ -20,8 +20,8 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="extract_refs" href="extract_refs.html" />
-    <link rel="prev" title="annotate_j" href="annotate_j.html" /> 
+    <link rel="next" title="make_igblast_ndm" href="make_igblast_ndm.html" />
+    <link rel="prev" title="fix_macaque_gaps" href="fix_macaque_gaps.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -42,15 +42,29 @@
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="airrc_sets_with_igblast.html">Using AIRR Community Reference Sets with IgBLAST</a></li>
+<li class="toctree-l1"><a class="reference internal" href="airrc_sets_with_mixcr.html">Using AIRR Community Reference Sets with MiXCR</a></li>
 <li class="toctree-l1"><a class="reference internal" href="custom_igblast.html">Using custom databases with IgBlast</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="scripts.html">Command-Line Utilities</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="scripts.html#naming-and-aligning-v-d-and-j-sequences">Naming and Aligning V, D and J Sequences</a></li>
-<li class="toctree-l2"><a class="reference internal" href="scripts.html#working-with-igblast">Working with IgBLAST</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="scripts.html#working-with-igblast">Working with IgBLAST</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">download_germline_set</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#positional-arguments">Positional Arguments</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#named-arguments">Named Arguments</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#format-options">Format Options</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#examples">Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="make_igblast_ndm.html">make_igblast_ndm</a></li>
+<li class="toctree-l3"><a class="reference internal" href="annotate_j.html">annotate_j</a></li>
+</ul>
+</li>
 <li class="toctree-l2 current"><a class="reference internal" href="scripts.html#convenience-tools">Convenience Tools</a><ul class="current">
 <li class="toctree-l3 current"><a class="current reference internal" href="#">download_germline_set</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#positional-arguments">Positional Arguments</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#named-arguments">Named Arguments</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#explanation-of-the-f-argument">Explanation of the -f argument</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#format-options">Format Options</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#examples">Examples</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="extract_refs.html">extract_refs</a></li>
@@ -93,17 +107,17 @@
              
   <section id="download-germline-set">
 <span id="id1"></span><h1>download_germline_set<a class="headerlink" href="#download-germline-set" title="Permalink to this heading"></a></h1>
-<p>This utility will download reference sequences from the Open Germline Receptor Database (OGRDB) at <a class="reference external" href="https://ogrdb.airr-community.org">https://ogrdb.airr-community.org</a>.</p>
+<p>This utility will download reference sequences from the Open Germline Receptor Database (<a class="reference external" href="https://ogrdb.airr-community.org">OGRDB</a>).</p>
 <p><p>Download germline sets from the Open Germline Receptor Database (OGRDB)</p>
 </p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">usage</span><span class="p">:</span> <span class="n">download_germline_set</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">n</span> <span class="n">NAME</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">v</span> <span class="n">VERSION</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">f</span> <span class="p">{</span><span class="n">AIRRC</span><span class="o">-</span><span class="n">JSON</span><span class="p">,</span><span class="n">SINGLE</span><span class="o">-</span><span class="n">FG</span><span class="p">,</span><span class="n">SINGLE</span><span class="o">-</span><span class="n">FU</span><span class="p">,</span><span class="n">MULTI</span><span class="o">-</span><span class="n">F</span><span class="p">}]</span> <span class="p">[</span><span class="o">-</span><span class="n">u</span> <span class="n">URL</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">p</span> <span class="n">PREFIX</span><span class="p">]</span> <span class="n">species</span> <span class="n">locus</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">usage</span><span class="p">:</span> <span class="n">download_germline_set</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">n</span> <span class="n">NAME</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">v</span> <span class="n">VERSION</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">f</span> <span class="p">{</span><span class="n">AIRRC</span><span class="o">-</span><span class="n">JSON</span><span class="p">,</span><span class="n">SINGLE</span><span class="o">-</span><span class="n">FG</span><span class="p">,</span><span class="n">SINGLE</span><span class="o">-</span><span class="n">FU</span><span class="p">,</span><span class="n">MULTI</span><span class="o">-</span><span class="n">F</span><span class="p">,</span><span class="n">MULTI</span><span class="o">-</span><span class="n">IGBLAST</span><span class="p">}]</span> <span class="p">[</span><span class="o">-</span><span class="n">u</span> <span class="n">URL</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">p</span> <span class="n">PREFIX</span><span class="p">]</span> <span class="n">species</span> <span class="n">locus</span>
 </pre></div>
 </div>
 <section id="positional-arguments">
 <h2>Positional Arguments<a class="headerlink" href="#positional-arguments" title="Permalink to this heading"></a></h2>
 <dl class="option-list">
 <dt><kbd>species</kbd></dt>
-<dd><p>Species (e.g. “Human”)</p>
+<dd><p>Species (e.g. “Homo sapiens”)</p>
 </dd>
 <dt><kbd>locus</kbd></dt>
 <dd><p>Locus (IGH, IGK, IGL, TRA, TRB, TRD, TRD)</p>
@@ -121,7 +135,7 @@
 <p>Default: “latest”</p>
 </dd>
 <dt><kbd>-f, --format</kbd></dt>
-<dd><p>Possible choices: AIRRC-JSON, SINGLE-FG, SINGLE-FU, MULTI-F</p>
+<dd><p>Possible choices: AIRRC-JSON, SINGLE-FG, SINGLE-FU, MULTI-F, MULTI-IGBLAST</p>
 <p>Format to download</p>
 <p>Default: “AIRRC-JSON”</p>
 </dd>
@@ -134,9 +148,14 @@
 </dd>
 </dl>
 </section>
-<section id="explanation-of-the-f-argument">
-<h2>Explanation of the -f argument<a class="headerlink" href="#explanation-of-the-f-argument" title="Permalink to this heading"></a></h2>
-<p>The utility has been designed to download germline sequences in a flexible manner.</p>
+<section id="format-options">
+<h2>Format Options<a class="headerlink" href="#format-options" title="Permalink to this heading"></a></h2>
+<ul class="simple">
+<li><p>JSON format: AIRR-C JSON format (default)</p></li>
+<li><p>Single FASTA file: all V(D)J sequences in a single FASTA file</p></li>
+<li><p>Multiple FASTA files: V, D, J, and gapped V sequences in separate FASTA files</p></li>
+<li><p>IgBLAST format: Multiple fasta files, plus IgBLAST germline configuration files</p></li>
+</ul>
 <p>By default, germline sets are downloaded in <a class="reference external" href="https://docs.airr-community.org/en/stable/datarep/germline.html/">AIRR-C JSON format</a>. The advantage of this format
 is that it contains full information on the germline set including delineation of the V-sequence CDRs and delieation of the J-sequences. This means that it can,
 in principle, be loaded into an annotation tool without needing any additional information to be provided to the tool. The json format is also recommended for use
@@ -145,8 +164,37 @@ specified with the argument -f AIRRC-JSON.</p>
 <p>Another option is to download all V(D)J sequences into a single FASTA file. This can be specified by the -f SINGLE-FG argument, which will download gapped V sequences, or
 -f SINGLE-FU, which will download ungapped V sequences. The filename, by default, is, respectively, &lt;species&gt;_&lt;locus&gt;_gapped.fasta, or &lt;species&gt;_&lt;locus&gt;.fasta.
 The -p argument can be used to replace the &lt;species&gt;_&lt;locus&gt;_ prefix with a custom prefix.</p>
-<p>The final option is to download the sequences into four FASTA files. These are named, by default, &lt;species&gt;_&lt;locus&gt;_V.fasta, &lt;species&gt;_&lt;locus&gt;_D.fasta, &lt;species&gt;_&lt;locus&gt;_J.fasta,
+<p>The sequences can also be downloaded into four FASTA files. These are named, by default, &lt;species&gt;_&lt;locus&gt;_V.fasta, &lt;species&gt;_&lt;locus&gt;_D.fasta, &lt;species&gt;_&lt;locus&gt;_J.fasta,
 &lt;species&gt;_&lt;locus&gt;_V_gapped.fasta. This is specified by the -f MULTI_F argument. The -p argument can be used to replace the &lt;species&gt;_&lt;locus&gt;_ prefix with a custom prefix.</p>
+<p>Finally, the -f MULTI-IGBLAST option will download the four multi files as above, and also create .ndm and .aux files for use with IgBLAST. For further details
+on use with IgBLAST please see <a class="reference internal" href="airrc_sets_with_igblast.html#airrc-sets-with-igblast"><span class="std std-ref">Using AIRR Community Reference Sets with IgBLAST</span></a>.</p>
+</section>
+<section id="examples">
+<h2>Examples<a class="headerlink" href="#examples" title="Permalink to this heading"></a></h2>
+<p>Download the latest version of the human IGK germline set in AIRR-C JSON format:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">download_germline_set</span> <span class="o">-</span><span class="s2">&quot;Homo sapiens&quot;</span> <span class="n">IGK</span>
+</pre></div>
+</div>
+<p>Download the latest version of the human IGH germline set in single FASTA format, with gapped V sequences:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">download_germline_set</span> <span class="s2">&quot;Homo sapiens&quot;</span> <span class="n">IGH</span> <span class="o">-</span><span class="n">f</span> <span class="n">SINGLE</span><span class="o">-</span><span class="n">FG</span>
+</pre></div>
+</div>
+<p>Download the latest version of the mouse C57BL/6 IGH germline set in multiple FASTA format:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">download_germline_set</span> <span class="s2">&quot;Mus musculus&quot;</span> <span class="n">IGH</span> <span class="o">-</span><span class="n">n</span> <span class="s2">&quot;C57BL/6 IGH&quot;</span> <span class="o">-</span><span class="n">f</span> <span class="n">MULTI</span><span class="o">-</span><span class="n">F</span>
+</pre></div>
+</div>
+<p>Note that the utility will try to provide helpful information in the event of a command error:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span><span class="n">download_germline_set</span> <span class="s2">&quot;Mus musculus&quot;</span> <span class="n">IGH</span> <span class="o">-</span><span class="n">n</span> <span class="s2">&quot;C57BL/6&quot;</span> <span class="o">-</span><span class="n">f</span> <span class="n">MULTI</span><span class="o">-</span><span class="n">F</span>
+<span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">ogrdb</span><span class="o">.</span><span class="n">airr</span><span class="o">-</span><span class="n">community</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">api_v2</span><span class="o">/</span><span class="n">germline</span><span class="o">/</span><span class="n">species</span>
+<span class="n">Mus</span> <span class="n">musculus</span><span class="p">:</span> <span class="mi">10090</span>
+<span class="n">Error</span><span class="p">:</span> <span class="nb">set</span> <span class="n">C57BL</span><span class="o">/</span><span class="mi">6</span> <span class="ow">not</span> <span class="n">found</span> <span class="k">for</span> <span class="n">species</span> <span class="mi">10090</span> <span class="n">locus</span> <span class="n">IGH</span><span class="o">.</span> <span class="n">Available</span> <span class="n">sets</span><span class="p">:</span>
+<span class="n">BALB</span><span class="o">/</span><span class="n">c</span> <span class="n">IGHV</span><span class="p">,</span> <span class="n">C57BL</span><span class="o">/</span><span class="mi">6</span> <span class="n">IGH</span><span class="p">,</span> <span class="n">C57BL</span><span class="o">/</span><span class="mi">6</span> <span class="n">IGHV</span><span class="p">,</span> <span class="n">CAST</span><span class="o">/</span><span class="n">EiJ</span> <span class="n">IGH</span><span class="p">,</span> <span class="n">LEWES</span><span class="o">/</span><span class="n">EiJ</span> <span class="n">IGH</span><span class="p">,</span> <span class="n">MSM</span><span class="o">/</span><span class="n">MsJ</span> <span class="n">IGH</span><span class="p">,</span> <span class="n">NOD</span><span class="o">/</span><span class="n">ShiLtJ</span> <span class="n">IGH</span><span class="p">,</span> <span class="n">PWD</span><span class="o">/</span><span class="n">PhJ</span> <span class="n">IGH</span><span class="p">,</span> <span class="n">BALB</span><span class="o">/</span><span class="n">c</span> <span class="n">IGH</span>
+</pre></div>
+</div>
+<p>Download human IGH files for IgBLAST, using the custom filename prefix AIRRC_IGH:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">download_germline_set</span> <span class="s2">&quot;Homo sapiens&quot;</span> <span class="n">IGH</span> <span class="o">-</span><span class="n">f</span> <span class="n">MULTI</span><span class="o">-</span><span class="n">IGBLAST</span> <span class="o">-</span><span class="n">p</span> <span class="n">AIRRC_IGH</span>
+</pre></div>
+</div>
 </section>
 </section>
 
@@ -154,8 +202,8 @@ The -p argument can be used to replace the &lt;species&gt;_&lt;locus&gt;_ prefix
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="annotate_j.html" class="btn btn-neutral float-left" title="annotate_j" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="extract_refs.html" class="btn btn-neutral float-right" title="extract_refs" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="fix_macaque_gaps.html" class="btn btn-neutral float-left" title="fix_macaque_gaps" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="make_igblast_ndm.html" class="btn btn-neutral float-right" title="make_igblast_ndm" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

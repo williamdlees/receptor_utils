@@ -1,0 +1,38 @@
+IGHJ2*01: j_codon_frame 1 j_cdr3_end 18 exta bps 1
+       1  2  3  4  5  6  7  8  9  10 11 12 13 14 15 16 17
+       Y  W  Y  F  D  L  W  G  R  G  T  L  V  T  V  S  S
+    C TACTGGTACTTCGATCTCTGGGGCCGTGGCACCCTGGTCACTGTCTCCTCAG
+
+            "j_codon_frame": 1,
+            "gene_start": 39,
+            "gene_end": 91,
+            "utr_5_prime_start": null,
+            "utr_5_prime_end": null,
+            "leader_1_start": null,
+            "leader_1_end": null,
+            "leader_2_start": null,
+            "leader_2_end": null,
+            "v_rs_start": null,
+            "v_rs_end": null,
+            "d_rs_3_prime_start": null,
+            "d_rs_3_prime_end": null,
+            "d_rs_5_prime_start": null,
+            "d_rs_5_prime_end": null,
+            "j_cdr3_end": 91,
+            "j_rs_start": 1,
+            "j_rs_end": 38,
+            "j_donor_splice": null,
+            "v_gene_delineations": null,
+            "unrearranged_support": [
+              {
+                "sequence_id": "1044",
+ 
+j_cdr3_end - gene_start - j_codon_frame = 91 - 39 -1 = 51
+51/3 = 17
+
+j_cdr3_end = (j_cdr3_end - gene_start - j_codon_frame)/3 + 1
+
+gene_end - gene_start - j_codon_frame + 1 = 91 - 39 - 1 + 1 = 52
+52 % 3 = 1
+
+extra bps = 1
