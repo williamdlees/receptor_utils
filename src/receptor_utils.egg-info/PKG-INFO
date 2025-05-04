@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: receptor_utils
-Version: 0.0.51
+Version: 0.0.52
 Summary: Some tools I find useful for working with Ig receptor sequences
 Home-page: https://github.com/williamdlees/receptor_utils
 Author: William Lees
@@ -13,6 +13,7 @@ Requires-Python: >=3.9
 Description-Content-Type: text/markdown
 License-File: LICENSE
 Requires-Dist: biopython>=1.81
+Requires-Dist: requests>=2.28
 
 # receptor_utils
 
@@ -20,7 +21,10 @@ Some tools I find useful for working with IG/TR receptor sequences, including su
 the creation of custom IgBlast databases. Please see the [documentation](https://williamdlees.github.io/receptor_utils/_build/html/introduction.html)
 for further details.
 
-Changes in version 0.0.50:
+Changes in version 0.0.52:
+- FIx missing dependency
+
+Changes in version 0.0.51:
 - Updates to download_germline_set, to create files for IgBlast.
 - New documentation sections: using AIRR-C sets with IgBlast, using AIRR-C sets with MiXCR
 

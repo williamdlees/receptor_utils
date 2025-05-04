@@ -1,1 +1,2 @@
 biopython>=1.81
+requests>=2.28

@@ -46,7 +46,7 @@ Finally, extract the file ``HD13M.fasta`` from the downloaded tarball and copy i
 1. Log in to the MiXCR container so that we can use its installed tools
 -----------------------------------------------------------------------
 
-Log in to the container, mounting the current local directory as /data.
+Log in to the container, mounting the current local directory as /work.
 
 From Linux using Docker:
 

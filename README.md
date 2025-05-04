@@ -4,6 +4,9 @@ Some tools I find useful for working with IG/TR receptor sequences, including su
 the creation of custom IgBlast databases. Please see the [documentation](https://williamdlees.github.io/receptor_utils/_build/html/introduction.html)
 for further details.
 
+Changes in version 0.0.52:
+- FIx missing dependency
+
 Changes in version 0.0.51:
 - Updates to download_germline_set, to create files for IgBlast.
 - New documentation sections: using AIRR-C sets with IgBlast, using AIRR-C sets with MiXCR
