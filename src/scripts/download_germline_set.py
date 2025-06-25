@@ -233,15 +233,15 @@ def find_available_sets(url, species_id, locus, germline_set_name):
     available_sets = []
     available_versions = []
     germline_set_id = None
-    for set in sets_list:
-        if set.get('locus') == locus:
+    for curr_set in sets_list:
+        if curr_set.get('locus') == locus:
             locus_found = True
-            available_sets.append(set['germline_set_name'])
-        if set.get('locus') == locus and (germline_set_name is None or germline_set_name == set['germline_set_name']):
+            available_sets.append(curr_set['germline_set_name'])
+        if curr_set.get('locus') == locus and (germline_set_name is None or germline_set_name == curr_set['germline_set_name']):
             found = True
             found_count += 1
-            available_versions.append(set['germline_set_id'])
-            germline_set_id = set['germline_set_id']
+            available_versions.append(curr_set['germline_set_id'])
+            germline_set_id = curr_set['germline_set_id']
     
     if not locus_found:
         available_locus = []
