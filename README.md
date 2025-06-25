@@ -4,6 +4,9 @@ Some tools I find useful for working with IG/TR receptor sequences, including su
 the creation of custom IgBlast databases. Please see the [documentation](https://williamdlees.github.io/receptor_utils/_build/html/introduction.html)
 for further details.
 
+Changes in version 0.0.53:
+- Fix bug in download_germline_set that masked the correct error message when multiple sets were selected
+
 Changes in version 0.0.52:
 - FIx missing dependency
 

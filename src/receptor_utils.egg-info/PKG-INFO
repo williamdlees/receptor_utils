@@ -1,6 +1,6 @@
-Metadata-Version: 2.1
+Metadata-Version: 2.4
 Name: receptor_utils
-Version: 0.0.52
+Version: 0.0.53
 Summary: Some tools I find useful for working with Ig receptor sequences
 Home-page: https://github.com/williamdlees/receptor_utils
 Author: William Lees
@@ -14,12 +14,16 @@ Description-Content-Type: text/markdown
 License-File: LICENSE
 Requires-Dist: biopython>=1.81
 Requires-Dist: requests>=2.28
+Dynamic: license-file
 
 # receptor_utils
 
 Some tools I find useful for working with IG/TR receptor sequences, including support for allele sequence naming and 
 the creation of custom IgBlast databases. Please see the [documentation](https://williamdlees.github.io/receptor_utils/_build/html/introduction.html)
 for further details.
+
+Changes in version 0.0.53:
+- Fix bug in download_germline_set that masked the correct error message when multiple sets were selected
 
 Changes in version 0.0.52:
 - FIx missing dependency
