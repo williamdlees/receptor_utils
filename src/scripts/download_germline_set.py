@@ -96,7 +96,7 @@ def download_germline_set(species, locus, version='latest', germline_set_name=No
                     output_file = f"{prefix}gapped.fasta"
                     write_fasta_to_disk(data.text, output_file)
                 elif file_format == 'SINGLE-FU':
-                    output_file = f"{prefix}gapped.fasta"
+                    output_file = f"{prefix}ungapped.fasta"
                     write_fasta_to_disk(data.text, output_file)
 
 
