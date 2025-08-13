@@ -63,12 +63,12 @@ def name_novel(novel_seq: str, ref_set: dict, v_gene: bool = True):
                 ungapped_ref_set[k] = v.replace('.', '')
             novel_seq, aa, notes = number_v.gap_sequence(novel_seq, ref_set, ungapped_ref_set)
 
-
     closest_ref_name = closest_aligned_ref(novel_seq, ref_set)[0]
     closest_ref_seq = ref_set[closest_ref_name]
 
     diffs = {}
     insertions = []
+
     class Diff:
         pass
 
@@ -189,10 +189,10 @@ def aligned_diff(novel_seq: str, ref_seq: str):
     aligner = Align.PairwiseAligner()
     aligner.mode = 'global'
     aligner.open_gap_score = -5
-    aligner.extend_gap_score = -1
+    aligner.extend_gap_score = -2
     aligner.match_score = 2
     aligner.mismatch_score = 0
-    aligner.target_end_gap_score = 1
+    aligner.target_end_gap_score = -1
 
     best_alignment = aligner.align(novel_seq, ref_seq)[0]
 
@@ -295,8 +295,17 @@ def build_ambiguous_ref(full_ref, start):
 
 
 def run_tests():
-    ref_set = simple.read_fasta('Homo_sapiens_IGHV_gapped.fasta')
+    
+    ref_set = simple.read_fasta('Homo_sapiens_IGH_V_gapped.fasta')
     test_novels = simple.read_fasta('IGHV3-20.04.fasta')
+
+    for name, seq in test_novels.items():
+        novel_name = name_novel(seq, ref_set)[0]
+        if novel_name != name:
+            print('Error: %s != %s' % (novel_name, name))
+    
+    ref_set = simple.read_fasta('Homo_sapiens_IGH_D.fasta')
+    test_novels = simple.read_fasta('test_D_names.fasta')
 
     for name, seq in test_novels.items():
         novel_name = name_novel(seq, ref_set)[0]
