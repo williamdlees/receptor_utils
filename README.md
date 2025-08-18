@@ -5,6 +5,9 @@ the creation of custom IgBlast databases. Please see the [documentation](https:/
 for further details.
 
 Changes in version 0.0.54:
+- annotate_j: accommodate (with warning) the non-standard motif [WF]A.G seen in TRGJP1, TRGJP2
+
+Changes in version 0.0.54:
 - Fix name of ungapped file in download_germline_set
 - Improve naming of novel D alleles
 

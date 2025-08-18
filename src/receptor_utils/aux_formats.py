@@ -190,6 +190,18 @@ def aux_from_seqs(seqs, out_file, verbose):
 
                 ]))
 
+            if not solutions:
+                for m in re.finditer('[WF]A.G', trans):     # found in TRJP1, TRJP2
+                    solutions.append(Result._make([
+                        seq,
+                        frame+1,
+                        frame + 3*m.start() + 1,
+                        trans,
+                        (len(seq) - frame) % 3,
+
+                    ]))
+                    print(f'{seq_name}: annotated with non-standard motif [WF]A.G')
+
         if solutions:
             if len(solutions) > 1:
                 print('WARNING: multiple solutions for {seq_name}')
