@@ -19,7 +19,7 @@
             "type": "python",
             "request": "launch",
             "program": "${workspaceFolder}/src/scripts/annotate_j.py",
-            "args": ["Homo_sapiens_IGLJ.fasta", "Human_IGH_VDJ_rev_2.aux"],
+            "args": ["experimental_TRJ.fasta", "experimental_TR.aux"],
             "cwd": "${workspaceFolder}/tests",
             "console": "integratedTerminal",
             "justMyCode": true

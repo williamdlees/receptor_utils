@@ -173,12 +173,12 @@ def aux_from_seqs(seqs, out_file, verbose):
 
     for seq_name, seq in seqs.items():
         solutions = []
-        Result = namedtuple('Result', ['nt_seq', 'frame', 'cdr3_pos', 'trans', 'extra_bps'])
+        Result = namedtuple('Result', ['nt_seq', 'frame', 'cdr3_pos', 'trans', 'extra_bps', 'stop_codon', 'canonical_junc', 'motif'])
         for frame in range(3):
             trans = simple.translate(seq[frame:])
 
-            if '*' in trans:
-                continue
+            # if '*' in trans:      allow stop codon as may be excised during junction formation
+            #    continue
 
             for m in re.finditer('[WF]G.G', trans):
                 solutions.append(Result._make([
@@ -187,26 +187,75 @@ def aux_from_seqs(seqs, out_file, verbose):
                     frame + 3*m.start() + 1,
                     trans,
                     (len(seq) - frame) % 3,
-
+                    '*' in trans,
+                    True,
+                    m.group(0)
                 ]))
 
             if not solutions:
-                for m in re.finditer('[CWF][AG].G', trans):     # found in TRJP1, TRJP2
+                for m in re.finditer('[CVWF]G.G', trans):     # found in TRJP1, TRJP2
                     solutions.append(Result._make([
                         seq,
                         frame+1,
                         frame + 3*m.start() + 1,
                         trans,
                         (len(seq) - frame) % 3,
-
+                        '*' in trans,
+                        False,
+                        m.group(0)
                     ]))
-                    print(f'{seq_name}: annotated with non-standard motif [CWF][AG].G')
+                    #print(f'{seq_name}: solution with non-standard motif [CVWF][AG].G')
+
+            if not solutions:
+                for m in re.finditer('[WF][AG].G', trans):     # found in TRJP1, TRJP2
+                    solutions.append(Result._make([
+                        seq,
+                        frame+1,
+                        frame + 3*m.start() + 1,
+                        trans,
+                        (len(seq) - frame) % 3,
+                        '*' in trans,
+                        False,
+                        m.group(0)
+                    ]))
+                    #print(f'{seq_name}: solution with non-standard motif [CWF]G.G')
+
+            if not solutions:
+                for m in re.finditer('[WF]G.[NG]', trans):     # found in TRJP1, TRJP2
+                    solutions.append(Result._make([
+                        seq,
+                        frame+1,
+                        frame + 3*m.start() + 1,
+                        trans,
+                        (len(seq) - frame) % 3,
+                        '*' in trans,
+                        False,
+                        m.group(0)
+                    ]))
+                    #print(f'{seq_name}: solution with non-standard motif [WF]G.[NG]')
 
         if solutions:
             if len(solutions) > 1:
-                print('WARNING: multiple solutions for {seq_name}')
+                # if there is a solution with a canonical junction, prefer it
+                preferred = [s for s in solutions if s.canonical_junc]
+                if preferred:
+                    solutions = preferred
+                if len(solutions) > 1:
+                    # if there is a solution without a stop codon, take it
+                    preferred = [s for s in solutions if not s.stop_codon]
+                    if preferred:
+                        solutions = preferred
+                    if len(solutions) > 1:
+                        print(f'{seq_name}: multiple solutions found, selecting one')
+                        solutions = [solutions[0]]
                 
             for solution in solutions:
+                if '*' in solution.trans:
+                    print(f'{seq_name}: solution with stop codon in translation')
+
+                if not solution.canonical_junc:
+                    print(f'{seq_name}: solution with non-canonical motif {solution.motif}')
+
                 if verbose:
                     print(f'{seq_name}: j_codon_frame {solution.frame} j_cdr3_end {solution.cdr3_pos} () exta bps {solution.extra_bps}')
 

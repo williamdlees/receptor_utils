@@ -4,6 +4,12 @@ Some tools I find useful for working with IG/TR receptor sequences, including su
 the creation of custom IgBlast databases. Please see the [documentation](https://williamdlees.github.io/receptor_utils/_build/html/introduction.html)
 for further details.
 
+Changes in version 0.0.57:
+- annotate_j: better handling of non-standard motifs and prioritzation of results. Canonical [WF]GxG motifs are
+  always preferred, but non-standard motifs such as [WF]A.G (seen in TRGJP1, TRGJP2, TRAJ16) and [CWF][AG].G (seen in TRAJ35) are accommodated with a warning.
+  likewise solutions with no stop codons are preferred, but stop codons are accommodated if necessary as they may be
+  excised during recombination.
+
 Changes in version 0.0.56:
 - annotate_j: accommodate (with warning) the non-standard motif [CWF][AG].G seen in TRAJ35
 
