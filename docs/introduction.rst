@@ -22,6 +22,8 @@ incorporating any SNPs. The naming scheme that it uses is described
 
 :ref:`gap_sequences_label` - Gap a supplied set of sequences according to the `IMGT alignment <https://www.imgt.org/IMGTindex/AlleleAlignments.php>`_, warning of any missing conserved residues. It employs a gapped reference set, which must be provided. For each sequence to be gapped, the tool identifies the closest reference sequence, and uses it as a template.
 
+:ref:`create_alignment_label` - Create a formatted alignment display from gap-aligned IG/TR sequences, showing nucleotide sequences with amino acid translations and change annotations. Supports V, D, and J sequence types with type-specific formatting including CDR region delineation for V sequences.
+
 :ref:`fix_macaque_gaps_label` - The IMGT alignment for macaque IG sequences has inserted codons relative to the alignment used for most other species. This can cause problems for downstream tools. This utility removes the additional codons in macaque IG, reverting to the standard alignment
 
 Using custom databases with IgBlast

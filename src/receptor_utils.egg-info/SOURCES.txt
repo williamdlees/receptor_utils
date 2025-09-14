@@ -9,6 +9,7 @@ src/receptor_utils/check_fastas.py
 src/receptor_utils/check_ndm.py
 src/receptor_utils/novel_allele_name.py
 src/receptor_utils/number_v.py
+src/receptor_utils/sequence_alignment.py
 src/receptor_utils/simple_bio_seq.py
 src/receptor_utils.egg-info/PKG-INFO
 src/receptor_utils.egg-info/SOURCES.txt
@@ -19,6 +20,7 @@ src/receptor_utils.egg-info/top_level.txt
 src/scripts/__init__.py
 src/scripts/annotate_j.py
 src/scripts/at_coords.py
+src/scripts/create_alignment.py
 src/scripts/download_germline_set.py
 src/scripts/extract_refs.py
 src/scripts/fix_macaque_gaps.py

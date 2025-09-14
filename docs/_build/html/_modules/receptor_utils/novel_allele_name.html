@@ -136,12 +136,12 @@
                 <span class="n">ungapped_ref_set</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
             <span class="n">novel_seq</span><span class="p">,</span> <span class="n">aa</span><span class="p">,</span> <span class="n">notes</span> <span class="o">=</span> <span class="n">number_v</span><span class="o">.</span><span class="n">gap_sequence</span><span class="p">(</span><span class="n">novel_seq</span><span class="p">,</span> <span class="n">ref_set</span><span class="p">,</span> <span class="n">ungapped_ref_set</span><span class="p">)</span>
 
-
     <span class="n">closest_ref_name</span> <span class="o">=</span> <span class="n">closest_aligned_ref</span><span class="p">(</span><span class="n">novel_seq</span><span class="p">,</span> <span class="n">ref_set</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
     <span class="n">closest_ref_seq</span> <span class="o">=</span> <span class="n">ref_set</span><span class="p">[</span><span class="n">closest_ref_name</span><span class="p">]</span>
 
     <span class="n">diffs</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="n">insertions</span> <span class="o">=</span> <span class="p">[]</span>
+
     <span class="k">class</span> <span class="nc">Diff</span><span class="p">:</span>
         <span class="k">pass</span>
 
@@ -262,10 +262,10 @@
     <span class="n">aligner</span> <span class="o">=</span> <span class="n">Align</span><span class="o">.</span><span class="n">PairwiseAligner</span><span class="p">()</span>
     <span class="n">aligner</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="s1">&#39;global&#39;</span>
     <span class="n">aligner</span><span class="o">.</span><span class="n">open_gap_score</span> <span class="o">=</span> <span class="o">-</span><span class="mi">5</span>
-    <span class="n">aligner</span><span class="o">.</span><span class="n">extend_gap_score</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="n">aligner</span><span class="o">.</span><span class="n">extend_gap_score</span> <span class="o">=</span> <span class="o">-</span><span class="mi">2</span>
     <span class="n">aligner</span><span class="o">.</span><span class="n">match_score</span> <span class="o">=</span> <span class="mi">2</span>
     <span class="n">aligner</span><span class="o">.</span><span class="n">mismatch_score</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="n">aligner</span><span class="o">.</span><span class="n">target_end_gap_score</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">aligner</span><span class="o">.</span><span class="n">target_end_gap_score</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
 
     <span class="n">best_alignment</span> <span class="o">=</span> <span class="n">aligner</span><span class="o">.</span><span class="n">align</span><span class="p">(</span><span class="n">novel_seq</span><span class="p">,</span> <span class="n">ref_seq</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
 
@@ -368,8 +368,17 @@
 
 
 <div class="viewcode-block" id="run_tests"><a class="viewcode-back" href="../../receptor_utils.html#receptor_utils.novel_allele_name.run_tests">[docs]</a><span class="k">def</span> <span class="nf">run_tests</span><span class="p">():</span>
-    <span class="n">ref_set</span> <span class="o">=</span> <span class="n">simple</span><span class="o">.</span><span class="n">read_fasta</span><span class="p">(</span><span class="s1">&#39;Homo_sapiens_IGHV_gapped.fasta&#39;</span><span class="p">)</span>
+    
+    <span class="n">ref_set</span> <span class="o">=</span> <span class="n">simple</span><span class="o">.</span><span class="n">read_fasta</span><span class="p">(</span><span class="s1">&#39;Homo_sapiens_IGH_V_gapped.fasta&#39;</span><span class="p">)</span>
     <span class="n">test_novels</span> <span class="o">=</span> <span class="n">simple</span><span class="o">.</span><span class="n">read_fasta</span><span class="p">(</span><span class="s1">&#39;IGHV3-20.04.fasta&#39;</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">seq</span> <span class="ow">in</span> <span class="n">test_novels</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">novel_name</span> <span class="o">=</span> <span class="n">name_novel</span><span class="p">(</span><span class="n">seq</span><span class="p">,</span> <span class="n">ref_set</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">novel_name</span> <span class="o">!=</span> <span class="n">name</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Error: </span><span class="si">%s</span><span class="s1"> != </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">novel_name</span><span class="p">,</span> <span class="n">name</span><span class="p">))</span>
+    
+    <span class="n">ref_set</span> <span class="o">=</span> <span class="n">simple</span><span class="o">.</span><span class="n">read_fasta</span><span class="p">(</span><span class="s1">&#39;Homo_sapiens_IGH_D.fasta&#39;</span><span class="p">)</span>
+    <span class="n">test_novels</span> <span class="o">=</span> <span class="n">simple</span><span class="o">.</span><span class="n">read_fasta</span><span class="p">(</span><span class="s1">&#39;test_D_names.fasta&#39;</span><span class="p">)</span>
 
     <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">seq</span> <span class="ow">in</span> <span class="n">test_novels</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
         <span class="n">novel_name</span> <span class="o">=</span> <span class="n">name_novel</span><span class="p">(</span><span class="n">seq</span><span class="p">,</span> <span class="n">ref_set</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>

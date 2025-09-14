@@ -11,6 +11,7 @@ Naming and Aligning V, D and J Sequences
 
    name_allele
    gap_sequences
+   create_alignment
    fix_macaque_gaps
 
 

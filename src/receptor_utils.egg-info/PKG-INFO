@@ -1,13 +1,13 @@
 Metadata-Version: 2.4
 Name: receptor_utils
-Version: 0.0.57
+Version: 0.0.60
 Summary: Some tools I find useful for working with Ig receptor sequences
 Home-page: https://github.com/williamdlees/receptor_utils
 Author: William Lees
 Author-email: william@lees.org.uk
+License: EUPL-1.2
 Project-URL: Bug Tracker, https://github.com/williamdlees/receptor_utils/issues
 Classifier: Programming Language :: Python :: 3
-Classifier: License :: OSI Approved :: European Union Public Licence 1.2 (EUPL 1.2)
 Classifier: Operating System :: OS Independent
 Requires-Python: >=3.9
 Description-Content-Type: text/markdown
@@ -21,6 +21,9 @@ Dynamic: license-file
 Some tools I find useful for working with IG/TR receptor sequences, including support for allele sequence naming and 
 the creation of custom IgBlast databases. Please see the [documentation](https://williamdlees.github.io/receptor_utils/_build/html/introduction.html)
 for further details.
+
+Changes in version 0.0.60:
+- New script create_alignment: creates an alignment of alleles from a single gene, showing nucleotide sequences with amino acid translations and silent/nonsilent mutations. Supports V, D, and J sequence types with type-specific formatting including CDR region delineation for V sequences.
 
 Changes in version 0.0.57:
 - annotate_j: better handling of non-standard motifs and prioritzation of results. Canonical [WF]GxG motifs are
