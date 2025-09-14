@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>create_alignment &mdash; receptor-utils  documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="fix_macaque_gaps" href="fix_macaque_gaps.html" />
+    <link rel="prev" title="gap_sequences" href="gap_sequences.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> receptor-utils
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="airrc_sets_with_igblast.html">Using AIRR Community Reference Sets with IgBLAST</a></li>
+<li class="toctree-l1"><a class="reference internal" href="airrc_sets_with_mixcr.html">Using AIRR Community Reference Sets with MiXCR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="custom_igblast.html">Using custom databases with IgBlast</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="scripts.html">Command-Line Utilities</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="scripts.html#naming-and-aligning-v-d-and-j-sequences">Naming and Aligning V, D and J Sequences</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="name_allele.html">name_allele</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gap_sequences.html">gap_sequences</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">create_alignment</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#positional-arguments">Positional Arguments</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#named-arguments">Named Arguments</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#cdr-delineation">CDR delineation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#examples">Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="fix_macaque_gaps.html">fix_macaque_gaps</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="scripts.html#working-with-igblast">Working with IgBLAST</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scripts.html#convenience-tools">Convenience Tools</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">receptor_utils</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">receptor-utils</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="scripts.html">Command-Line Utilities</a></li>
+      <li class="breadcrumb-item active">create_alignment</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/create_alignment.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="create-alignment">
+<span id="create-alignment-label"></span><h1>create_alignment<a class="headerlink" href="#create-alignment" title="Permalink to this heading"></a></h1>
+<p>Create a formatted alignment display from gap-aligned IG/TR alleles. This tool takes FASTA files
+containing IMGT-gapped nucleotide sequences and produces a human-readable alignment showing nucleotide
+sequences with amino acid translations and silent/nonsilent mutations. The tool should be used
+on a set of alleles from the same gene.</p>
+<p>The tool supports V, D, and J sequence types with type-specific formatting:</p>
+<ul class="simple">
+<li><p><strong>V sequences</strong>: Display both nucleotides and amino acids with CDR region delineation</p></li>
+<li><p><strong>D sequences</strong>: Display only nucleotides (no amino acid translations)</p></li>
+<li><p><strong>J sequences</strong>: Display both nucleotides and amino acids without CDR regions (for translation, the alleles should be gap-aligned to a codon boundary at the 5’ end)</p></li>
+</ul>
+<p>For V sequences, CDR regions are marked based on configurable codon coordinates.</p>
+<p>Sequences are automatically sorted alphabetically by allele name for consistent output formatting.</p>
+<p><p>Create a formatted alignment display from gapped sequences</p>
+</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">usage</span><span class="p">:</span> <span class="n">create_alignment</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">codon_wrap</span> <span class="n">CODON_WRAP</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">v_coords</span> <span class="n">V_COORDS</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="nb">filter</span> <span class="n">FILTER</span><span class="p">]</span> <span class="n">input_file</span> <span class="p">{</span><span class="n">V</span><span class="p">,</span><span class="n">D</span><span class="p">,</span><span class="n">J</span><span class="p">}</span> <span class="n">output_file</span>
+</pre></div>
+</div>
+<section id="positional-arguments">
+<h2>Positional Arguments<a class="headerlink" href="#positional-arguments" title="Permalink to this heading"></a></h2>
+<dl class="option-list">
+<dt><kbd>input_file</kbd></dt>
+<dd><p>FASTA file containing gap-aligned nucleotide sequences</p>
+</dd>
+<dt><kbd>sequence_type</kbd></dt>
+<dd><p>Possible choices: V, D, J</p>
+<p>Type of sequence (V, D, or J) - currently only V is implemented</p>
+</dd>
+<dt><kbd>output_file</kbd></dt>
+<dd><p>Output file for the formatted alignment</p>
+</dd>
+</dl>
+</section>
+<section id="named-arguments">
+<h2>Named Arguments<a class="headerlink" href="#named-arguments" title="Permalink to this heading"></a></h2>
+<dl class="option-list">
+<dt><kbd>--codon_wrap, -w</kbd></dt>
+<dd><p>Number of codons per line before wrapping (default: 20)</p>
+<p>Default: 20</p>
+</dd>
+<dt><kbd>--v_coords, -c</kbd></dt>
+<dd><p>Comma-separated list of 1-based codon coordinates for CDR1, CDR2 and CDR3-start (default: 27,38,56,65,105)</p>
+</dd>
+<dt><kbd>--filter, -f</kbd></dt>
+<dd><p>Only include sequences in the file that contain this substring (e.g. IGHV1-18)</p>
+</dd>
+</dl>
+</section>
+<section id="cdr-delineation">
+<h2>CDR delineation<a class="headerlink" href="#cdr-delineation" title="Permalink to this heading"></a></h2>
+<p>For V sequences, the CDR regions are marked using codon coordinates (because the input sequences are IMGT-aligned, the CDR positions occupy specific coordinates).
+By default, the tool uses the following IMGT codon positions, which are correct for IMGT-aligned human allele sequences:
+- CDR1 start: 27
+- CDR1 end: 38
+- CDR2 start: 56
+- CDR2 end: 65
+- CDR3 start: 105</p>
+<p>Codon boundaries for other species may differ, and the user can specify alternative coordinates using the <code class="docutils literal notranslate"><span class="pre">--v_coords</span></code> option. As an example, the
+default coordinates would be specified as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">--</span><span class="n">v_coords</span> <span class="s2">&quot;27,38,56,65,105&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="examples">
+<h2>Examples<a class="headerlink" href="#examples" title="Permalink to this heading"></a></h2>
+<p>Create an alignment of V sequences with default CDR coordinates:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">create_alignment</span> <span class="n">sequences</span><span class="o">.</span><span class="n">fasta</span> <span class="n">V</span> <span class="n">output</span><span class="o">.</span><span class="n">txt</span>
+</pre></div>
+</div>
+<p>Create an alignment of D sequences (nucleotides only):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">create_alignment</span> <span class="n">d_sequences</span><span class="o">.</span><span class="n">fasta</span> <span class="n">D</span> <span class="n">d_alignment</span><span class="o">.</span><span class="n">txt</span>
+</pre></div>
+</div>
+<p>Create an alignment with custom CDR coordinates and shorter line wrapping:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">create_alignment</span> <span class="n">sequences</span><span class="o">.</span><span class="n">fasta</span> <span class="n">V</span> <span class="n">output</span><span class="o">.</span><span class="n">txt</span> <span class="o">--</span><span class="n">v_coords</span> <span class="s2">&quot;25,30,54,60,100&quot;</span> <span class="o">--</span><span class="n">codon_wrap</span> <span class="mi">15</span>
+</pre></div>
+</div>
+<p>Filter sequences containing a specific pattern:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">create_alignment</span> <span class="n">sequences</span><span class="o">.</span><span class="n">fasta</span> <span class="n">V</span> <span class="n">output</span><span class="o">.</span><span class="n">txt</span> <span class="o">--</span><span class="nb">filter</span> <span class="s2">&quot;IGHV1-18&quot;</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="gap_sequences.html" class="btn btn-neutral float-left" title="gap_sequences" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="fix_macaque_gaps.html" class="btn btn-neutral float-right" title="fix_macaque_gaps" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, William Lees.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
