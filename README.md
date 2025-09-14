@@ -4,6 +4,9 @@ Some tools I find useful for working with IG/TR receptor sequences, including su
 the creation of custom IgBlast databases. Please see the [documentation](https://williamdlees.github.io/receptor_utils/_build/html/introduction.html)
 for further details.
 
+Changes in version 0.0.61:
+- Fix handing of incomplete codon at 3' end in create_alignment
+
 Changes in version 0.0.60:
 - New script create_alignment: creates an alignment of alleles from a single gene, showing nucleotide sequences with amino acid translations and silent/nonsilent mutations. Supports V, D, and J sequence types with type-specific formatting including CDR region delineation for V sequences.
 

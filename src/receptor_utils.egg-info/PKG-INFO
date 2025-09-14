@@ -1,6 +1,6 @@
 Metadata-Version: 2.4
 Name: receptor_utils
-Version: 0.0.60
+Version: 0.0.61
 Summary: Some tools I find useful for working with Ig receptor sequences
 Home-page: https://github.com/williamdlees/receptor_utils
 Author: William Lees
@@ -21,6 +21,9 @@ Dynamic: license-file
 Some tools I find useful for working with IG/TR receptor sequences, including support for allele sequence naming and 
 the creation of custom IgBlast databases. Please see the [documentation](https://williamdlees.github.io/receptor_utils/_build/html/introduction.html)
 for further details.
+
+Changes in version 0.0.61:
+- Fix handing of incomplete codon at 3' end in create_alignment
 
 Changes in version 0.0.60:
 - New script create_alignment: creates an alignment of alleles from a single gene, showing nucleotide sequences with amino acid translations and silent/nonsilent mutations. Supports V, D, and J sequence types with type-specific formatting including CDR region delineation for V sequences.

@@ -69,7 +69,8 @@ def main():
             sequences,
             sequence_type=args.sequence_type,
             codon_wrap=args.codon_wrap,
-            v_coords=v_coords
+            v_coords=v_coords,
+            output_format='text'
         )
     except Exception as e:
         print(f"Error creating alignment: {e}")

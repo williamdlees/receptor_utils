@@ -6,6 +6,7 @@
 # the English version of which is available here: https://perma.cc/DK5U-NDVE
 
 from receptor_utils import simple_bio_seq as simple
+import math
 
 
 def create_alignment(sequences, sequence_type='V', codon_wrap=20, v_coords=None, output_format='text'):
@@ -13,7 +14,7 @@ def create_alignment(sequences, sequence_type='V', codon_wrap=20, v_coords=None,
     
     :param sequences: dict of sequences in the format returned by read_fasta
     :type sequences: dict
-    :param sequence_type: type of sequence (V, D, or J) - currently only V is implemented
+    :param sequence_type: type of sequence (V, D, or J)
     :type sequence_type: str
     :param codon_wrap: number of codons per line before wrapping
     :type codon_wrap: int
@@ -72,7 +73,9 @@ def create_alignment(sequences, sequence_type='V', codon_wrap=20, v_coords=None,
     alignment_lines = []
     
     # Calculate total codons needed
-    total_codons = len(reference_seq) // 3
+    max_length = max(len(seq) for seq in normalized_sequences.values())
+    max_length = max(max_length, len(reference_seq))
+    total_codons = math.ceil(max_length / 3)
     
     # Process alignment in chunks based on codon_wrap
     for chunk_start in range(0, total_codons, codon_wrap):
@@ -295,7 +298,7 @@ def _create_comparison_line(seq_name, nucleotide_seq, ref_nt_seq, ref_aa_seq, st
     # Compare codons
     nt_part = ""
     
-    for i in range(0, len(ref_chunk_nt), 3):
+    for i in range(0, len(comp_chunk_nt), 3):
         ref_codon = ref_chunk_nt[i:i+3] if i+3 <= len(ref_chunk_nt) else ref_chunk_nt[i:]
         comp_codon = comp_chunk_nt[i:i+3] if i+3 <= len(comp_chunk_nt) else comp_chunk_nt[i:] if i < len(comp_chunk_nt) else ""
         
@@ -343,8 +346,20 @@ def _create_comparison_line(seq_name, nucleotide_seq, ref_nt_seq, ref_aa_seq, st
             # Sequence ends here
             break
         else:
-            # Partial codon
-            nt_part += comp_codon.ljust(3) + " " if comp_codon else ""
+            # Partial codon or ref exhausted
+            for j in range(3):
+                if j >= len(comp_codon):
+                    break
+                if j < len(ref_codon):
+                    if ref_codon[j] == comp_codon[j]:
+                        nt_part += "-"
+                    else:
+                        nt_part += comp_codon[j].lower()
+                else:
+                    nt_part += comp_codon[j].lower()
+            
+            nt_part += " "
+
             if sequence_type != 'D':
                 aa_changes.append("")
     
