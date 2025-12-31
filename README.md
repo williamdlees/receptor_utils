@@ -5,6 +5,9 @@ the creation of custom IgBlast databases. Please see the [documentation](https:/
 for further details.
 
 Changes in version 0.0.61:
+- Internal restructing of aux_formats.py: no change to functionality
+
+Changes in version 0.0.61:
 - Fix handing of incomplete codon at 3' end in create_alignment
 
 Changes in version 0.0.60:

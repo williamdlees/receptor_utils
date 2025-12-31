@@ -165,15 +165,13 @@ def aux_from_fasta(seq_file, out_file, verbose):
     aux_from_seqs(seqs, out_file, verbose)
 
 
-def aux_from_seqs(seqs, out_file, verbose):
-    if verbose:
-        print('Annotations use MiAIRR definitions for codon_frame, j_cdr3_end')
-
-    annotations = []
+def results_from_seqs(seqs):
+    results = []
 
     for seq_name, seq in seqs.items():
         solutions = []
-        Result = namedtuple('Result', ['nt_seq', 'frame', 'cdr3_pos', 'trans', 'extra_bps', 'stop_codon', 'canonical_junc', 'motif'])
+        notes = []
+        Result = namedtuple('Result', ['seq_name', 'nt_seq', 'frame', 'cdr3_pos', 'trans', 'extra_bps', 'stop_codon', 'canonical_junc', 'motif', 'notes'])
         for frame in range(3):
             trans = simple.translate(seq[frame:])
 
@@ -182,6 +180,7 @@ def aux_from_seqs(seqs, out_file, verbose):
 
             for m in re.finditer('[WF]G.G', trans):
                 solutions.append(Result._make([
+                    seq_name,
                     seq,
                     frame+1,
                     frame + 3*m.start() + 1,
@@ -189,12 +188,14 @@ def aux_from_seqs(seqs, out_file, verbose):
                     (len(seq) - frame) % 3,
                     '*' in trans,
                     True,
-                    m.group(0)
+                    m.group(0),
+                    ''
                 ]))
 
             if not solutions:
                 for m in re.finditer('[CVWF]G.G', trans):     # found in TRJP1, TRJP2
                     solutions.append(Result._make([
+                        seq_name,
                         seq,
                         frame+1,
                         frame + 3*m.start() + 1,
@@ -202,13 +203,14 @@ def aux_from_seqs(seqs, out_file, verbose):
                         (len(seq) - frame) % 3,
                         '*' in trans,
                         False,
-                        m.group(0)
+                        m.group(0),
+                        ''
                     ]))
-                    #print(f'{seq_name}: solution with non-standard motif [CVWF][AG].G')
 
             if not solutions:
                 for m in re.finditer('[WF][AG].G', trans):     # found in TRJP1, TRJP2
                     solutions.append(Result._make([
+                        seq_name,
                         seq,
                         frame+1,
                         frame + 3*m.start() + 1,
@@ -216,13 +218,14 @@ def aux_from_seqs(seqs, out_file, verbose):
                         (len(seq) - frame) % 3,
                         '*' in trans,
                         False,
-                        m.group(0)
+                        m.group(0),
+                        ''
                     ]))
-                    #print(f'{seq_name}: solution with non-standard motif [CWF]G.G')
 
             if not solutions:
                 for m in re.finditer('[WF]G.[NG]', trans):     # found in TRJP1, TRJP2
                     solutions.append(Result._make([
+                        seq_name,
                         seq,
                         frame+1,
                         frame + 3*m.start() + 1,
@@ -230,9 +233,9 @@ def aux_from_seqs(seqs, out_file, verbose):
                         (len(seq) - frame) % 3,
                         '*' in trans,
                         False,
-                        m.group(0)
+                        m.group(0),
+                        ''
                     ]))
-                    #print(f'{seq_name}: solution with non-standard motif [WF]G.[NG]')
 
         if solutions:
             if len(solutions) > 1:
@@ -246,40 +249,63 @@ def aux_from_seqs(seqs, out_file, verbose):
                     if preferred:
                         solutions = preferred
                     if len(solutions) > 1:
-                        print(f'{seq_name}: multiple solutions found, selecting one')
                         solutions = [solutions[0]]
-                
-            for solution in solutions:
-                if '*' in solution.trans:
-                    print(f'{seq_name}: solution with stop codon in translation')
+                        notes.append('Multiple solutions found, selected one')
 
-                if not solution.canonical_junc:
-                    print(f'{seq_name}: solution with non-canonical motif {solution.motif}')
+            solution = solutions[0]
+            if '*' in solution.trans:
+                notes.append('Solution with stop codon in translation')
 
-                if verbose:
-                    print(f'{seq_name}: j_codon_frame {solution.frame} j_cdr3_end {solution.cdr3_pos} () exta bps {solution.extra_bps}')
+            if not solution.canonical_junc:
+                notes.append(f'Solution with non-canonical motif {solution.motif}')
 
-                    loc_count = '      '
-                    for num in range(len(solution.trans)):
-                        loc_count += f' {num+1:<2}'
-                    print(loc_count)
+            solution = solution._replace(notes=', '.join(notes) if notes else '')
+            results.append(solution)
 
-                    aa = '      '
-                    for num in range(len(solution.trans)):
-                        aa += f' {solution.trans[num]} '
-                    print(aa)
-
-                    nt = f'  {solution.nt_seq[:solution.frame-1]:>3} {solution.nt_seq[solution.frame-1:]}'
-                    print(nt + '\n\n')
-
-                annotations.append({
-                    '#name': seq_name,
-                    'j_codon_frame': solution.frame - 1,
-                    'chain_type': f'{seq_name[3]}{seq_name[2]}',
-                    'j_cdr3_end': solution.cdr3_pos-2,
-                    'extra_bps': solution.extra_bps,
-                })
         else:
-            print(f'{seq_name}: no solutions')
+            results.append(Result._make([
+                seq_name,
+                seq,
+                '', '', '', '', '', '', '', 'No j motif found'
+            ]))
+
+    return results
+
+
+def aux_from_seqs(seqs, out_file, verbose):
+    results = results_from_seqs(seqs)
+    annotations = []
+
+    if verbose:
+        print('Annotations use MiAIRR definitions for codon_frame, j_cdr3_end')
+
+    for result in results:
+        if 'No j motif found' not in result.notes:
+            if verbose:
+                print(f'{result.seq_name}: j_codon_frame {result.frame} j_cdr3_end {result.cdr3_pos} () exta bps {result.extra_bps}')
+
+                loc_count = '      '
+                for num in range(len(result.trans)):
+                    loc_count += f' {num+1:<2}'
+                print(loc_count)
+
+                aa = '      '
+                for num in range(len(result.trans)):
+                    aa += f' {result.trans[num]} '
+                print(aa)
+
+                nt = f'  {result.nt_seq[:result.frame-1]:>3} {result.nt_seq[result.frame-1:]}'
+                print(nt + '\n\n')
+
+            annotations.append({
+                '#name': result.seq_name,
+                'j_codon_frame': result.frame - 1,
+                'chain_type': f'{result.seq_name[3]}{result.seq_name[2]}',
+                'j_cdr3_end': result.cdr3_pos-2,
+                'extra_bps': result.extra_bps,
+            })
+    else:
+        if verbose:
+            print(f'{result.seq_name}: no solutions')
 
     simple.write_csv(out_file, annotations, delimiter='\t')

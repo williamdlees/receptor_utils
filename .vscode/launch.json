@@ -19,7 +19,7 @@
             "type": "python",
             "request": "launch",
             "program": "${workspaceFolder}/src/scripts/annotate_j.py",
-            "args": ["experimental_TRJ.fasta", "experimental_TR.aux"],
+            "args": ["-v", "experimental_TRJ.fasta", "experimental_TR.aux"],
             "cwd": "${workspaceFolder}/tests",
             "console": "integratedTerminal",
             "justMyCode": true
