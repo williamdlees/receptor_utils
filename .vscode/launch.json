@@ -29,7 +29,7 @@
             "type": "python",
             "request": "launch",
             "program": "${workspaceFolder}/src/scripts/download_germline_set.py",
-            "args": ["Mus musculus", "-n", "IGLJ (all strains)", "IGL", "-f", "MULTI-IGBLAST", "-u", "http://127.0.0.1:5000/api_v2/"],
+            "args": ["Homo sapiens", "-n", "IGHC", "IGH", "-f", "MULTI-IGBLAST", "-u", "http://127.0.0.1:5000/api_v2/"],
             "cwd": "${workspaceFolder}/tests",
             "console": "integratedTerminal",
             "justMyCode": true

@@ -69,8 +69,13 @@ def download_germline_set(species, locus, version='latest', germline_set_name=No
                 data_g = SeqIO.parse(StringIO(data_g.text), 'fasta')
                 data_g = {rec.id: str(rec.seq).upper() for rec in data_g}
                 files_written = []
-                for chain in ['V', 'D', 'J']:
-                    seqs = {k: v for k, v in data_u.items() if k[3] == chain}
+                for chain in ['V', 'D', 'J', 'C']:
+                    if chain in ['V', 'J']:
+                        seqs = {k: v for k, v in data_u.items() if k[3] == chain}
+                    elif chain == 'D':
+                        seqs = {k: v for k, v in data_u.items() if k[3] == 'D' and len(v) < 100}    # Hopefully this gives good enough differentiation
+                    else:
+                        seqs = {k: v for k, v in data_g.items() if k[3] not in ['V', 'D', 'J'] or (k[3] == 'D' and len(v) >= 100)}
                     if seqs: 
                         simple.write_fasta(f"{prefix}{chain}.fasta", seqs)
                         files_written.append(f"{prefix}{chain}.fasta")

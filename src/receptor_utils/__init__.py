@@ -5,5 +5,5 @@ def __getattr__(name):
     if name == 'number_ighv':
         warn("number_ighv is deprecated. Please use number_v instead.", DeprecationWarning, stacklevel=2)
         return number_v
-
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
 
