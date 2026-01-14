@@ -104,7 +104,7 @@ def read_imgt_fasta(infile: str, species: str, chains=('IGHV', 'IGHD', 'IGHJ', '
             for chain in chains:
                 if ('-REGION' in rec.description or chain == 'CH' or 'EX' in rec.description) and sp in rec.description and chain in rec.description:
                     if not functional_only or '|F|' in rec.description:
-                        if 'V' not in chain or len(rec.seq) > 280:       # strip out obviously incomplete Vs
+                        if ('V' not in chain) or (len(rec.seq) > 280) or (not functional_only):       # strip out obviously incomplete Vs
                             name = rec.description.split('|')[1]
                             if include_orphon or '/OR' not in name:
                                 seq_type = rec.description.split('|')[4]

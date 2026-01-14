@@ -4,6 +4,10 @@ Some tools I find useful for working with IG/TR receptor sequences, including su
 the creation of custom IgBlast databases. Please see the [documentation](https://williamdlees.github.io/receptor_utils/_build/html/introduction.html)
 for further details.
 
+Changes in version 0.0.63:
+- In extract_imgt_refs, include obviously incomplete V sequences (length <= 280) unless the functional_only option is set
+- upgrade setuptools dependency. If you have trouble installing receptor_utils, please upgrade pip.
+
 Changes in version 0.0.62:
 - Fix import of aux_formats
 - Add support for C genes in download_germline_set
