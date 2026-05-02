@@ -309,3 +309,97 @@ def aux_from_seqs(seqs, out_file, verbose):
             print(f'{result.seq_name}: no solutions')
 
     simple.write_csv(out_file, annotations, delimiter='\t')
+
+
+
+def make_mixcr_ref(ref, uri_prefix, taxon_id, species_name, delineation_scheme='IMGT'):
+    if isinstance(ref["GermlineSet"], list):
+        germline_set = ref["GermlineSet"][0]
+    else:
+        germline_set = ref["GermlineSet"]
+
+    if 'items' in germline_set:
+        germline_set = germline_set['items'][0]
+
+    mixcr_rec = ({
+        "taxonId": taxon_id,
+        "speciesNames": [ species_name ],
+        "genes": [],
+        "sequenceFragments": [],
+    })
+    
+    for allele in germline_set['allele_descriptions']:
+        try:
+            sequence = allele['sequence']
+            label = allele['label']
+            uri = f"{uri_prefix}#{label}"
+            locus = germline_set['locus']
+
+            mixcr_rec['sequenceFragments'].append({
+                "uri": uri,
+                "sequence": sequence,
+                "range": {"from": 0, "to": len(sequence)},
+            })
+
+            gene_rec = {
+                "base_sequence": uri,
+                "name": label,
+                "isFunctional": True,
+                "chains": [locus],
+                "anchorPoints": {},
+            }
+
+            if allele['sequence_type'] == 'J':
+                gene_rec['geneType'] = 'J'
+                offset = int(allele['gene_start']) - 1
+                gene_rec['anchorPoints'] = {
+                    "JBegin": int(allele['gene_start']) - 1,
+                    "FR4Begin": offset + int(allele['j_cdr3_end']) + 3,   # first nt of the first G of the GXG motif
+                    "FR4End": int(allele['gene_end']),
+                }
+
+                mixcr_rec['genes'].append(gene_rec)
+                
+            elif allele['sequence_type'] == 'V':
+                if 'v_gene_delineations' not in allele:
+                    print(f"Omitting allele {allele['label']} as no delineations are specified")
+                    continue
+
+                delineation = None
+                for delineation in allele['v_gene_delineations']:
+                    if delineation['delineation_scheme'] == delineation_scheme:
+                        break
+                
+                if not delineation:
+                    print(f"Omitting allele {allele['label']} as no delineation with scheme {delineation_scheme} is specified")
+                    continue
+
+                gene_rec['geneType'] = 'V'
+                offset = int(allele['gene_start']) - 1
+                gene_rec['anchorPoints'] = {
+                    "FR1Begin": offset + delineation['fwr1_start'] - 1,
+                    "CDR1Begin": offset + delineation['cdr1_start'] - 1,
+                    "FR2Begin": offset + delineation['fwr2_start'] - 1,
+                    "CDR2Begin": offset + delineation['cdr2_start'] - 1,
+                    "FR3Begin": offset + delineation['fwr3_start'] - 1,
+                    "CDR3Begin": offset + delineation['cdr3_start'] - 1,
+                    "VEnd": int(allele['gene_end']),
+                }
+                
+                mixcr_rec['genes'].append(gene_rec)
+
+            elif allele['sequence_type'] == 'D':
+                gene_rec['geneType'] = 'D'
+                offset = int(allele['gene_start']) - 1
+                gene_rec['anchorPoints'] = {
+                    "DBegin": offset,
+                    "DEnd": int(allele['gene_end']),
+                }
+                
+                mixcr_rec['genes'].append(gene_rec)
+
+        except Exception as e:
+            print(f"Unrecognisable parameter in JSON file for allele {allele['label']}: {e}. Skipping.")
+            continue
+
+    return list(mixcr_rec)
