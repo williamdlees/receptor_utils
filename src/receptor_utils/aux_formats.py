@@ -342,7 +342,7 @@ def make_mixcr_ref(ref, uri_prefix, taxon_id, species_name, delineation_scheme='
             })
 
             gene_rec = {
-                "base_sequence": uri,
+                "baseSequence": uri,
                 "name": label,
                 "isFunctional": True,
                 "chains": [locus],
@@ -354,7 +354,7 @@ def make_mixcr_ref(ref, uri_prefix, taxon_id, species_name, delineation_scheme='
                 offset = int(allele['gene_start']) - 1
                 gene_rec['anchorPoints'] = {
                     "JBegin": int(allele['gene_start']) - 1,
-                    "FR4Begin": offset + int(allele['j_cdr3_end']) + 3,   # first nt of the first G of the GXG motif
+                    "FR4Begin": offset + int(allele['j_cdr3_end']) + 2,   # first nt of the first G of the GXG motif
                     "FR4End": int(allele['gene_end']),
                 }
 
@@ -382,7 +382,7 @@ def make_mixcr_ref(ref, uri_prefix, taxon_id, species_name, delineation_scheme='
                     "FR2Begin": offset + delineation['fwr2_start'] - 1,
                     "CDR2Begin": offset + delineation['cdr2_start'] - 1,
                     "FR3Begin": offset + delineation['fwr3_start'] - 1,
-                    "CDR3Begin": offset + delineation['cdr3_start'] - 1,
+                    "CDR3Begin": offset + delineation['cdr3_start'] - 4,
                     "VEnd": int(allele['gene_end']),
                 }
                 
@@ -402,4 +402,4 @@ def make_mixcr_ref(ref, uri_prefix, taxon_id, species_name, delineation_scheme='
             print(f"Unrecognisable parameter in JSON file for allele {allele['label']}: {e}. Skipping.")
             continue
 
-    return list(mixcr_rec)
+    return [mixcr_rec]

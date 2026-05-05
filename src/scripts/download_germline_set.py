@@ -41,7 +41,7 @@ def download_germline_set(species, locus, version='latest', germline_set_name=No
         locus (str): The locus (e.g., IGH, IGK, IGL, TRA, TRB, TRD).
         version (str): The specific version to download, default is 'latest'.
         germline_set_name (str): The name of the germline set, default is None.
-        file_format (str): The format to download (AIRRC-JSON, SINGLE-FG, SINGLE-FU).
+        file_format (str): The format to download (AIRRC-JSON, SINGLE-FG, SINGLE-FU, MIXCR).
         url (str): The base URL for the API, default is 'https://ogrdb.airr-community.org/api_v2'.
         prefix (str): The prefix for filenames, default is None.
     """
@@ -103,13 +103,17 @@ def download_germline_set(species, locus, version='latest', germline_set_name=No
                 elif file_format == 'SINGLE-FU':
                     output_file = f"{prefix}ungapped.fasta"
                     write_fasta_to_disk(data.text, output_file)
+                elif file_format == 'MIXCR':
+                    uri = f"{url}/germline/set/{germline_set_id}/{version}"
+                    output_file = f"{prefix}mixcr.json"
+                    write_mixcr_to_disk(data, output_file, uri)
 
 
 
 def write_fasta_to_disk(data, output_file):
     """
     Writes FASTA data to a file.
-
+    
     Args:
         data (str): The FASTA data to write.
         output_file (str): The name of the output file.
@@ -131,6 +135,45 @@ def write_json_to_disk(data, output_file):
     with open(output_file, 'w') as f:
         json.dump(data, f, indent=2)
     print(f"JSON file saved to {output_file}")
+
+
+def write_mixcr_to_disk(data, output_file, uri_prefix):
+    """
+    Writes JSON data to a file.
+
+    Args:
+        data (dict): The JSON data to write.
+        output_file (str): The name of the output file.
+    """
+
+    if isinstance(data["GermlineSet"], list):
+        germline_set = data["GermlineSet"][0]
+    else:
+        germline_set = data["GermlineSet"]
+
+    taxon_id = '1234'
+
+    if 'species' in germline_set and 'id' in germline_set['species'] and germline_set['species']['id']:
+        taxon_id = germline_set['species']['id']
+        if ':' in taxon_id:
+            taxon_id = taxon_id.split(':')[-1]
+    else:
+        print("Taxon ID not found in the reference file - using default value '0000'.")
+        return
+        
+    species_name = 'Unknown'
+
+    if 'species' in germline_set and 'label' in germline_set['species'] and germline_set['species']['label']:
+        species_name = germline_set['species']['label']
+    else:
+        print("Species name not found in the reference file - using default value 'Unknown'.")
+        return
+
+    mixcr_data = aux_formats.make_mixcr_ref(data, uri_prefix, taxon_id, species_name)
+    with open(output_file, 'w') as f:
+        json.dump(mixcr_data, f, indent=2)
+
+    print(f"MIXCR JSON file saved to {output_file}")
 
 
 def write_igblast_to_disk(data, locus, prefix):
@@ -179,7 +222,7 @@ def request_set(url, germline_set_id, version, species, germline_set_name, locus
     ex = '_ex' if species == 'Homo sapiens' else ''
 
     if version == "latest" or version in versions_list:
-        if format == 'AIRRC-JSON':
+        if format == 'AIRRC-JSON' or format == 'MIXCR':
             api_url = f"{url}/germline/set/{germline_set_id}/{version}"
             response = do_request(api_url)
             return response.json()
@@ -313,7 +356,7 @@ def get_parser():
     parser.add_argument('locus', type=str, help='Locus (IGH, IGK, IGL, TRA, TRB, TRD, TRD)')
     parser.add_argument('-n', '--name', type=str, help='germline set name (the utility will attempt to determine the name, if none is specified)')
     parser.add_argument('-v', '--version', type=str, default='latest', help='Specific version to download, otherwise the latest version will be downloaded')
-    parser.add_argument('-f', '--format', type=str, default='AIRRC-JSON', choices=['AIRRC-JSON', 'SINGLE-FG', 'SINGLE-FU', 'MULTI-F', 'MULTI-IGBLAST'], help='Format to download')
+    parser.add_argument('-f', '--format', type=str, default='AIRRC-JSON', choices=['AIRRC-JSON', 'SINGLE-FG', 'SINGLE-FU', 'MULTI-F', 'MULTI-IGBLAST', 'MIXCR'], help='Format to download')
     parser.add_argument('-u', '--url', type=str, default='https://ogrdb.airr-community.org/api_v2', help='URL to use')
     parser.add_argument('-p', '--prefix', type=str, help='Prefix for filenames. Default prefix is species_locus (with _ substituted for space). If PREFIX is NONE, no prefix will be used for multi files, and the default prefix will be used for single files.')
     return parser

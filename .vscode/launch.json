@@ -25,6 +25,16 @@
             "justMyCode": true
         },
         {
+            "name": "make_mixcr_json",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/scripts/make_mixcr_json.py",
+            "args": ["c:/users/william/mixcrannot/Oncorhynchus_mykiss_IGH_VDJ_rev_0.json", "c:/users/william/mixcrannot/trout_from_miairr.json"],
+            "cwd": "${workspaceFolder}/src",
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        {
             "name": "download_germline_set",
             "type": "python",
             "request": "launch",
