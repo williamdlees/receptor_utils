@@ -15,7 +15,19 @@ def ndm_from_json(ref, ndm_file, chain, delineation_scheme='IMGT'):
     if 'items' in germline_set:
         germline_set = germline_set['items'][0]
 
+    V_found = False
+    for allele in germline_set['allele_descriptions']:
+        if allele['sequence_type'] == 'V':
+            V_found = True
+            break
+
+    if not V_found:
+        print("No V gene alleles found in JSON file. No .ndm file will be created.")
+        return False
+
     ret = False
+    fake_alleles_added = False
+
     with open(ndm_file, 'w') as fo:
         for allele in germline_set['allele_descriptions']:
             if allele['sequence_type'] == 'V':
@@ -34,7 +46,13 @@ def ndm_from_json(ref, ndm_file, chain, delineation_scheme='IMGT'):
                                 print(f"Omitting incomplete allele {allele['label']}")
                                 continue
 
-                        rec = record_from_json(allele['label'], delineation, chain)
+                        label = allele['label']
+                        if '*' not in label:
+                            label += '*00'
+                            if label[4] == '-':
+                                label = label[:4] + '0' +label[4:]
+                            fake_alleles_added = True
+                        rec = record_from_json(label, delineation, chain)
 
                         # compare with gapped sequence derivation and warn if there is a mismatch
                         # can't make this comparison any longer because we don't know the coordinates used in the gapped alignment
@@ -44,6 +62,9 @@ def ndm_from_json(ref, ndm_file, chain, delineation_scheme='IMGT'):
                         #     print(f"Warning: mismatch between IMGT gapped sequence and CDR delineation for allele {allele['label']}")
 
                         fo.write(rec)
+
+        if fake_alleles_added:
+            print(f".ndm: some alleles had no allele designation. Added fake allele designations with *00 suffix as IgBLAST requires an allele designation.")
 
     return ret
 
@@ -125,6 +146,7 @@ def aux_from_json(ref, out_file, verbose):
         germline_set = germline_set['items'][0]
 
     annotations = []
+    fake_alleles_added = False
 
     for allele in germline_set['allele_descriptions']:
         if allele['sequence_type'] == 'J':
@@ -142,13 +164,23 @@ def aux_from_json(ref, out_file, verbose):
                 print(f"CDR3 end for {allele['label']} is not on a codon boundary. Skipping.")
                 continue
 
+            label = allele['label']
+            if '*' not in label:
+                label += '*00'
+                if label[4] == '-':
+                    label = label[:4] + '0' +label[4:]
+                fake_alleles_added = True
+
             annotations.append({
-                '#name': allele['label'],
+                '#name': label,
                 'j_codon_frame': allele['j_codon_frame'] - 1,
                 'chain_type': f"{allele['label'][3]}{allele['label'][2]}",
                 'j_cdr3_end': j_cdr3_end - 2,
                 'extra_bps': (gene_end - gene_start - j_codon_frame - 1 ) % 3,
             })
+
+    if fake_alleles_added:
+        print(f".aux: some alleles had no allele designation. Added fake allele designations with *00 suffix as IgBLAST requires an allele designation.")
 
     annotations = sorted(annotations, key=lambda x: x['#name'])
 
