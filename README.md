@@ -7,6 +7,7 @@ for further details.
 Changes in version 0.0.66:
 - Added -f MIXCR option to download_germline set
 - Added make_mixcr_json utility
+- If necessary, add fake alleles to sequence names when making aux, ndm files for igblast
 
 Changes in version 0.0.65:
 - Further fixes to imports

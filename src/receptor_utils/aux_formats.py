@@ -373,10 +373,14 @@ def make_mixcr_ref(ref, uri_prefix, taxon_id, species_name, delineation_scheme='
                 "range": {"from": 0, "to": len(sequence)},
             })
 
+            functional = True
+            if 'functional' in allele and (allele['functional'] is False or str(allele['functional']).lower() in ('false', 'f')):
+                functional = False
+
             gene_rec = {
                 "baseSequence": uri,
                 "name": label,
-                "isFunctional": True,
+                "isFunctional": functional,
                 "chains": [locus],
                 "anchorPoints": {},
             }

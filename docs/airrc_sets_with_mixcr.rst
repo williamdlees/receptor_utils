@@ -5,9 +5,9 @@ Using AIRR Community Reference Sets with MiXCR
 
 The utility :ref:`make_mixcr_json` will convert AIRR-C germline reference sets in MIAIRR format to MiXCR's JSON format. In addition,
 the :ref:`download_germline_set` utility can be used to download germline reference sets from the AIRR-C OGRDB database in MiXCR format. 
-The germline set in MiXCR format can then be used to annotate sequences with MiXCR, using `mixcr analyze` as outlined in the MiXCR
+The germline set in MiXCR format can then be used to annotate sequences with MiXCR, using ``mixcr analyze`` as outlined in the MiXCR
 documentation on the `Custom Reference Library page <https://mixcr.com/mixcr/guides/create-custom-library/?h=json#de-novo-libraries>`_.
-There is no need to use `mixcr buildlibrary` as the file is already in the correct format for use with MiXCR.
+There is no need to use ``mixcr buildlibrary`` as the file is already in the correct format for use with MiXCR.
 
 Example Usage
 =============
@@ -17,8 +17,8 @@ If you are not familiar with the container, you can read about it in the `MiXCR 
 using the instructions provided on the `MiXCR website <https://mixcr.com>`_. In this case just skip the 'log in to Docker' step in the walkthrough.
 
 We will annotate a sample set of sequences provided on the `Immcantation website <http://clip.med.yale.edu/immcantation/examples/AIRR_Example.tar.gz>`_. 
-The sequences have been preprocessed and quality-filtered from Illumina paired-end reads and are present in a FASTA file called ``HD13M.fasta``. The process required to create such a file from sequencing reads, will depend on the sequencing protocol. 
-You can consult the Mixcr documentation, or other sources, to determine a suitable approach for you sequencing data.
+The sequences have been preprocessed and quality-filtered from Illumina paired-end reads and are present in a FASTA file called ``HD13M.fasta``. The process required to create such a file from sequencing reads will depend on the sequencing protocol. 
+You can consult the MiXCR documentation, or other sources, to determine a suitable approach for your sequencing data.
 
 Prerequisites
 -------------
@@ -32,7 +32,7 @@ Before you start, you will need to have the following installed on your machine:
 
 The steps we shall follow are as follows:
 
-#. Download the AIRR-C germline set for human IGHV genes in Mixcr format.
+#. Download the AIRR-C germline set for human IGHV genes in MiXCR format.
 #. Log in to the MiXCR container so that we can use its installed tools.
 #. Annotate the sample sequences using MiXCR.
 
@@ -49,9 +49,9 @@ In a suitable directory to use for this test, use the :ref:`download_germline_se
     9606.IGH_VDJ
     MIXCR JSON file saved to Homo_sapiens_IGH_VDJ_IGH_mixcr.json
     
-Finally, extract the file ``HD13M.fasta`` from the downloaded tarball and copy it to the directory.
+Next, extract the file ``HD13M.fasta`` from the downloaded tarball and copy it to the directory.
 
-1. Log in to the MiXCR container so that we can use its installed tools
+2. Log in to the MiXCR container so that we can use its installed tools
 -----------------------------------------------------------------------
 
 Log in to the container, mounting the current local directory as /work.

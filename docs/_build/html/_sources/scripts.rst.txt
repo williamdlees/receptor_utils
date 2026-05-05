@@ -24,6 +24,7 @@ Working with IgBLAST
    download_germline_set
    make_igblast_ndm
    annotate_j
+   make_mixcr_json
 
    
 Convenience Tools
