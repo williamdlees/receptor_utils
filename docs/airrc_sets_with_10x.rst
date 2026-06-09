@@ -54,3 +54,5 @@ Now cd to the runs directory, and create a new run that uses the OGRDB reference
         --localmem=64 \
 
 When Cell Ranger completes, open the file runs/HumanB_Cell_OGRDB/outs/airr_rearrangement.tsv and note that the records are annotated at allele level.
+
+Thanks to Eve Richardson for the investigation, core code and testing, and to Katherine Jackson for helpful support.
