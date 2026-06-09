@@ -10,7 +10,7 @@ documentation on the `Custom Reference Library page <https://mixcr.com/mixcr/gui
 There is no need to use ``mixcr buildlibrary`` as the file is already in the correct format for use with MiXCR.
 
 Example Usage
-=============
+-------------
 
 For simplicity in this example, we will use the MiXCR Docker/Singularity container.  
 If you are not familiar with the container, you can read about it in the `MiXCR documentation <https://mixcr.com/mixcr/getting-started/docker/?h=container>`_. Alternatively, you can install MiXCR on your local machine,

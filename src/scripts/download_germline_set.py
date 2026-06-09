@@ -1,4 +1,5 @@
 import argparse
+import os
 import requests
 import json
 from Bio import SeqIO
@@ -89,7 +90,7 @@ def download_germline_set(species, locus, version='latest', germline_set_name=No
                     data = request_set(url, germline_set_id, version, species, germline_set_name, locus, 'AIRRC-JSON')
                     write_igblast_to_disk(data, locus, prefix)
             else:
-                data = request_set(url, germline_set_id, version, species, germline_set_name, locus, file_format)
+                data = request_set(url, germline_set_id, version, species, germline_set_name, locus, file_format) 
                 if not data:
                     return
                 if file_format == 'AIRRC-JSON':
@@ -107,7 +108,180 @@ def download_germline_set(species, locus, version='latest', germline_set_name=No
                     uri = f"{url}/germline/set/{germline_set_id}/{version}"
                     output_file = f"{prefix}mixcr.json"
                     write_mixcr_to_disk(data, output_file, uri)
+                elif file_format == 'LEADER':
+                    output_file = f"{prefix}leaders.fasta"
+                    if aux_formats.write_leaders_to_fasta(data, output_file, False):
+                        print(f"Leader FASTA file saved to {output_file}")
+                    else:
+                        print("No leader sequences found. No FASTA file will be created.")
+                elif file_format == 'LEADER-AA':
+                    output_file = f"{prefix}leaders_aa.fasta"
+                    if aux_formats.write_leaders_to_fasta(data, output_file, True):
+                        print(f"Leader amino acid FASTA file saved to {output_file}")
+                    else:
+                        print("No leader sequences found. No FASTA file will be created.")
 
+
+
+def download_10x_germline_set(species, locus, version='latest', germline_set_name=None, file_format='AIRRC-JSON', url='https://ogrdb.airr-community.org/api_v2', prefix=None):
+# human light chain constant sequences for inclusion
+    human_c = {
+        'IGKC*01':  'GAACTGTGGCTGCACCATCTGTCTTCATCTTCCCGCCATCTGATGAGCAGTTGAAATCTGGAACTGCCTCTGTTGTGTGCCTGCTGAATAACTTCTATCCCAGAGAGGCCAAAGTACAGTGGAAGGTGGATAACGCCCTCCAATCGGGTAACTCCCAGGAGAGTGTCACAGAGCAGGA',
+        'IGLC1*02': 'GTCAGCCCAAGGCCAACCCCACTGTCACTCTGTTCCCGCCCTCCTCTGAGGAGCTCCAAGCCAACAAGGCCACACTAGTGTGTCTGATCAGTGACTTCTACCCGGGAGCTGTGACAGTGGCCTGGAAGGCAGATGGCAGCCCCGTCAAGGCGGGAGTGGAGACCACCAAACCCTCCAA',
+        'TRAC*01':  'ATATCCAGAACCCTGACCCTGCCGTGTACCAGCTGAGAGACTCTAAATCCAGTGACAAGTCTGTCTGCCTATTCACCGATTTTGATTCTCAAACAAATGTGTCACAAAGTAAGGATTCTGATGTGTATATCACAGACAAAACTGTGCTAGACATGAGGTCTATGGACTTCAAGAGCAA',
+        'TRBC1*01': 'AGGACCTGAACAAGGTGTTCCCACCCGAGGTCGCTGTGTTTGAGCCATCAGAAGCAGAGATCTCCCACACCCAAAAGGCCACACTGGTGTGCCTGGCCACAGGCTTCTTCCCCGACCACGTGGAGCTGAGCTGGTGGGTGAATGGGAAGGAGGTGCACAGTGGGGTCAGCACGGACCC',
+        'TRDC*01':  'GAAGTCAGCCTCATACCAAACCATCCGTTTTTGTCATGAAAAATGGAACAAATGTCGCTTGTCTGGTGAAGGAATTCTACCCCAAGGATATAAGAATAAATCTCGTGTCATCCAAGAAGATAACAGAGTTTGATCCTGCTATTGTCATCTCTCCCAGTGGGAAGTACAATGCTGTCAA',
+    }
+
+    if version != 'latest':
+        print("Versioning is not currently supported for 10X format. Downloading latest version.")
+
+    if species != 'Homo sapiens':
+        print("10X format is currently only available for human species.")
+        return
+
+    if 'IG' in locus:
+        print('Creating 10x germline set for Homo sapiens, IG loci, from latest versions')
+    elif 'TR' in locus:
+        print('Creating 10x germline set for Homo sapiens, TR loci, from latest versions')
+    else:
+        return
+
+    refs = {}
+
+    # (name, locus, set_name)
+    ref_details = [
+        ('IGH', 'IGH', 'IGH_VDJ'),
+        ('IGHC', 'IGH', 'IGHC'),
+        ('IGK', 'IGK', 'IGKappa_VJ'),
+        ('IGL', 'IGL', 'IGLambda_VJ'),
+        ('TRA', 'TRA', 'TRA_VJ'),
+        ('TRB', 'TRB', 'TRB_VDJ'),
+        ('TRG', 'TRG', 'TRG_VJ'),
+        ('TRD', 'TRD', 'TRD_VDJ'),
+    ]
+
+    ref_details = [d for d in ref_details if locus[:2] in d[1]]
+
+    species_id = find_species_id(url, species)
+
+    if not species_id:
+        print(f"Species ID not found for {species}.")
+        return
+
+    for (name, locus, germline_set_name) in ref_details:
+        if os.path.exists(name+'.json'):
+            print(f"Germline set for {germline_set_name} already exists. Skipping download.")
+            with open(name+'.json', 'r') as f:
+                refs[name] = json.load(f)
+            continue
+
+        germline_set_id = find_available_sets(url, species_id, locus, germline_set_name)
+
+        if not germline_set_id:
+            print(f"Germline set ID not found for {germline_set_name}.")
+            return
+        
+        refs[name] = request_set(url, germline_set_id, version, species, germline_set_name, locus, 'AIRRC-JSON')
+
+        if not refs[name]:
+            print(f"Failed to retrieve germline set for {germline_set_name}.")
+            return
+
+        write_json_to_disk(refs[name], name+'.json') 
+
+    allele_to_leader = {}
+    gene_to_leader = {}
+
+    # build the best table we can of V sequences and leaders
+    for name, locus, germline_set_name in ref_details:
+        for allele in refs[name]['GermlineSet'][0]['allele_descriptions']:
+            if allele['sequence_type'] != 'V':
+                continue
+
+            allele_to_leader[allele['label']] = None
+            found_leader = True
+            coords = {}
+            for coord in ['leader_1_start', 'leader_1_end', 'leader_2_start', 'leader_2_end']:
+
+                if not allele[coord]:
+                    found_leader = False
+                    break
+                try:
+                    coords[coord] = int(allele[coord])
+                except ValueError:
+                    print(f"Invalid coordinate value {allele[coord]} for allele {allele['id']} in set {germline_set_name}")
+                    found_leader = False
+                    break
+            if not found_leader:
+                continue
+
+            allele_to_leader[allele['label']] = allele['sequence'][coords['leader_1_start']-1:coords['leader_1_end']] + allele['sequence'][coords['leader_2_start']-1:coords['leader_2_end']]
+            gene = allele['label'].split('*')[0]
+            if gene not in gene_to_leader:
+                gene_to_leader[gene] = allele_to_leader[allele['label']]
+
+    # try to fill in any missing leaders with other alleles of the same gene
+    missing = 0
+    for allele in allele_to_leader:
+        if allele_to_leader[allele] is None:
+            gene = allele.split('*')[0]
+            if gene in gene_to_leader:
+                allele_to_leader[allele] = gene_to_leader[gene]
+            else:
+                missing += 1
+
+    if missing:
+        print(f"{missing} alleles are missing leader sequences and will not be included:\n{', '.join([a for a in allele_to_leader if allele_to_leader[a] is None])}")
+
+    # now build the 10X format file
+    recs = {}
+    included_const = []
+    index = 1
+
+    for name, locus, germline_set_name in ref_details:
+        for allele in refs[name]['GermlineSet'][0]['allele_descriptions']:
+            accession = [i.get('repository_ref', allele['allele_description_id']) for i in allele.get('unrearranged_support', [])]
+            if len(accession) == 0:
+                accession = allele['allele_description_id']
+            else:
+                accession = accession[0]
+
+            if allele['sequence_type'] == 'V':
+                if not allele_to_leader[allele['label']]:
+                    continue
+                regions = 'L-REGION+V-REGION'
+                sequence = allele_to_leader[allele['label']] + allele['coding_sequence'].replace('.', '')
+            elif allele['sequence_type'] == 'C':
+                if allele['label'][:4] in included_const:
+                    continue
+
+                included_const.append(allele['label'][:4])
+                regions = 'C-REGION'
+                sequence = allele['coding_sequence'][:180]
+            else:
+                regions = allele['sequence_type'] + '-REGION'
+                sequence = allele['coding_sequence']
+
+            header = f"{index}|{allele['label']} {accession}|{allele['label']}|{regions}|{locus[:2]}|{locus}|None|{allele['allele_designation']}"
+            recs[header] = sequence
+            index += 1
+
+    # add hardcoded alleles
+    for allele, seq in human_c.items():
+        if locus[:2] in allele:
+            header = f"{index}|{allele} None|{allele}|C-REGION|IG|{allele[:3]}|None|{allele.split('*')[1]}"
+            recs[header] = seq
+            index += 1 
+
+    sp = species.replace(' ', '_')
+    if not prefix:
+        output_file = f"{sp}_{locus[:2]}_10x.fasta"
+    else:
+        output_file = f"{prefix}_{sp}_{locus[:2]}_10x.fasta"
+
+    simple.write_fasta(output_file, recs)
+    print(f"10X FASTA file saved to {output_file}")
 
 
 def write_fasta_to_disk(data, output_file):
@@ -222,7 +396,7 @@ def request_set(url, germline_set_id, version, species, germline_set_name, locus
     ex = '_ex' if species == 'Homo sapiens' else ''
 
     if version == "latest" or version in versions_list:
-        if format == 'AIRRC-JSON' or format == 'MIXCR':
+        if format == 'AIRRC-JSON' or format == 'MIXCR' or format == 'LEADER-AA' or format == 'LEADER':
             api_url = f"{url}/germline/set/{germline_set_id}/{version}"
             response = do_request(api_url)
             return response.json()
@@ -356,7 +530,7 @@ def get_parser():
     parser.add_argument('locus', type=str, help='Locus (IGH, IGK, IGL, TRA, TRB, TRD, TRD)')
     parser.add_argument('-n', '--name', type=str, help='germline set name (the utility will attempt to determine the name, if none is specified)')
     parser.add_argument('-v', '--version', type=str, default='latest', help='Specific version to download, otherwise the latest version will be downloaded')
-    parser.add_argument('-f', '--format', type=str, default='AIRRC-JSON', choices=['AIRRC-JSON', 'SINGLE-FG', 'SINGLE-FU', 'MULTI-F', 'MULTI-IGBLAST', 'MIXCR'], help='Format to download')
+    parser.add_argument('-f', '--format', type=str, default='AIRRC-JSON', choices=['AIRRC-JSON', 'SINGLE-FG', 'SINGLE-FU', 'MULTI-F', 'MULTI-IGBLAST', 'MIXCR', 'LEADER', 'LEADER-AA', '10X'], help='Format to download')
     parser.add_argument('-u', '--url', type=str, default='https://ogrdb.airr-community.org/api_v2', help='URL to use')
     parser.add_argument('-p', '--prefix', type=str, help='Prefix for filenames. Default prefix is species_locus (with _ substituted for space). If PREFIX is NONE, no prefix will be used for multi files, and the default prefix will be used for single files.')
     return parser
@@ -364,7 +538,11 @@ def get_parser():
 
 def main():
     args = get_parser().parse_args()
-    download_germline_set(args.species, args.locus, args.version, args.name, args.format, args.url, args.prefix)
+
+    if args.format == '10X':
+        download_10x_germline_set(args.species, args.locus, args.version, args.name, args.format, args.url, args.prefix)
+    else:
+        download_germline_set(args.species, args.locus, args.version, args.name, args.format, args.url, args.prefix)
 
 
 if __name__ == "__main__":

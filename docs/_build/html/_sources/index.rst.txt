@@ -13,6 +13,7 @@ Receptor-utils: code and utilities for working with IG/TR receptor sequences
    introduction
    airrc_sets_with_igblast
    airrc_sets_with_mixcr
+   airrc_sets_with_10x
    custom_igblast
    scripts
    modules

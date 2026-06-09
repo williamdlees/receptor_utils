@@ -17,6 +17,8 @@ Format Options
 * Single FASTA file: all V(D)J sequences in a single FASTA file
 * Multiple FASTA files: V, D, J, and gapped V sequences in separate FASTA files
 * IgBLAST format: Multiple fasta files, plus IgBLAST germline configuration files
+* MiXCR JSON format: MiXCR's JSON format, for use with MiXCR
+* 10X format: a single FASTA file covering all IG chains, for processing with 10X Genomics' Cell Ranger software.
 
 By default, germline sets are downloaded in `AIRR-C JSON format <https://docs.airr-community.org/en/stable/datarep/germline.html/>`_. The advantage of this format
 is that it contains full information on the germline set including delineation of the V-sequence CDRs and delieation of the J-sequences. This means that it can,
@@ -31,8 +33,14 @@ The -p argument can be used to replace the <species>_<locus>_ prefix with a cust
 The sequences can also be downloaded into four FASTA files. These are named, by default, <species>_<locus>_V.fasta, <species>_<locus>_D.fasta, <species>_<locus>_J.fasta, 
 <species>_<locus>_V_gapped.fasta. This is specified by the -f MULTI_F argument. The -p argument can be used to replace the <species>_<locus>_ prefix with a custom prefix.
 
-Finally, the -f MULTI-IGBLAST option will download the four multi files as above, and also create .ndm and .aux files for use with IgBLAST. For further details 
+The MULTI-IGBLAST option will download the four multi files as above, and also create .ndm and .aux files for use with IgBLAST. For further details 
 on use with IgBLAST please see :ref:`airrc_sets_with_igblast`.
+
+The MIXCR option will create a single JSON file in MiXCR format: see :ref:`airrc_sets_with_mixcr`.
+
+The 10X option will create a single FASTA file for use with 10X Cell Ranger: see :ref:`airrc_sets_with_10x`.
+
+The LEADER and LEADER-AA options will create FASTA files containing the leader sequences for the V genes, in nucleotide and amino acid format.
 
 Examples
 --------
@@ -51,7 +59,7 @@ Download the latest version of the mouse C57BL/6 IGH germline set in multiple FA
 
 Note that the utility will try to provide helpful information in the event of a command error::
 
-   >download_germline_set "Mus musculus" IGH -n "C57BL/6" -f MULTI-F
+   download_germline_set "Mus musculus" IGH -n "C57BL/6" -f MULTI-F
    https://ogrdb.airr-community.org/api_v2/germline/species
    Mus musculus: 10090
    Error: set C57BL/6 not found for species 10090 locus IGH. Available sets:

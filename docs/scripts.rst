@@ -34,6 +34,7 @@ Convenience Tools
    :maxdepth: 1
 
    download_germline_set
+   make_leader_fasta
    extract_refs
    fix_macaque_gaps
    identical_seqs

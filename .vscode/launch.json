@@ -35,6 +35,16 @@
             "justMyCode": true
         },
         {
+            "name": "make_leader_fasta",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/scripts/make_leader_fasta.py",
+            "args": ["${workspaceFolder}/tests/Homo_sapiens_IGH_VDJ_IGH.json", "${workspaceFolder}/tests/Homo_sapiens_IGH_VDJ_IGH_leaders.fasta", "--aa"],
+            "cwd": "${workspaceFolder}/src",
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        {
             "name": "download_germline_set",
             "type": "python",
             "request": "launch",
@@ -70,6 +80,16 @@
             "request": "launch",
             "program": "${workspaceFolder}/src/receptor_utils/check_ndm.py",
             "args": ["Homo_sapiens_IGK_.ndm", "human.ndm.imgt"],
+            "cwd": "${workspaceFolder}/tests",
+            "console": "integratedTerminal",
+            "justMyCode": true
+        }
+        {
+            "name": "make 10x",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/scripts/download_germline_set.py",
+            "args": ["Homo sapiens", "IGH", "-f", "10X"],
             "cwd": "${workspaceFolder}/tests",
             "console": "integratedTerminal",
             "justMyCode": true

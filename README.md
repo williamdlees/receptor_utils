@@ -5,6 +5,10 @@ the creation of custom IgBlast databases. Please see the [documentation](https:/
 for further details.
 
 Changes in version 0.0.66:
+- Added support for 10X Cell Ranger reference sets
+- Added options and a utility to download/extract leader sequences for V alleles
+
+Changes in version 0.0.66:
 - Added -f MIXCR option to download_germline set
 - Added make_mixcr_json utility
 - If necessary, add fake alleles to sequence names when making aux, ndm files for igblast

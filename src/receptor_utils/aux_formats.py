@@ -343,7 +343,6 @@ def aux_from_seqs(seqs, out_file, verbose):
     simple.write_csv(out_file, annotations, delimiter='\t')
 
 
-
 def make_mixcr_ref(ref, uri_prefix, taxon_id, species_name, delineation_scheme='IMGT'):
     if isinstance(ref["GermlineSet"], list):
         germline_set = ref["GermlineSet"][0]
@@ -439,3 +438,47 @@ def make_mixcr_ref(ref, uri_prefix, taxon_id, species_name, delineation_scheme='
             continue
 
     return [mixcr_rec]
+
+
+def write_leaders_to_fasta(ref, out_file, aa):
+    leaders = leader_from_json(ref, out_file, aa)
+    if not leaders:
+        return False
+
+    simple.write_fasta(out_file, leaders)
+    return True
+
+
+def leader_from_json(ref, out_file, aa):
+    if isinstance(ref["GermlineSet"], list):
+        germline_set = ref["GermlineSet"][0]
+    else:
+        germline_set = ref["GermlineSet"]
+
+    if 'items' in germline_set:
+        germline_set = germline_set['items'][0]
+
+    recs = {}
+
+    for allele in germline_set['allele_descriptions']:
+        if allele['sequence_type'] == 'V':
+            try:
+                label = allele['label']
+                l1_start = int(allele['leader_1_start'])
+                l1_end = int(allele['leader_1_end'])
+                l2_start = int(allele['leader_2_start'])
+                l2_end = int(allele['leader_2_end'])
+
+                leader_seq = allele['sequence'][l1_start-1:l1_end] + allele['sequence'][l2_start-1:l2_end]
+                if aa:
+                    leader_seq = simple.translate(leader_seq)
+
+                recs[label] = leader_seq
+            except:
+                print(f"{allele['label']}: leader not available")
+                
+    if len(recs) == 0:
+        return list()
+    else:
+        return recs
+        

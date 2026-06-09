@@ -12,3 +12,4 @@ make_mixcr_json = scripts.make_mixcr_json:main
 merge_fasta = scripts.merge_fasta:main
 name_allele = scripts.name_allele:main
 rev_comp = scripts.reverse_complement:main
+make_leader_fasta = scripts.make_leader_fasta

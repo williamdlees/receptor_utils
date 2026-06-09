@@ -48,7 +48,7 @@ In a suitable directory to use for this test, use the :ref:`download_germline_se
     IgBLAST ndm file saved to Homo_sapiens_IGH.ndm
     IgBLAST aux file saved to Homo_sapiens_IGH.aux
     
-Finally, extract the file ``HD13M.fasta``` from the downloaded tarball and copy it to the directory.
+Finally, extract the file ``HD13M.fasta`` from the downloaded tarball and copy it to the directory.
 
 2. Log in to the Immcantation container so that we can use its installed tools
 ------------------------------------------------------------------------------

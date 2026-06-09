@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Using AIRR Community Reference Sets with MiXCR &mdash; receptor-utils  documentation</title>
@@ -20,7 +20,7 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Using custom databases with IgBlast" href="custom_igblast.html" />
+    <link rel="next" title="Using AIRR Community Reference Sets with 10X Cell Ranger" href="airrc_sets_with_10x.html" />
     <link rel="prev" title="Using AIRR Community Reference Sets with IgBLAST" href="airrc_sets_with_igblast.html" /> 
 </head>
 
@@ -43,8 +43,8 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="airrc_sets_with_igblast.html">Using AIRR Community Reference Sets with IgBLAST</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Using AIRR Community Reference Sets with MiXCR</a></li>
-<li class="toctree-l1"><a class="reference internal" href="#example-usage">Example Usage</a><ul>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Using AIRR Community Reference Sets with MiXCR</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#example-usage">Example Usage</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#download-the-germline-set-for-human-ighv-genes">1. Download the germline set for human IGHV genes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#log-in-to-the-mixcr-container-so-that-we-can-use-its-installed-tools">2. Log in to the MiXCR container so that we can use its installed tools</a></li>
@@ -52,6 +52,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#annotate-the-sample-sequences-using-mixcr">4. Annotate the sample sequences using MiXCR</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="airrc_sets_with_10x.html">Using AIRR Community Reference Sets with 10X Cell Ranger</a></li>
 <li class="toctree-l1"><a class="reference internal" href="custom_igblast.html">Using custom databases with IgBlast</a></li>
 <li class="toctree-l1"><a class="reference internal" href="scripts.html">Command-Line Utilities</a></li>
 <li class="toctree-l1"><a class="reference internal" href="modules.html">receptor_utils</a></li>
@@ -88,15 +89,15 @@ the <a class="reference internal" href="download_germline_set.html#download-germ
 The germline set in MiXCR format can then be used to annotate sequences with MiXCR, using <code class="docutils literal notranslate"><span class="pre">mixcr</span> <span class="pre">analyze</span></code> as outlined in the MiXCR
 documentation on the <a class="reference external" href="https://mixcr.com/mixcr/guides/create-custom-library/?h=json#de-novo-libraries">Custom Reference Library page</a>.
 There is no need to use <code class="docutils literal notranslate"><span class="pre">mixcr</span> <span class="pre">buildlibrary</span></code> as the file is already in the correct format for use with MiXCR.</p>
-</section>
 <section id="example-usage">
-<h1>Example Usage<a class="headerlink" href="#example-usage" title="Permalink to this heading"></a></h1>
+<h2>Example Usage<a class="headerlink" href="#example-usage" title="Permalink to this heading"></a></h2>
 <p>For simplicity in this example, we will use the MiXCR Docker/Singularity container.
 If you are not familiar with the container, you can read about it in the <a class="reference external" href="https://mixcr.com/mixcr/getting-started/docker/?h=container">MiXCR documentation</a>. Alternatively, you can install MiXCR on your local machine,
 using the instructions provided on the <a class="reference external" href="https://mixcr.com">MiXCR website</a>. In this case just skip the ‘log in to Docker’ step in the walkthrough.</p>
 <p>We will annotate a sample set of sequences provided on the <a class="reference external" href="http://clip.med.yale.edu/immcantation/examples/AIRR_Example.tar.gz">Immcantation website</a>.
 The sequences have been preprocessed and quality-filtered from Illumina paired-end reads and are present in a FASTA file called <code class="docutils literal notranslate"><span class="pre">HD13M.fasta</span></code>. The process required to create such a file from sequencing reads will depend on the sequencing protocol.
 You can consult the MiXCR documentation, or other sources, to determine a suitable approach for your sequencing data.</p>
+</section>
 <section id="prerequisites">
 <h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this heading"></a></h2>
 <p>Before you start, you will need to have the following installed on your machine:</p>
@@ -173,7 +174,7 @@ HD13M
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="airrc_sets_with_igblast.html" class="btn btn-neutral float-left" title="Using AIRR Community Reference Sets with IgBLAST" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="custom_igblast.html" class="btn btn-neutral float-right" title="Using custom databases with IgBlast" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="airrc_sets_with_10x.html" class="btn btn-neutral float-right" title="Using AIRR Community Reference Sets with 10X Cell Ranger" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
