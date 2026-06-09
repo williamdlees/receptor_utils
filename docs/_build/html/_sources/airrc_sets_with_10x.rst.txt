@@ -1,0 +1,56 @@
+.. _airrc_sets_with_10x:
+
+
+Using AIRR Community Reference Sets with 10X Cell Ranger
+========================================================
+
+The :ref:`download_germline_set` utility can be used to download germline reference sets from the AIRR-C OGRDB database in the format 
+required by Cell Ranger's `makevdjref tool <https://www.10xgenomics.com/support/software/cell-ranger/latest/analysis/inputs/cr-5p-references>`_. 
+
+OGRDB currently only supports 10X format for human IG sequences. Support for Rhesus macaque IG sequences is planned for a future release.
+
+Example Usage
+-------------
+
+In this example, we follow the 10X Cellranger tutorial, but modify the reference set to use the latest version of the human IGH germline set from OGRDB, downloaded with the :ref:`download_germline_set` utility.
+It is assumed below that you have used the directory layout described in the tutorial. 
+
+Prerequisites
+-------------
+
+First follow the instructions in the tutorial `Running Cell Ranger VDJ <https://www.10xgenomics.com/support/software/cell-ranger/latest/tutorials/cr-tutorial-vdj>`_. Complete it, so that you have the sample data
+annotated with the build-in Cell Ranger data set. Open the file runs/HumanB_Cell/outs/airr_rearrangement.tsv. Note that the annotations are at gene level: the 10X reference set does not contain allele-level information.
+
+Annotation with OGRDB germline reference set
+--------------------------------------------
+
+In the top-level working directory, create a new directory ``ogrdb_ref``. cd to the directory and enter the command:
+
+.. code-block:: none
+
+    download_germline_set "Homo sapiens" IGH -f 10X
+
+The tool will download germline reference data for all IG loci (even though only IGH is specified) and will create a single FASTA file. You may see warnings that some sequences have been omitted because
+no leader sequence is available. Cell Ranger requires a leader sequence for annotation, and there are a small number of records in the OGRDB human IG set which do not at present have an annotated leader:
+these will not be included in the 10x reference.
+
+Now enter the command:
+
+.. code-block:: none
+
+    cellranger mkvdjref --seqs homo_sapiens_10x.fasta --genome ogrdb_mkvdjref
+
+Here, `--seqs` specifies the input FASTA file containing the reference sequences from ogrdb, and `--genome` specifies the name of the output directory where the new Cell Ranger reference will be created.
+
+Now cd to the runs directory, and create a new run that uses the OGRDB reference set:
+
+.. code-block:: none
+
+    cellranger vdj --id=HumanB_Cell_OGRDB \
+        --reference=../ogrdb_ref/ogrdb_mkvdjref \
+        --fastqs=../dataset-vdj-practice/sc5p_v2_hs_B_1k_multi_5gex_b_fastqs/sc5p_v2_hs_B_1k_b_fastqs \
+        --sample=sc5p_v2_hs_B_1k_b \
+        --localcores=8 \
+        --localmem=64 \
+
+When Cell Ranger completes, open the file runs/HumanB_Cell_OGRDB/outs/airr_rearrangement.tsv and note that the records are annotated at allele level.

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Using AIRR Community Reference Sets with 10X Cell Ranger &mdash; receptor-utils  documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Using custom databases with IgBlast" href="custom_igblast.html" />
+    <link rel="prev" title="Using AIRR Community Reference Sets with MiXCR" href="airrc_sets_with_mixcr.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> receptor-utils
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="airrc_sets_with_igblast.html">Using AIRR Community Reference Sets with IgBLAST</a></li>
+<li class="toctree-l1"><a class="reference internal" href="airrc_sets_with_mixcr.html">Using AIRR Community Reference Sets with MiXCR</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Using AIRR Community Reference Sets with 10X Cell Ranger</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#example-usage">Example Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#annotation-with-ogrdb-germline-reference-set">Annotation with OGRDB germline reference set</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="custom_igblast.html">Using custom databases with IgBlast</a></li>
+<li class="toctree-l1"><a class="reference internal" href="scripts.html">Command-Line Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">receptor_utils</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">receptor-utils</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a></li>
+      <li class="breadcrumb-item active">Using AIRR Community Reference Sets with 10X Cell Ranger</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/airrc_sets_with_10x.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="using-airr-community-reference-sets-with-10x-cell-ranger">
+<span id="airrc-sets-with-10x"></span><h1>Using AIRR Community Reference Sets with 10X Cell Ranger<a class="headerlink" href="#using-airr-community-reference-sets-with-10x-cell-ranger" title="Permalink to this heading"></a></h1>
+<p>The <a class="reference internal" href="download_germline_set.html#download-germline-set"><span class="std std-ref">download_germline_set</span></a> utility can be used to download germline reference sets from the AIRR-C OGRDB database in the format
+required by Cell Ranger’s <a class="reference external" href="https://www.10xgenomics.com/support/software/cell-ranger/latest/analysis/inputs/cr-5p-references">makevdjref tool</a>.</p>
+<p>OGRDB currently only supports 10X format for human IG sequences. Support for Rhesus macaque IG sequences is planned for a future release.</p>
+<section id="example-usage">
+<h2>Example Usage<a class="headerlink" href="#example-usage" title="Permalink to this heading"></a></h2>
+<p>In this example, we follow the 10X Cellranger tutorial, but modify the reference set to use the latest version of the human IGH germline set from OGRDB, downloaded with the <a class="reference internal" href="download_germline_set.html#download-germline-set"><span class="std std-ref">download_germline_set</span></a> utility.
+It is assumed below that you have used the directory layout described in the tutorial.</p>
+</section>
+<section id="prerequisites">
+<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this heading"></a></h2>
+<p>First follow the instructions in the tutorial <a class="reference external" href="https://www.10xgenomics.com/support/software/cell-ranger/latest/tutorials/cr-tutorial-vdj">Running Cell Ranger VDJ</a>. Complete it, so that you have the sample data
+annotated with the build-in Cell Ranger data set. Open the file runs/HumanB_Cell/outs/airr_rearrangement.tsv. Note that the annotations are at gene level: the 10X reference set does not contain allele-level information.</p>
+</section>
+<section id="annotation-with-ogrdb-germline-reference-set">
+<h2>Annotation with OGRDB germline reference set<a class="headerlink" href="#annotation-with-ogrdb-germline-reference-set" title="Permalink to this heading"></a></h2>
+<p>In the top-level working directory, create a new directory <code class="docutils literal notranslate"><span class="pre">ogrdb_ref</span></code>. cd to the directory and enter the command:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>download_germline_set &quot;Homo sapiens&quot; IGH -f 10X
+</pre></div>
+</div>
+<p>The tool will download germline reference data for all IG loci (even though only IGH is specified) and will create a single FASTA file. You may see warnings that some sequences have been omitted because
+no leader sequence is available. Cell Ranger requires a leader sequence for annotation, and there are a small number of records in the OGRDB human IG set which do not at present have an annotated leader:
+these will not be included in the 10x reference.</p>
+<p>Now enter the command:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>cellranger mkvdjref --seqs homo_sapiens_10x.fasta --genome ogrdb_mkvdjref
+</pre></div>
+</div>
+<p>Here, <cite>–seqs</cite> specifies the input FASTA file containing the reference sequences from ogrdb, and <cite>–genome</cite> specifies the name of the output directory where the new Cell Ranger reference will be created.</p>
+<p>Now cd to the runs directory, and create a new run that uses the OGRDB reference set:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>cellranger vdj --id=HumanB_Cell_OGRDB \
+    --reference=../ogrdb_ref/ogrdb_mkvdjref \
+    --fastqs=../dataset-vdj-practice/sc5p_v2_hs_B_1k_multi_5gex_b_fastqs/sc5p_v2_hs_B_1k_b_fastqs \
+    --sample=sc5p_v2_hs_B_1k_b \
+    --localcores=8 \
+    --localmem=64 \
+</pre></div>
+</div>
+<p>When Cell Ranger completes, open the file runs/HumanB_Cell_OGRDB/outs/airr_rearrangement.tsv and note that the records are annotated at allele level.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="airrc_sets_with_mixcr.html" class="btn btn-neutral float-left" title="Using AIRR Community Reference Sets with MiXCR" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="custom_igblast.html" class="btn btn-neutral float-right" title="Using custom databases with IgBlast" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, William Lees.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

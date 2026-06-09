@@ -1,6 +1,6 @@
 Metadata-Version: 2.4
 Name: receptor_utils
-Version: 0.0.66
+Version: 0.0.67
 Summary: Some tools I find useful for working with Ig receptor sequences
 Home-page: https://github.com/williamdlees/receptor_utils
 Author: William Lees
@@ -21,6 +21,10 @@ Dynamic: license-file
 Some tools I find useful for working with IG/TR receptor sequences, including support for allele sequence naming and 
 the creation of custom IgBlast databases. Please see the [documentation](https://williamdlees.github.io/receptor_utils/_build/html/introduction.html)
 for further details.
+
+Changes in version 0.0.66:
+- Added support for 10X Cell Ranger reference sets
+- Added options and a utility to download/extract leader sequences for V alleles
 
 Changes in version 0.0.66:
 - Added -f MIXCR option to download_germline set

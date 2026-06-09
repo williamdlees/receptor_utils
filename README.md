@@ -4,7 +4,7 @@ Some tools I find useful for working with IG/TR receptor sequences, including su
 the creation of custom IgBlast databases. Please see the [documentation](https://williamdlees.github.io/receptor_utils/_build/html/introduction.html)
 for further details.
 
-Changes in version 0.0.66:
+Changes in version 0.0.67:
 - Added support for 10X Cell Ranger reference sets
 - Added options and a utility to download/extract leader sequences for V alleles
 

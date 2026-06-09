@@ -27,6 +27,7 @@ src/scripts/fix_macaque_gaps.py
 src/scripts/gap_inferred.py
 src/scripts/identical_seqs.py
 src/scripts/make_igblast_ndm.py
+src/scripts/make_leader_fasta.py
 src/scripts/make_mixcr_json.py
 src/scripts/merge_fasta.py
 src/scripts/name_allele.py
