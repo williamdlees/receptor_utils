@@ -104,7 +104,7 @@ annotated with the build-in Cell Ranger data set. Open the file runs/HumanB_Cell
 no leader sequence is available. Cell Ranger requires a leader sequence for annotation, and there are a small number of records in the OGRDB human IG set which do not at present have an annotated leader:
 these will not be included in the 10x reference.</p>
 <p>Now enter the command:</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>cellranger mkvdjref --seqs homo_sapiens_10x.fasta --genome ogrdb_mkvdjref
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>cellranger mkvdjref --seqs Homo_sapiens_IG_10x.fasta --genome ogrdb_mkvdjref
 </pre></div>
 </div>
 <p>Here, <cite>–seqs</cite> specifies the input FASTA file containing the reference sequences from ogrdb, and <cite>–genome</cite> specifies the name of the output directory where the new Cell Ranger reference will be created.</p>

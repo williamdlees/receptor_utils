@@ -12,6 +12,15 @@ Installation
 
 The module requires `Biopython <https://biopython.org/>`_, which needs to be installed separately.
 
+Walkthroughs for using AIRR-C OGRDB germline sets
+-------------------------------------------------
+
+:ref:`airrc_sets_with_igblast`
+
+:ref:`airrc_sets_with_mixcr`
+
+:ref:`airrc_sets_with_10x`
+
 Naming and aligning V, D and J sequences
 ----------------------------------------
 
@@ -25,6 +34,7 @@ incorporating any SNPs. The naming scheme that it uses is described
 :ref:`create_alignment_label` - Create a formatted alignment display from gap-aligned IG/TR sequences, showing nucleotide sequences with amino acid translations and change annotations. Supports V, D, and J sequence types with type-specific formatting including CDR region delineation for V sequences.
 
 :ref:`fix_macaque_gaps_label` - The IMGT alignment for macaque IG sequences has inserted codons relative to the alignment used for most other species. This can cause problems for downstream tools. This utility removes the additional codons in macaque IG, reverting to the standard alignment
+
 
 Using custom databases with IgBlast
 -----------------------------------

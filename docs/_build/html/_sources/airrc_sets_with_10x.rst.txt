@@ -38,7 +38,7 @@ Now enter the command:
 
 .. code-block:: none
 
-    cellranger mkvdjref --seqs homo_sapiens_10x.fasta --genome ogrdb_mkvdjref
+    cellranger mkvdjref --seqs Homo_sapiens_IG_10x.fasta --genome ogrdb_mkvdjref
 
 Here, `--seqs` specifies the input FASTA file containing the reference sequences from ogrdb, and `--genome` specifies the name of the output directory where the new Cell Ranger reference will be created.
 
