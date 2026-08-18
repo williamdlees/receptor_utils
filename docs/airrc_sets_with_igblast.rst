@@ -40,7 +40,7 @@ In a suitable directory to use for this test, use the :ref:`download_germline_se
 
 ..  code-block:: none
 
-    $ download_germline_set "Homo sapiens" IGH -f MULTI-IGBLAST
+    $ download_germline_set "Homo sapiens" IGH -f MULTI-IGBLAST -n IGH_VDJ -p Homo_sapiens_IGH_
     https://ogrdb.airr-community.org/api_v2/germline/species
     Homo sapiens: 9606
     9606.IGH_VDJ
