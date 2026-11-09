@@ -32,4 +32,4 @@ src/scripts/make_mixcr_json.py
 src/scripts/merge_fasta.py
 src/scripts/name_allele.py
 src/scripts/reverse_complement.py
-tests/test_scored_gap_consensus.py
+tests/test_simple_bio_seq.py

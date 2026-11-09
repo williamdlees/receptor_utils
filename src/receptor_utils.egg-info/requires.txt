@@ -1,2 +1,7 @@
 biopython>=1.81
 requests>=2.28
+
+[test]
+pytest>=7
+pytest-cov>=4
+pytest-mock>=3
