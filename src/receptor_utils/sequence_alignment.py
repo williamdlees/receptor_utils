@@ -26,7 +26,7 @@ def create_alignment(sequences, sequence_type='V', codon_wrap=20, v_coords=None,
     :rtype: str
     """
     
-    if sequence_type not in ['V', 'D', 'J']:
+    if sequence_type not in ['V', 'D', 'J', 'C']:
         raise ValueError("sequence_type must be 'V', 'D', or 'J'")
     
     if output_format != 'text':
