@@ -4,16 +4,9 @@ Some tools I find useful for working with IG/TR receptor sequences, including su
 the creation of custom IgBlast databases. Please see the [documentation](https://williamdlees.github.io/receptor_utils/_build/html/introduction.html)
 for further details.
 
-## Running tests
-
-```
-pip install -e ".[test]"
-pytest                      # runs the suite (network tests are skipped by default)
-pytest --cov                # with coverage
-pytest -m network           # optional tests that contact live services
-```
-
-The suite runs on every push and pull request via GitHub Actions (`.github/workflows/tests.yml`).
+Changes in version 0.0.68:
+- Expand create_alignment to support C sequences
+- Minor fixes and improvements
 
 Changes in version 0.0.67:
 - Added support for 10X Cell Ranger reference sets
