@@ -13,16 +13,19 @@ def get_parser():
     return parser
 
 
-if __name__ == "__main__":
-    
+def main():
     args = get_parser().parse_args()
-    
+
     with open(args.json_file, 'r') as f:
         germline_set = json.load(f)
-    
+
     success = aux.write_leaders_to_fasta(germline_set, args.out_file, aa=args.aa)
-    
+
     if success:
         print(f"Leader FASTA file successfully created at {args.out_file}.")
     else:
         print("No leader sequences were found. No FASTA file was created.")
+
+
+if __name__ == "__main__":
+    main()
