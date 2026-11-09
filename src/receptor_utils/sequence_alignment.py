@@ -27,7 +27,7 @@ def create_alignment(sequences, sequence_type='V', codon_wrap=20, v_coords=None,
     """
     
     if sequence_type not in ['V', 'D', 'J', 'C']:
-        raise ValueError("sequence_type must be 'V', 'D', or 'J'")
+        raise ValueError("sequence_type must be 'V', 'D', 'J', or 'C'")
     
     if output_format != 'text':
         raise NotImplementedError("Only text output format is currently implemented")

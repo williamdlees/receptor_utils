@@ -359,7 +359,7 @@ def write_igblast_to_disk(data, locus, prefix):
         output_file (str): The name of the output file.
     """
     p = prefix
-    if p[-1] == '_':
+    if p and p[-1] == '_':
         p = p[:-1]
     if aux_formats.ndm_from_json(data, f"{p}.ndm", f"V{locus[2]}", 'IMGT'):
         print(f"IGBLAST ndm file saved to {p}.ndm")

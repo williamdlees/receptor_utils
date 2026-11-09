@@ -4,3 +4,17 @@ requires = [
     "wheel"
 ]
 build-backend = "setuptools.build_meta"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra --strict-markers -m 'not network'"
+markers = [
+    "network: tests that need live network access (deselected by default; run with -m network)",
+]
+
+[tool.coverage.run]
+source = ["receptor_utils", "scripts"]
+
+[tool.coverage.report]
+show_missing = true
+skip_empty = true

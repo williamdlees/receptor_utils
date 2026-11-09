@@ -133,7 +133,7 @@ def sample_fasta(seqs: dict, number: int):
     if len(keys) <= number:
         return seqs
 
-    sample = random.sample(keys, number)
+    sample = random.sample(list(keys), number)
     sample_seqs = {}
     for key in sample:
         sample_seqs[key] = seqs[key]
@@ -233,8 +233,7 @@ def dumb_consensus(seqs: dict, threshold: float = 0.7):
     :rtype: str
     """
     msa = MultipleSeqAlignment(toSeqRecords(seqs))
-    summary_align = AlignInfo.SummaryInfo(msa)
-    return str(summary_align.gap_consensus(threshold=threshold))
+    return str(scored_gap_consensus(msa, threshold=threshold)[0])
 
 
 def scored_consensus(seqs: dict, threshold: float = 0.7):
