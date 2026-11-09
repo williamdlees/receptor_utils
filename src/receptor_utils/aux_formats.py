@@ -336,9 +336,9 @@ def aux_from_seqs(seqs, out_file, verbose):
                 'j_cdr3_end': result.cdr3_pos-2,
                 'extra_bps': result.extra_bps,
             })
-    else:
-        if verbose:
-            print(f'{result.seq_name}: no solutions')
+        else:
+            if verbose:
+                print(f'{result.seq_name}: no solutions')
 
     simple.write_csv(out_file, annotations, delimiter='\t')
 
