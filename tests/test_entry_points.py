@@ -23,12 +23,8 @@ def test_fourteen_console_scripts():
     assert len(EP) == 14
 
 
-NO_MAIN = pytest.mark.xfail(strict=True, raises=AttributeError,
-                            reason="scripts.make_leader_fasta defines no main(), so its console script is broken")
-
-
 def ep_params():
-    return [pytest.param(n, t, marks=NO_MAIN) if n == "make_leader_fasta" else (n, t) for n, t in sorted(EP.items())]
+    return sorted(EP.items())
 
 
 @pytest.mark.parametrize("name,target", ep_params())

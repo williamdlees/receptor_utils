@@ -195,9 +195,10 @@ def test_multi_igblast(api, run_script, tmp_path):
     assert (tmp_path / "Homo_sapiens_IGH.aux").exists()
 
 
-@pytest.mark.xfail(strict=True, raises=IndexError, reason="write_igblast_to_disk indexes prefix[-1] when prefix is empty (-p NONE)")
 def test_multi_igblast_prefix_none(api, run_script, tmp_path):
-    run(run_script, "-f", "MULTI-IGBLAST", "-p", "NONE")
+    assert run(run_script, "-f", "MULTI-IGBLAST", "-p", "NONE") == 0
+    assert (tmp_path / "V.fasta").exists()
+    assert (tmp_path / ".ndm").exists()
 
 
 def test_unknown_species_downloads_nothing(api, run_script, tmp_path, capsys):

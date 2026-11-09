@@ -80,8 +80,6 @@ def test_read_imgt_fasta_constant_names_get_seq_type(imgt_file):
     assert res["Homo sapiens"]["CH"] == {"IGHG1_CH1*01": "GGGG"}
 
 
-@pytest.mark.xfail(sys.version_info >= (3, 11), raises=TypeError, strict=True,
-                   reason="BUG: sample_fasta passes dict keys view to random.sample, unsupported on Python 3.11+")
 def test_sample_fasta_samples_subset():
     seqs = {str(i): "ACGT" for i in range(10)}
     sample = sbs.sample_fasta(seqs, 3)
@@ -129,8 +127,6 @@ def test_to_seq_records():
     assert [str(r.seq) for r in recs] == ["ACGT", "TT"]
 
 
-@pytest.mark.xfail(not hasattr(AlignInfo.SummaryInfo, "gap_consensus"), raises=AttributeError, strict=True,
-                   reason="BUG: dumb_consensus uses SummaryInfo.gap_consensus, removed in recent Biopython")
 def test_dumb_consensus():
     seqs = {"1": "ACGT", "2": "ACGT", "3": "ACCT"}
     assert sbs.dumb_consensus(seqs, threshold=0.6) == "ACGT"
