@@ -138,7 +138,9 @@ def test_check_conserved_residues_problems():
 
 
 def test_check_conserved_residues_stop_and_truncation():
-    assert number_v.check_conserved_residues("A" * 50) == "Sequence truncated before second cysteine"
+    assert number_v.check_conserved_residues("A" * 50) == (
+        "Sequence truncated before second cysteine, First cysteine not found, Conserved Trp not found"
+    )
     aa = "A" * 22 + "C" + "A" * 17 + "W" + "A" * 10 + "*" + "A" * 51 + "C" + "A" * 5
     assert "Stop codon" in number_v.check_conserved_residues(aa)
 
