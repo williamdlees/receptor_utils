@@ -291,21 +291,21 @@ def check_conserved_residues(aa):
     notes = []
 
     if len(aa) < 104:
-        return 'Sequence truncated before second cysteine'
+        notes.append('Sequence truncated before second cysteine')
 
     # allow stop codon in final nucleotides without warning
     if '*' in aa:
         pos = aa.index('*')
-        if pos <= 103:
+        if pos < 103:
             notes.append('Stop codon in V-REGION before 2nd cysteine')
 
-    if aa[22] != 'C':
+    if len(aa) > 22 and aa[22] != 'C':
         notes.append('First cysteine not found')
 
-    if aa[40] != 'W':
+    if len(aa) > 40 and aa[40] != 'W':
         notes.append('Conserved Trp not found')
 
-    if aa[103] != 'C':
+    if len(aa) > 103 and aa[103] != 'C':
         notes.append('Second cysteine not found')
 
     return ', '.join(notes)
